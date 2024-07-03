@@ -1,0 +1,10 @@
+mutation AddCustomer($customer: CustomerInput!) {
+  addCustomer(customer: $customer) {
+    id
+    whatsapp_name
+    first_name
+    last_name
+    phone_number
+    __typename
+  }
+}

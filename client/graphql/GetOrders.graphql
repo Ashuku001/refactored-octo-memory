@@ -1,0 +1,23 @@
+query GetOrders($storeId: Int!) {
+  orders(storeId: $storeId) {
+    id
+    phone
+    isPaid
+    address
+    orderID
+    customerOrder {
+      first_name
+      last_name
+    }
+    orderItems {
+      id
+      price
+      quantity
+      orderProduct {
+        id
+        name
+      }
+    }
+    createdAt
+  }
+}

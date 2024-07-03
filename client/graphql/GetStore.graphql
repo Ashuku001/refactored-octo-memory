@@ -1,0 +1,7 @@
+query GetStore($storeId: Int){
+    store(storeId: $storeId){
+        __typename
+        id
+        name
+    }
+}

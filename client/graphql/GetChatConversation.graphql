@@ -1,0 +1,11 @@
+query GetConversation($chatId: Int!) {
+  chat(chatId: $chatId) {
+    conversations {
+      id
+      category
+      status
+      pricingModel
+      expiryDate
+    }
+  }
+}

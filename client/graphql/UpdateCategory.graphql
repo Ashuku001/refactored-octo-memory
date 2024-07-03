@@ -1,0 +1,15 @@
+mutation UpdateCategory($categoryId: Int!, $payload: CategoryInput!){
+    updateCategory(categoryId: $categoryId, payload: $payload){
+        __typename
+        id
+        name
+        billboard{
+            __typename
+            id
+        }
+        store{
+            __typename
+            id
+        }
+    }
+}

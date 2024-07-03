@@ -1,0 +1,7 @@
+query GetProductsOfIds($productsIds: [Int], $storeId: Int) {
+  productsIds(productIds: $productsIds, storeId: $storeId) {
+    id
+    name
+    price
+  }
+}

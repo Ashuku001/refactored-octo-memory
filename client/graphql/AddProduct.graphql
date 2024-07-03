@@ -1,0 +1,20 @@
+mutation AddProduct($product: ProductInput!){
+    addProduct(product: $product){
+        __typename
+        id
+        name
+        price
+        isArchived
+        isFeatured
+        store{
+            __typename
+            id
+            name
+        }
+        category{
+            __typename
+            id
+            name
+        }
+    }
+}

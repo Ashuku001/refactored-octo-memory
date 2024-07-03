@@ -1,0 +1,15 @@
+mutation UpdateDiscount($promotionId: Int!, $payload: DiscountPromInput) {
+  updateDiscount(promotionId: $promotionId, payload: $payload) {
+    __typename
+    id
+    name
+    startDate
+    endDate
+    description
+    discountType
+    active
+    discountValue
+    createdAt
+    updatedAt
+  }
+}

@@ -1,0 +1,61 @@
+mutation AddInteractiveButtonMessage(
+  $message: InteractiveMessageInput!
+  $template: String
+  $participants: ParticipantsInput
+  $customerId: Int
+) {
+  addInteractiveButtonMessage(
+    message: $message
+    template: $template
+    participants: $participants
+    customerId: $customerId
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    messageId
+    interactive {
+      __typename
+      id
+      type
+      button {
+        __typename
+        id
+        header
+        btnImageHead {
+          __typename
+          link
+        }
+        btnTextHead {
+          __typename
+          body
+        }
+        body
+        footer
+        action
+        buttons {
+          __typename
+          buttonId
+          title
+        }
+        product {
+          __typename
+          id
+          name
+          store {
+            __typename
+            id
+            name
+          }
+        }
+      }
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

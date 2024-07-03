@@ -1,0 +1,21 @@
+mutation UpdateMessageStatus($id: Int!, $messageId: String) {
+  updateMessageStatus(id: $id, messageId: $messageId) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    status
+    messageId
+    text {
+      __typename
+      body
+    }
+    image {
+      __typename
+      caption
+      url
+    }
+    createdAt
+  }
+}

@@ -1,0 +1,34 @@
+mutation AddDocumentMessage(
+  $message: DocumentMessageInput!
+  $template: String
+  $participants: ParticipantsInput
+  $customerId: Int
+) {
+  addDocumentMessage(
+    message: $message
+    template: $template
+    participants: $participants
+    customerId: $customerId
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    messageId
+    document {
+      __typename
+      url
+      sha256
+      filename
+      mimeType
+      documentId
+      caption
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

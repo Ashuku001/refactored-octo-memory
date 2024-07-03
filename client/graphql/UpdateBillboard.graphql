@@ -1,0 +1,12 @@
+mutation UpdateBillboard($billboardId: Int!, $payload: BillboardInput!){
+    updateBillboard(billboardId: $billboardId, payload: $payload){
+        __typename
+        id
+        label
+        imageUrl
+        store{
+            __typename
+            id
+        }
+    }
+}

@@ -1,0 +1,8 @@
+query GetCurrentMerchant{
+    currentMerchant{
+        __typename
+        id
+        business_name
+        username
+    }
+}

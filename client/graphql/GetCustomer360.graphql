@@ -1,0 +1,35 @@
+query GetCustomer360($customerId: Int!) {
+  customer360(customerId: $customerId) {
+    id
+    whatsapp_name
+    first_name
+    last_name
+    phone_number
+    createdAt
+    customerOrder {
+      __typename
+      orderID
+      id
+      isPaid
+      phone
+      address
+      status
+      updatedAt
+      orderItems {
+        id
+        price
+        quantity
+        orderProduct {
+          id
+          name
+        }
+      }
+      storeOrder {
+        __typename
+        id
+        name
+      }
+    }
+    __typename
+  }
+}

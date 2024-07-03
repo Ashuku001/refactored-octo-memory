@@ -1,0 +1,13 @@
+query GetAllProducts {
+    allProducts{
+        __typename
+        id
+        name
+        products {
+            __typename
+            id
+            name
+            price
+        }
+    }
+}

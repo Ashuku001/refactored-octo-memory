@@ -1,0 +1,12 @@
+mutation addBillboard($billboard: BillboardInput!){
+    addBillboard(billboard: $billboard){
+        __typename
+        id
+        label
+        imageUrl
+        store {
+            __typename
+            id
+        }
+    }
+}

@@ -1,0 +1,27 @@
+mutation AddImageMessage(
+  $message: ImageMessageInput!
+  $template: String
+  $customerId: Int
+) {
+  addImageMessage(
+    message: $message
+    template: $template
+    customerId: $customerId
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    image {
+      __typename
+      url
+      caption
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

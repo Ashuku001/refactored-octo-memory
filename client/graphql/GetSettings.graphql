@@ -1,0 +1,12 @@
+query GetSetting($username: String){
+    setting(username: $username){
+        __typename
+        callBack_url
+        APP_ID
+        PHONE_NUMBER_ID
+        BUSINESS_ACCOUNT_ID
+        ACCESS_TOKEN
+        API_VERSION
+        WEBHOOK_VERIFICATION_TOKEN
+    }
+}

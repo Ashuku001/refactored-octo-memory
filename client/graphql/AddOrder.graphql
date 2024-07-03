@@ -1,0 +1,13 @@
+mutation AddOrder($order: OrderInput!, $storeId: Int!) {
+  addOrder(order: $order, storeId: $storeId) {
+    id
+    isPaid
+    phone
+    orderItems {
+      id
+      orderProduct {
+        name
+      }
+    }
+  }
+}

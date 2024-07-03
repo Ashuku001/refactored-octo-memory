@@ -1,0 +1,55 @@
+mutation AddInteractiveTemplateMessage(
+  $message: InteractiveMessageInput!
+  $template: String
+  $participants: ParticipantsInput
+  $customerId: Int
+) {
+  addInteractiveTemplateMessage(
+    message: $message
+    template: $template
+    participants: $participants
+    customerId: $customerId
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    messageId
+    interactive {
+      __typename
+      id
+      type
+      template {
+        __typename
+        id
+        header
+        tempImageHead {
+          __typename
+          link
+        }
+        body
+        action
+        tempProduct {
+          __typename
+          name
+          store {
+            __typename
+            name
+            id
+          }
+        }
+        buttons {
+          __typename
+          text
+          id
+        }
+      }
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

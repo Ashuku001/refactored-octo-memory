@@ -1,0 +1,10 @@
+mutation UpdateCustomer($customerId: Int!, $payload: CustomerInput!) {
+  updateCustomer(customerId: $customerId, payload: $payload) {
+    id
+    whatsapp_name
+    first_name
+    last_name
+    phone_number
+    __typename
+  }
+}

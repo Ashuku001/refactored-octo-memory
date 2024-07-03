@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+  cesPostgresDB:
+    container_name: ces-db
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=ces_live_db
+    ports:
+      - "5432:5432"
+    networks:
+      - shared-network
+    volumes: 
+      - ./postgres-db:/var/lib/postgresql/data
+      - dbscripts:/docker-entrypoint-initdb.d/
+
+  cesServerAPI:
+    container_name: ces-server
+    restart: always
+    image: ces-server-prod:1.0.0
+    build: 
+      context: server
+      target: production
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PG_HOST=cesPostgresDB
+      - PG_USERNAME=postgres
+      - PG_PASSWORD=admin123
+      - PG_DB=ces_live_db
+      - PG_PORT=5432
+    ports:
+      - "4000:4000"
+    env_file:
+      - ./server/.env
+    networks:
+      - shared-network
+    depends_on:
+      - cesPostgresDB
+
+  cesNextClient:
+    container_name: ces-client
+    restart: unless-stopped
+    image: ces-client-prod:1.0.0
+    build: 
+      context: client
+      target: production
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_SERVER_API=http://cesServerAPI:4000
+      - NEXT_PUBLIC_CLIENT_URL=http://cesNextClient:3000
+      - NEXT_PUBLIC_FASTAPI_URL=http://cesFastAPI:8000
+    env_file:
+      - ./client/.env.local
+    networks:
+      - shared-network
+    depends_on:
+      - cesServerAPI
+
+  cesFastAPI:
+    container_name: ces-fastapi
+    restart: unless-stopped
+    image: ces-fastapi-prod:1.0.0
+    build: 
+      context: fastapi
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - shared-network
+    
+networks:
+  shared-network:
+
+volumes:
+  dbscripts: {}
+  postgres-db: {}

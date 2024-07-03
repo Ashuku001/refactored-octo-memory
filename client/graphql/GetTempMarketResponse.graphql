@@ -1,0 +1,49 @@
+query GetTempMarketResponse($adTemplateId: Int!){
+    tempMarketResponse(adTemplateId: $adTemplateId){
+        id
+        name
+        leads
+        adTempProduct {
+            id
+            name
+            price
+            images {
+                id
+                url
+            }
+            store {
+                id
+                name
+            }
+        }
+        adTempMessage {
+            id
+            interactive {
+                template {
+                    buttons {
+                        text
+                    }
+                }
+            }
+        }
+        adTempResponses {
+            id
+            cusTempLead {
+                id
+                phone_number
+                first_name
+                last_name
+            }
+            mesTempLead {
+                id
+                createdAt
+                chat {
+                    id
+                }
+                mesTempReply {
+                    text
+                }
+            }
+        }
+    }
+}

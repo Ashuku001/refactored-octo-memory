@@ -1,0 +1,5 @@
+mutation DeleteCategory($categoryId: Int!, $storeId: Int!) {
+  deleteCategory(categoryId: $categoryId, storeId: $storeId) {
+    success
+  }
+}

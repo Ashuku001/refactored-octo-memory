@@ -1,0 +1,7 @@
+mutation updateStore($storeId: Int!, $payload: StoreInput!){
+    updateStore(storeId: $storeId, payload: $payload){
+        __typename
+        id
+        name
+    }
+}

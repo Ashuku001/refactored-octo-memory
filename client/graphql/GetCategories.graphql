@@ -1,0 +1,13 @@
+query GetCategories($storeId: Int!){
+    categories(storeId: $storeId){
+        __typename
+        id
+        name
+        updatedAt
+        billboard {
+            __typename
+            id
+            label
+        }
+    }
+}

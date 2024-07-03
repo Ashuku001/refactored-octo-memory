@@ -1,0 +1,82 @@
+query LastMessage($chatId: Int!) {
+  lastMessage(chatId: $chatId) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    status
+    text {
+      __typename
+      body
+    }
+    image {
+      __typename
+      caption
+    }
+    document {
+      __typename
+      filename
+    }
+    video {
+      __typename
+      caption
+    }
+    interactive {
+      __typename
+      type
+      button {
+        __typename
+        body
+        footer
+      }
+      list {
+        __typename
+        body
+        button
+        footer
+      }
+      template {
+        __typename
+        body
+      }
+    }
+    mesListReply {
+      __typename
+      title
+      description
+      listReply {
+        __typename
+        product {
+          __typename
+          name
+          price
+        }
+      }
+    }
+    mesBtnReply {
+      __typename
+      title
+      buttonReply {
+        __typename
+        product {
+          name
+          price
+        }
+      }
+    }
+    mesTempReply {
+      __typename
+      text
+      tempReply {
+        __typename
+        tempProduct {
+          __typename
+          name
+          price
+        }
+      }
+    }
+  }
+}

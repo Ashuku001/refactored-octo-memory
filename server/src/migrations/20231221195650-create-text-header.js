@@ -1,0 +1,55 @@
+'use strict';
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('TextHeaders', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      interactiveButtonId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "InteractiveButtons",
+          key: "id"
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+      },
+      interactiveListId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "InteractiveLists",
+          key: "id"
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+      },
+      interactiveTemplateId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "InteractiveLists",
+          key: "id"
+        },
+        onDelete: 'cascade',
+        onUpdate: 'cascade'
+      },
+      body: {
+        type: Sequelize.TEXT
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
+    });
+  },
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('TextHeaders');
+  }
+};

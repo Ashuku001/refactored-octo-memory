@@ -1,0 +1,7 @@
+query GetAllStores {
+  stores {
+    __typename
+    id
+    name
+  }
+}

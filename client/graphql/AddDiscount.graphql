@@ -1,0 +1,15 @@
+mutation AddDiscount($discount: DiscountPromInput!) {
+  addDiscount(discount: $discount) {
+    __typename
+    id
+    name
+    startDate
+    endDate
+    description
+    discountType
+    active
+    discountValue
+    createdAt
+    updatedAt
+  }
+}

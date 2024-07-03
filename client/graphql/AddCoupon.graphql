@@ -1,0 +1,19 @@
+mutation addCoupon($promotion: CouponPromInput!) {
+  addCoupon(promotion: $promotion) {
+    __typename
+    id
+    name
+    description
+    discountType
+    coupon {
+      __typename
+      id
+      validFrom
+      validTo
+      discount
+      active
+      createdAt
+      updatedAt
+    }
+  }
+}

@@ -1,0 +1,50 @@
+mutation AddButtonRepliedMessage(
+  $message: ButtonRepliedInput!
+  $participants: ParticipantsInput
+  $contextMessage: ContextMessageInput
+) {
+  addButtonRepliedMessage(
+    message: $message
+    participants: $participants
+    contextMessage: $contextMessage
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    messageId
+    mesBtnReply {
+      __typename
+      id
+      buttonReply {
+        __typename
+        id
+        header
+        btnImageHead {
+          __typename
+          link
+        }
+        product {
+          __typename
+          name
+          store {
+            __typename
+            name
+            id
+          }
+        }
+        buttons {
+          __typename
+          buttonId
+          title
+        }
+      }
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

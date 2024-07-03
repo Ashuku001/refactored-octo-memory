@@ -1,0 +1,15 @@
+mutation AddCategory($category: CategoryInput!){
+    addCategory(category: $category){
+        __typename
+        id
+        name
+        store{
+            __typename
+            id
+        }
+        billboard{
+            __typename
+            id
+        }
+    }
+}

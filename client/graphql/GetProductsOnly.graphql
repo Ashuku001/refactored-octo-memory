@@ -1,0 +1,10 @@
+query GetProductsOnly($storeId: Int!) {
+  products(storeId: $storeId) {
+    __typename
+    id
+    name
+    price
+    isFeatured
+    updatedAt
+  }
+}

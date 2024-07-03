@@ -1,0 +1,9 @@
+mutation AddStore($store: StoreInput!){
+    addStore(store: $store){
+        __typename
+        id
+        name
+        createdAt
+        updatedAt
+    }
+}

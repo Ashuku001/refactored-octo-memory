@@ -1,0 +1,33 @@
+mutation AddVideoMessage(
+  $message: VideoMessageInput!
+  $template: String
+  $participants: ParticipantsInput
+  $customerId: Int
+) {
+  addVideoMessage(
+    message: $message
+    template: $template
+    participants: $participants
+    customerId: $customerId
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    messageId
+    video {
+      __typename
+      url
+      sha256
+      mimeType
+      videoId
+      caption
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

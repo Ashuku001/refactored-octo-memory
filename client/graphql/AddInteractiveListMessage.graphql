@@ -1,0 +1,62 @@
+mutation AddInteractiveListMessage(
+  $message: InteractiveMessageInput!
+  $template: String
+  $participants: ParticipantsInput
+  $customerId: Int
+) {
+  addInteractiveListMessage(
+    message: $message
+    template: $template
+    participants: $participants
+    customerId: $customerId
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    timestamp
+    createdAt
+    messageId
+    interactive {
+      __typename
+      id
+      type
+      list {
+        __typename
+        id
+        header
+        listTextHead {
+          __typename
+          body
+        }
+        body
+        button
+        sections {
+          __typename
+          title
+          rows {
+            __typename
+            id
+            buttonId
+            title
+            description
+            product {
+              __typename
+              id
+              name
+              store {
+                __typename
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

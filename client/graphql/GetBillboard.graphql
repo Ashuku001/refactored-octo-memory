@@ -1,0 +1,13 @@
+query GetBillboard( $billboardId: Int!){
+    billboard(billboardId: $billboardId){
+        __typename
+        id
+        label
+        imageUrl
+        store {
+            __typename
+            id
+        }
+
+    }
+}

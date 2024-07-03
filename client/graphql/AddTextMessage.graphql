@@ -1,0 +1,29 @@
+mutation AddTextMessage(
+  $message: TextMessageInput!
+  $participants: ParticipantsInput
+  $customerId: Int
+  $template: String
+) {
+  addTextMessage(
+    message: $message
+    participants: $participants
+    customerId: $customerId
+    template: $template
+  ) {
+    __typename
+    id
+    from_customer
+    type
+    hasContext
+    timestamp
+    createdAt
+    text {
+      __typename
+      body
+    }
+    chat {
+      __typename
+      id
+    }
+  }
+}

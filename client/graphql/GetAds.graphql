@@ -1,0 +1,17 @@
+query GetAds{
+    ads{
+        __typename
+        id
+        read
+        delivered
+        sent
+        failed
+        response
+        updatedAt
+        adTemplate {
+            __typename
+            id
+            name
+        }
+    }
+}

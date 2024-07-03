@@ -1,0 +1,10 @@
+mutation signupMerchant($username: String!, $password: String!, $email: String, $whatsapp_phone_number: String!){
+    signupMerchant(username: $username password: $password email: $email whatsapp_phone_number: $whatsapp_phone_number){
+        token
+        merchant {
+            __typename
+            id
+        }
+        __typename
+    }
+}

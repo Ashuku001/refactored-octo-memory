@@ -1,0 +1,11 @@
+query GetCusInChatInfo($chatId: Int!){
+    chat(chatId: $chatId){
+        customer {
+            __typename
+            id
+            first_name
+            last_name
+            phone_number
+       }
+    }
+}

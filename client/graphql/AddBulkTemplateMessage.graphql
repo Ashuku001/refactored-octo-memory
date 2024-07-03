@@ -1,0 +1,14 @@
+mutation AddTemplateCampaign(
+  $selectedCustomers: String!
+  $template: String
+  $message: InteractiveMessageInput!
+) {
+  addTemplateMesBulk(
+    template: $template
+    selectedCustomers: $selectedCustomers
+    message: $message
+  ) {
+    id
+    __typename
+  }
+}

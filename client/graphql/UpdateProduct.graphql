@@ -1,0 +1,20 @@
+mutation UpdateProduct($productId: Int!, $payload: ProductInput!){
+    updateProduct(productId: $productId, payload: $payload){
+        __typename
+        id
+        name
+        price
+        isArchived
+        isFeatured
+        store{
+            __typename
+            id
+            name
+        }
+        category{
+            __typename
+            id
+            name
+        }
+    }
+}

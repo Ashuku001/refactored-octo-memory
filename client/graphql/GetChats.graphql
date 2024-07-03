@@ -1,0 +1,15 @@
+query GetChats {
+  chats {
+    __typename
+    id
+    customer {
+      __typename
+      id
+      whatsapp_name
+      phone_number
+      first_name
+      last_name
+    }
+    status
+  }
+}

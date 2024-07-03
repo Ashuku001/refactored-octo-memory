@@ -1,0 +1,25 @@
+query GetPromotions($storeId: Int!){
+    promotions(storeId: $storeId
+    ){
+        __typename
+        id
+        name
+        startDate
+        endDate
+        description
+        discountType
+        active
+        discountValue
+        coupon  {
+            __typename
+            id
+            code
+            validFrom
+            validTo
+            discount
+            active
+            createdAt
+        }
+        createdAt
+    }
+}

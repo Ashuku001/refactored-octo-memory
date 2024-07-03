@@ -1,0 +1,21 @@
+mutation UpdateOrderCheckout($orderId: Int!,$storeId: Int!, $payload: OrderCheckoutInput!){
+    updateOrderCheckout(orderId: $orderId, storeId: $storeId, payload: $payload){
+        id
+        isPaid
+        phone
+        storeOrder {
+            id
+            name
+        }
+        customerOrder {
+            id
+            phone_number
+            
+        }
+        orderItems {
+            id
+            productId
+            quantity
+        }
+    }
+}

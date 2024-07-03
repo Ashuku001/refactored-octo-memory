@@ -1,0 +1,13 @@
+mutation addBulkTemplateTask($schedule: ScheduleTaskInput!) {
+  addBulkTemplateTask(schedule: $schedule) {
+    id
+    type
+    timestamp
+    bulkTempTask {
+      id
+      customers
+      message
+      template
+    }
+  }
+}

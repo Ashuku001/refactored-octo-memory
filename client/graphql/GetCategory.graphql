@@ -1,0 +1,13 @@
+query GetCategory($categoryId: Int!){
+    category(categoryId: $categoryId){
+        __typename
+        id
+        name
+        billboard{
+            __typename
+            id
+            label
+            imageUrl
+        }
+    }
+}

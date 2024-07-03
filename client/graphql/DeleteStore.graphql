@@ -1,0 +1,5 @@
+mutation DeleteStore($storeId: Int!){
+    deleteStore(storeId: $storeId){
+        success
+    }
+}

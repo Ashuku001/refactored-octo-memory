@@ -1,0 +1,276 @@
+query GetChat($chatId: Int!) {
+  chat(chatId: $chatId) {
+    conversations {
+      id
+      category
+      status
+      pricingModel
+      expiryDate
+    }
+    messages {
+      __typename
+      id
+      from_customer
+      type
+      timestamp
+      messageId
+      status
+      isAd
+      hasContext
+      context {
+        __typename
+        id
+        type
+        messageId
+        text {
+          __typename
+          body
+        }
+        video {
+          __typename
+          caption
+          url
+          mimeType
+        }
+        image {
+          __typename
+          caption
+          url
+        }
+        document {
+          __typename
+          url
+          caption
+          filename
+        }
+        interactive {
+          __typename
+          type
+          button {
+            __typename
+            body
+            product {
+              __typename
+              id
+              name
+              price
+              store {
+                __typename
+                id
+              }
+            }
+          }
+          template {
+            __typename
+            id
+            body
+            tempProduct {
+              __typename
+              id
+              name
+              price
+              store {
+                __typename
+                id
+                name
+              }
+            }
+          }
+        }
+      }
+      text {
+        __typename
+        body
+      }
+      image {
+        __typename
+        caption
+        url
+      }
+      video {
+        __typename
+        caption
+        url
+        mimeType
+      }
+      document {
+        __typename
+        url
+        caption
+        filename
+        mimeType
+      }
+      interactive {
+        __typename
+        id
+        type
+        button {
+          __typename
+          id
+          header
+          btnImageHead {
+            __typename
+            link
+          }
+          btnTextHead {
+            __typename
+            body
+          }
+          body
+          footer
+          action
+          buttons {
+            __typename
+            buttonId
+            title
+          }
+          product {
+            __typename
+            id
+            name
+            price
+            store {
+              __typename
+              id
+              name
+            }
+          }
+        }
+        template {
+          __typename
+          id
+          header
+          tempImageHead {
+            __typename
+            link
+          }
+          tempTextHead {
+            __typename
+            body
+          }
+          body
+          action
+          buttons {
+            __typename
+            text
+          }
+          tempProduct {
+            __typename
+            id
+            name
+            price
+            store {
+              __typename
+              id
+              name
+            }
+          }
+        }
+        list {
+          __typename
+          id
+          header
+          listTextHead {
+            __typename
+            body
+          }
+          body
+          button
+          footer
+          sections {
+            __typename
+            title
+            rows {
+              __typename
+              id
+              buttonId
+              title
+              description
+              product {
+                __typename
+                id
+                name
+                price
+                store {
+                  __typename
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+      mesListReply {
+        __typename
+        id
+        buttonId
+        title
+        description
+        listReply {
+          __typename
+          id
+          product {
+            __typename
+            id
+            name
+            price
+            store {
+              id
+              name
+            }
+          }
+        }
+      }
+
+      mesBtnReply {
+        __typename
+        id
+        title
+        buttonId
+        buttonReply {
+          __typename
+          product {
+            __typename
+            id
+            name
+            price
+            store {
+              __typename
+              id
+              name
+            }
+          }
+        }
+      }
+      mesTempReply {
+        __typename
+        id
+        text
+        tempReply {
+          __typename
+          tempProduct {
+            __typename
+            name
+            price
+            store {
+              __typename
+              id
+              name
+            }
+          }
+        }
+      }
+      messageAd {
+        __typename
+        id
+        read
+        delivered
+        failed
+        sent
+        response
+      }
+      createdAt
+    }
+  }
+}
