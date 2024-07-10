@@ -19,6 +19,7 @@ from app.machine_learning.api.model_based.nmf_svd_knn_coClustering import router
 from app.machine_learning.api.hybrid.hybrid import router as hybrid_router
 from app.machine_learning.api.unsupervised_model.clustering import router as clustering_router
 from app.machine_learning.api.supervised_model.classification import router as classification_router
+from app.machine_learning.api.deep_learing.collaborativeNN import router as deep_learning_router
 ############################
 from services.graphql_service.resolver import graphql_app
 
@@ -60,8 +61,9 @@ app.include_router(collaborative_filter_router, prefix="/memory/collaborative", 
 app.include_router(knn_router, prefix="/model/collaborative", tags=["model filter"])
 app.include_router(nmf_router, prefix="/model/collaborative", tags=["model filter"])
 app.include_router(hybrid_router, prefix="/model/hybrid", tags=["model hybrid"])
-app.include_router(clustering_router, prefix="/unsupervised_model/clustering", tags=["unsupervised model"])
-app.include_router(classification_router, prefix="/supervised_model/classification", tags=["unsupervised model"])
+app.include_router(clustering_router, prefix="/unsupervised_model/clustering", tags=["unsupervised learning"])
+app.include_router(classification_router, prefix="/supervised_model/classification", tags=["supervised learning"])
+app.include_router(deep_learning_router, prefix="/deep-learning/collaborative", tags=["deep learning"])
 
 app.include_router(graphql_app, prefix="/graphql", tags=["graphql"]) 
 
