@@ -149,14 +149,10 @@ async def get_sales(storeId: int):
     df["items"] = df["name"].str.replace(" ", "_")
     
     filtered_image = BytesIO()
-    wordcloud = WordCloud(background_color="white", 
-                        width=1200, 
-                        height=1200, 
-                        max_words=121).generate(str(df["items"]))
     
-    plt.subplots(figsize=(20, 20))
+    plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
-    wordcloud = WordCloud(background_color = 'white', width = 1200,  height = 1200, max_words = 121).generate(str(df['items']))
+    wordcloud = WordCloud(background_color = 'white', width = 900,  height = 900, max_words = 121).generate(str(df['items']))
     plt.imshow(wordcloud)
     plt.axis('off')
     plt.title('Most Frequently Bought Items',fontsize = 22)
@@ -313,7 +309,7 @@ async def loyal_customer_by_orders(storeId:int):
     filtered_image = BytesIO()
     
     # Number of orders per customer
-    plt.subplots(figsize=(15,6))
+    plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
     plt.plot(orders.customerId, orders.invoiceNo)
     plt.xlabel("Customer ID")
@@ -348,7 +344,7 @@ async def loyal_customer_by_amount_spent(storeId:int):
     
     filtered_image = BytesIO()
     
-    plt.subplots(figsize=(15,6))
+    plt.subplots(figsize=(20, 10))
     plt.plot(money_spent.customerId, money_spent.amount)
     plt.style.use("bmh")
     plt.ylabel("amount")
@@ -427,6 +423,7 @@ async def sales_by_day(storeId: int):
     
     filtered_image = BytesIO()
     
+    plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
     # groupby InvoiceNo extract unique days for each invoice count the days and sort the days
     ax = df.groupby("invoiceNo")["day"].unique().value_counts().sort_index().plot(kind="bar", figsize=(15, 6))
@@ -468,6 +465,7 @@ async def sales_by_hour(storeId: int):
     
     filtered_image = BytesIO()
     
+    plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
     # we removed the sort_index()
     ax = df.groupby('invoiceNo')['hour'].unique().value_counts().iloc[:-1].plot(kind='bar',figsize=(15,6))
@@ -513,6 +511,7 @@ async def discount_sales(storeId: int, discount:float = 0):
     filtered_image = BytesIO()
     
     try:
+        plt.subplots(figsize=(20, 10))
         plt.style.use("bmh")
         # countint the number of free items per year and month
         ax = free_items_df.year_month.value_counts().sort_index().plot(kind="bar", figsize=(12,6))
@@ -552,6 +551,7 @@ async def trending_items(storeId: int, date:str):
     datewise_sales = df.pivot_table(index=['date','stockCode','name'], values='quantity', aggfunc='sum').reset_index()
     
     filtered_image = BytesIO()
+    plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
     # countint the number of free items per year and month
     sns.barplot(y='name', x='quantity', data=datewise_sales[datewise_sales['date']==date].sort_values(by='quantity', ascending=False).head(10), errorbar=None)

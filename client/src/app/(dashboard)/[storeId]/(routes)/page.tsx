@@ -1,6 +1,6 @@
 
 import Heading from "@/components/ui/Heading"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { formatter } from "@/lib/utils"
 import { CreditCard, DollarSign, Package } from "lucide-react"
@@ -13,6 +13,7 @@ import { getGraphRevenue } from "@/app/actions/get-graph-data"
 import { getClient } from "@/lib/graphql/ApolloClient"
 import { GetOrdersDocument } from "@/graphql"
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { SalesInsights } from "@/components/business-insights/sales"
 
 
 interface DashBoardProps {
@@ -28,9 +29,9 @@ const DashBoardPage: React.FC<DashBoardProps> = async ({
   })
 
   const paidOrders = data.orders.filter((order) => order?.isPaid === true)
-  const totalRevenue: Number = await getTotalRevenue(paidOrders)
-  const salesCount: Number = await getSalesCount(paidOrders)
-  const stockCount: Number = await getStocksCount(params.storeId)
+  const totalRevenue: number = await getTotalRevenue(paidOrders)
+  const salesCount: number = await getSalesCount(paidOrders)
+  const stockCount: number = await getStocksCount(params.storeId)
   const graphRevenue: any= await getGraphRevenue(paidOrders)
 
 
@@ -88,6 +89,17 @@ const DashBoardPage: React.FC<DashBoardProps> = async ({
           </CardHeader>
           <CardContent className="pl-2 ">
             <RevenueGraph data={graphRevenue} />
+          </CardContent>
+        </Card>
+        <Card className="col-span-4 h-[100vh]">
+          <CardHeader>
+            <CardTitle>
+              Store insights
+            </CardTitle>
+            <CardDescription>View insights about your store by clicking the tabs below.</CardDescription>
+          </CardHeader>
+          <CardContent className="h-full">
+            <SalesInsights />
           </CardContent>
         </Card>
       </div>
