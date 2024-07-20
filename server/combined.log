@@ -5541,3 +5541,6 @@
 {"level":"error","message":"[ERROR SENDING MESSAGE TO CUSTOMER] for 2 bulk message"}
 {"level":"error","message":"[ERROR SENDING MESSAGE TO CUSTOMER] for 2 bulk message"}
 {"level":"error","message":"[ERROR SENDING MESSAGE TO CUSTOMER] for 2 bulk message"}
+{"level":"info","message":"Message was created Thu Jul 11 2024"}
+{"level":"info","message":"chat updated"}
+{"level":"info","message":"Customer was created"}

@@ -12,22 +12,21 @@ export const MostSold = ({base_url, storeId}: MostSoldProps) => {
 
   const fetchImage = async () => {
     try {
-      const response = await fetch(`${base_url}?storeId=${storeId}`);  // Assuming endpoint is at root
+      const response = await fetch(`${base_url}?storeId=${storeId}`); 
       if (!response.ok) {
         throw new Error(`Error fetching image: ${response.statusText}`);
       }
       const blob = await response.blob();
       const objectURL = URL.createObjectURL(blob);
-      setImageURL(objectURL);  // Update state with object URL
+      setImageURL(objectURL);
     } catch (error) {
       toast.error("Something went wrong.")
-      // Handle errors appropriately (e.g., display error message)
     }
   };
   
   useEffect(() => {
     fetchImage();
-  }, [])
+  }, [fetchImage])
   console.log("THE RESPONSE", imageUrl)
   return(
     <div className="flex items-center justify-center">
@@ -37,7 +36,7 @@ export const MostSold = ({base_url, storeId}: MostSoldProps) => {
           fill={true}
           src={imageUrl}
           alt=""
-          className="object-cover "
+          className="object-contain"
         />
         : <LargeLoadingSpinner />
       }

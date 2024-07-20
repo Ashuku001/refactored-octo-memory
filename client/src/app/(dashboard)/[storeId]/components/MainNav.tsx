@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { TipTool } from "@/components/ui/TipTool";
-import { SettingsIcon, ShoppingCartIcon, WalletCards, GiftIcon, BoxesIcon, BarChart3Icon, PresentationIcon } from "lucide-react";
+import { SettingsIcon, ShoppingCartIcon, WalletCards, GiftIcon, BrainCircuitIcon, BoxesIcon, BarChart3Icon, PresentationIcon } from "lucide-react";
 
 function MainNav({
     className,
@@ -63,6 +63,12 @@ function MainNav({
             active: pathname.includes(`promotions`)
         },
         {
+            href: `/${params.storeId}/ai/`,
+            label: 'AI models',
+            icon: <BrainCircuitIcon size={"25"} className=""/>,
+            active: pathname.includes(`ai`)
+        },
+        {
             href: `/${params.storeId}/settings`,
             label: 'Store Settings',
             icon: <SettingsIcon size={"25"} />,
@@ -77,8 +83,8 @@ function MainNav({
                     href={route.href}
                 >
                     <TipTool tip={route.label} sideOffset={3} 
-                        className={cn(" text-slate-700 dark:text-slate-400 text-sm font-medium transition-colors hover:text-primary",
-                        route.active ? " text-primary dark:text-primary" : "text-mutate-foreground"
+                        className={cn(" text-sm font-medium transition-colors hover:text-primary",
+                        route.active ? " text-primary dark:text-primary" : "text-mutate-foreground text-slate-500"
                     )}>
                         {route.icon}
                     </TipTool>

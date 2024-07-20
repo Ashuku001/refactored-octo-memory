@@ -344,7 +344,7 @@ async def loyal_customer_by_amount_spent(storeId:int):
     
     filtered_image = BytesIO()
     
-    plt.subplots(figsize=(20, 10))
+    plt.subplots(figsize=(15, 8))
     plt.plot(money_spent.customerId, money_spent.amount)
     plt.style.use("bmh")
     plt.ylabel("amount")
@@ -383,8 +383,9 @@ async def sales_by_month(storeId: int):
     
     filtered_image = BytesIO()
     
+    plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
-    ax = df.groupby("invoiceNo")["year_month"].unique().value_counts().sort_index().plot(kind="bar", figsize=(15, 6))
+    ax = df.groupby("invoiceNo")["year_month"].unique().value_counts().sort_index().plot(kind="bar")
     ax.set_xlabel("Month", fontsize=15)
     ax.set_ylabel("Number of orders", fontsize=15)
     ax.set_title("# orders for various months (Dec 2010 - Dec 2011) make this dynamic",  fontsize=15)
@@ -426,7 +427,7 @@ async def sales_by_day(storeId: int):
     plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
     # groupby InvoiceNo extract unique days for each invoice count the days and sort the days
-    ax = df.groupby("invoiceNo")["day"].unique().value_counts().sort_index().plot(kind="bar", figsize=(15, 6))
+    ax = df.groupby("invoiceNo")["day"].unique().value_counts().sort_index().plot(kind="bar", figsize=(12, 6))
     ax.set_xlabel("Day", fontsize=15)
     ax.set_ylabel("Number of Orders", fontsize=15)
     ax.set_title("Nuber of orders for different days", fontsize=15)
@@ -468,7 +469,7 @@ async def sales_by_hour(storeId: int):
     plt.subplots(figsize=(20, 10))
     plt.style.use("bmh")
     # we removed the sort_index()
-    ax = df.groupby('invoiceNo')['hour'].unique().value_counts().iloc[:-1].plot(kind='bar',figsize=(15,6))
+    ax = df.groupby('invoiceNo')['hour'].unique().value_counts().iloc[:-1].plot(kind='bar',figsize=(12, 6))
     ax.set_xlabel("Hour", fontsize=15) 
     ax.set_ylabel("Number of orders", fontsize=15)
     ax.set_title("Number of orders for different Hours", fontsize=15)

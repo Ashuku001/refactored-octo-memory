@@ -21,18 +21,18 @@ const bulkMessaging: { title: string; href: string; description: string }[] = [
     description:
       "Send business initiated conversation using Marketing, Utility or Authentication templates.",
   },
-  // {
-  //   title: "Interactive list message",
-  //   href: "/broadcast/list",
-  //   description:
-  //     "Send interactive list type messages to open chats.",
-  // },
-  // {
-  //   title: "Interactive button message",
-  //   href: "/broadcast/button",
-  //   description:
-  //     "Send interactive button message to open chats.",
-  // },
+  {
+    title: "Interactive list message",
+    href: "/broadcast/list",
+    description:
+      "Send interactive list type messages to open chats.",
+  },
+  {
+    title: "Interactive button message",
+    href: "/broadcast/button",
+    description:
+      "Send interactive button message to open chats.",
+  },
 ]
 
 type MainMenuProps = {

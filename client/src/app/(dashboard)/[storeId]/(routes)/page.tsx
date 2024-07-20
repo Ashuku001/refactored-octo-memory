@@ -41,7 +41,7 @@ const DashBoardPage: React.FC<DashBoardProps> = async ({
         <Heading title="Dashboard" description="Overview of your store" />
         <Separator />
         <div className="grid gap-4 grid-cols-3">
-          <Card>
+          <Card className="glassy">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Total Revenue
@@ -82,7 +82,7 @@ const DashBoardPage: React.FC<DashBoardProps> = async ({
           </Card>
         </div>
         <Card className="col-span-4">
-          <CardHeader>
+          <CardHeader className=" py-2">
             <CardTitle>
               Overview
             </CardTitle>
@@ -91,14 +91,14 @@ const DashBoardPage: React.FC<DashBoardProps> = async ({
             <RevenueGraph data={graphRevenue} />
           </CardContent>
         </Card>
-        <Card className="col-span-4 h-[100vh]">
-          <CardHeader>
+        <Card className="col-span-4 h-[110vh]">
+          <CardHeader className=" py-4">
             <CardTitle>
               Store insights
             </CardTitle>
             <CardDescription>View insights about your store by clicking the tabs below.</CardDescription>
           </CardHeader>
-          <CardContent className="h-full">
+          <CardContent className="h-[90vh]">
             <SalesInsights />
           </CardContent>
         </Card>

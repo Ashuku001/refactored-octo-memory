@@ -16,7 +16,7 @@ const Navbar = () => {
         <DropdownMenu>
             <TipTool tip='Stores menu' sideOffset={4}>
                 <DropdownMenuTrigger asChild className='z-50'>
-                    <StoreIcon size={"25"} className=" hover:text-primary text-slate-700 dark:text-slate-400"/>
+                    <StoreIcon size={"25"} className=" hover:text-primary  dark:text-slate-400 text-slate-500"/>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='z-50'>
                     <StoreSwitcher items={stores} />

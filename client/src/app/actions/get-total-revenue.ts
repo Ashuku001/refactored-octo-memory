@@ -1,7 +1,7 @@
 import { OrderType } from "@/types"
 
 export const getTotalRevenue = async (orders: OrderType) => {
-    const totalRevenue: Number = orders.reduce((total, order) => {
+    const totalRevenue: number = orders.reduce((total, order) => {
         const orderTotal = order.orderItems.reduce((orderSum, item) => {
             return orderSum + Number(item?.price * item?.quantity)
         }, 0)

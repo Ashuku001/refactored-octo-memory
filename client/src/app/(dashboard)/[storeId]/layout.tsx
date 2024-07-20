@@ -2,7 +2,6 @@ import { GetStoreDocument } from "@/graphql";
 import { redirect } from "next/navigation";
 import Navbar from "./components/NavBar";
 import { getClient } from "@/lib/graphql/ApolloClient";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 
 export default async function DashboardLayout({

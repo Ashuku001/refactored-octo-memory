@@ -49,6 +49,10 @@ class Product(Table, tablename="Products"):
     categoryId= ForeignKey(Category)
     storeId= ForeignKey(Store,)
     
+class Image(Table, tablename="Images"):
+    url = Varchar()
+    productId = ForeignKey(Product)
+    storeId = ForeignKey(Store)
 class Sale(Table, tablename="Sales"):
     customerId= ForeignKey(Customer,)
     saleDate= Varchar()

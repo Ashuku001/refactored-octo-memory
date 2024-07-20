@@ -9,12 +9,13 @@ from dotenv import load_dotenv
 
 from app.repository.product import ProductRepository
 from app.machine_learning.api.helpers.content import get_recommendation_tfidf
+from app.repository.image import ImageRepository
 
 router = APIRouter()
 load_dotenv()
 
 @router.get("/tfidf/train")
-async def train(storeId:int):
+async def train(storeId:int, merchantId:int):
     repo = ProductRepository()
     data = await repo.get_all_products(storeId=storeId)
     df = {
@@ -60,17 +61,17 @@ async def train(storeId:int):
     model_path = os.environ.get("content_filtering_path")
     
     # save the filename to a db that includes the username and id
-    model_filename = "tfidf_vec_model.pkl"
+    model_filename = f"tfidf_vec_model.pkl-{storeId}-{merchantId}"
     if not os.path.exists(model_path):
         os.makedirs(model_path)
         
     # save the model path to a database to have stats about the models performance   
     joblib.dump(model, os.path.join(model_path, model_filename))
     
-    return JSONResponse(content={"success": "content based recommeder is ready for use. Please save the model to use it for prediction."})
+    return JSONResponse(content={"success": "Recommendation agent is ready for use. Please save the model to use it for prediction."})
 
-@router.get("/tfidf/content-based-recommender")
-async def recommend(storeId:int, productId: int, similarity: str):
+@router.get("/tfidf/predict")
+async def recommend(storeId:int, merchantId:int, productId: int, similarity: str):
     repo = ProductRepository()
     data = await repo.get_all_products(storeId=storeId)
     df = {
@@ -111,7 +112,7 @@ async def recommend(storeId:int, productId: int, similarity: str):
     model_path = os.environ.get("content_filtering_path")
     
     #filename retrive from a database
-    model_filename = "tfidf_vec_model.pkl"
+    model_filename = f"tfidf_vec_model.pkl-{storeId}-{merchantId}"
     
     try:
         model = joblib.load(os.path.join(model_path, model_filename))
@@ -124,3 +125,9 @@ async def recommend(storeId:int, productId: int, similarity: str):
     else:
         return HTTPException(status_code=404, detail={"not_found": "No similar products found"})
     
+
+@router.get("/images")
+async def recommend(storeId:int):
+    repo = ImageRepository()
+    data = await repo.get_images(storeId=storeId)
+    print(data)
