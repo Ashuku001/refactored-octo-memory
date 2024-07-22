@@ -3,7 +3,7 @@ import { ModelInsights } from "../../components/ModelInsights";
 
 export const Home = () => {
   return (
-  <div className="">
+  <div className="flex flex-col space-y-2">
     <Banner
       heading={"Content based recommendation modelling"}
       className="h-[80vh] md:h-[60vh] lg:h-[50vh] px-5 md:px-5 lg:px-20 "

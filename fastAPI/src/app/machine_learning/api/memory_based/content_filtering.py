@@ -22,28 +22,22 @@ async def train(storeId:int, merchantId:int):
         "productId": [],
         "name": [],
         "description": [],
-        "price": [],
-        "brand": [],
-        "category": [],
     }
     for el in data:
         df["name"].append(el["name"])
         df["description"].append(el["description"])
         df["productId"].append(el["id"])
-        df["price"].append(el["price"])
-        df["brand"].append(el["brand"])
-        df["category"].append(el["categoryId"]["name"])
     
     df = pd.DataFrame(df)
     
     # combine product and description
-    df.loc[:, "description"] = df["name"] + " " + df["description"]
+    df.loc[:, "descName"] = df["name"] + " " + df["description"]
     
     # Droppint Duplicates and keeping first record
     unique_df = df.drop_duplicates(subset=["productId"], keep="first")
 
     # Converting String to lower case
-    unique_df["desc_lower"] = unique_df["description"].apply(lambda x: str(x).lower())
+    unique_df["desc_lower"] = unique_df["descName"].apply(lambda x: str(x).lower())
 
     # remove stop special characters
     unique_df.loc[:, "desc_lower"] = unique_df["desc_lower"].apply(lambda x: re.sub(r'[^\w\s]', '', x))
@@ -93,13 +87,13 @@ async def recommend(storeId:int, merchantId:int, productId: int, similarity: str
     df = pd.DataFrame(df)
     
     # combine product and description
-    df.loc[:, "description"] = df["name"] + " " + df["description"]
+    df.loc[:, "descName"] = df["name"] + " " + df["description"]
 
     # Droppint Duplicates and keeping first record
     unique_df = df.drop_duplicates(subset=["productId"], keep="first")
  
     # Converting String to lower case
-    unique_df.loc[:, "desc_lower"] = unique_df["description"].apply(lambda x: str(x).lower())
+    unique_df.loc[:, "desc_lower"] = unique_df["descName"].apply(lambda x: str(x).lower())
 
     # remove stop special characters
     unique_df.loc[:, "desc_lower"] = unique_df["desc_lower"].apply(lambda x: re.sub(r'[^\w\s]', '', x))

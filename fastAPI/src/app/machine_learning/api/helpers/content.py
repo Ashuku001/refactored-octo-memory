@@ -136,6 +136,6 @@ def get_recommendation_tfidf(productId, df: DataFrame, similarity, tfidf_matrix,
             "description": row["description"].iloc[0],
             "brand": row["brand"].iloc[0],
         },
-        "similar_products": products,
+        "similar_products": products[1:],
     }
     return temp

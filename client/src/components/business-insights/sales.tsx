@@ -51,7 +51,7 @@ export const SalesInsights = () => {
 
   return (
     <Tabs defaultValue={tabs[0]?.head} className="h-full relative rounded-sm mt-1 px-1">
-        <TabsList className="h-8 sticky top-0 right-0 w-full flex justify-start z-40">
+        <TabsList className="h-8 sticky top-0 right-0 w-full flex justify-start z-10">
             {tabs?.map((tab, i) => 
             <TabsTrigger
                 value={tab.head}

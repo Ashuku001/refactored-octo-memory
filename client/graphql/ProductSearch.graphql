@@ -1,0 +1,14 @@
+query ProductSearch($page: Int, $limit: Int, $text: String!, $storeId: Int!) {
+    productSearch(page: $page, limit: $limit, text: $text, storeId: $storeId){
+        id
+        name
+        description
+        price
+        category {
+            name
+        }
+        images {
+            url
+        }
+    }
+}

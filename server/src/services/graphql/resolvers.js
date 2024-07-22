@@ -1099,6 +1099,45 @@ function resolvers() {
         return stores;
       },
 
+      async productSearch(root, { page, limit, text, storeId }, context) {
+        // if text length less than three skip
+        let products = [];
+        if (text.length < 3) {
+          return {
+            products,
+          };
+        }
+
+        var skip = 0;
+        if (page && limit) {
+          skip = page * limit;
+        }
+
+        var query = {
+          order: [["createdAt", "DESC"]],
+          offset: skip,
+        };
+        if (limit) {
+          query.limit = limit;
+        }
+
+        query.where = {
+          [Op.or]: [
+            {
+              name: { [Op.iLike]: "%" + text + "%" },
+              storeId,
+            },
+          ],
+        };
+
+        products = await Product.findAll(query);
+        if (products.length === 0) {
+          throw new Error(`No results found for "${text}"`);
+        }
+
+        return products
+      },
+
       async orders(root, { storeId }, context) {
         if (!context.merchant) {
           throw new Error(

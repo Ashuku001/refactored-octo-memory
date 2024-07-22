@@ -1,494 +1,547 @@
-import { Models } from "appwrite"
+import { Models } from "appwrite";
 
 interface Links {
-    [key: string]: string
+  [key: string]: string;
 }
 
 export type MerchantType = {
-    id: int,
-    username: string,
-    business_name: string
-}
+  id: int;
+  username: string;
+  business_name: string;
+};
 
 type Template = {
-    name: string,
-    components?: [[Object], [Object]],
-    language: string,
-    status: string,
-    category: string,
-    id: string
-}
+  name: string;
+  components?: [[Object], [Object]];
+  language: string;
+  status: string;
+  category: string;
+  id: string;
+};
 
 type MessageInputType = {
-    messaging_product: string,
-    preview_url: boolean,
-    recipient_type: string,
-    to: string,
-    type: string,
-    text: Text
-}
+  messaging_product: string;
+  preview_url: boolean;
+  recipient_type: string;
+  to: string;
+  type: string;
+  text: Text;
+};
 
 type LoginFormProps = {
-    changeLoginState: Dispatch<SetStateAction<boolean>>
-}
+  changeLoginState: Dispatch<SetStateAction<boolean>>;
+};
 
 type CustomerType = {
+  __typename: "Customer";
+  id: number;
+  first_name?: string | null | undefined;
+  last_name?: string | null | undefined;
+  phone_number: string;
+} | null;
+
+type ChatAddedType = {
+  __typename?: "Chat" | undefined;
+  id?: number | null | undefined;
+  customer: {
     __typename: "Customer";
     id: number;
     first_name?: string | null | undefined;
     last_name?: string | null | undefined;
-    phone_number: string
-} | null
+    phone_number: string;
+  };
+} | null;
 
-
-type ChatAddedType = {
-    __typename?: "Chat" | undefined;
-    id?: number | null | undefined;
-    customer: {
-        __typename: "Customer";
-        id: number;
-        first_name?: string | null | undefined;
-        last_name?: string | null | undefined;
-        phone_number: string;
-    };
-} | null
-
-
-type ChatType = {
-    __typename?: "Chat" | undefined;
-    id?: number | null | undefined;
-    customer: {
+type ChatType =
+  | {
+      __typename?: "Chat" | undefined;
+      id?: number | null | undefined;
+      customer: {
         __typename: "Customer";
         id?: number | null | undefined;
         first_name?: string | null | undefined;
         last_name?: string | null | undefined;
         phone_number: string;
-    };
-    lastMessage?: {
-        __typename?: "Message" | undefined;
-        id?: number | undefined;
-        text: string;
-        createdAt?: any | null;
-    } | null | undefined;
-} | null | undefined
-
+      };
+      lastMessage?:
+        | {
+            __typename?: "Message" | undefined;
+            id?: number | undefined;
+            text: string;
+            createdAt?: any | null;
+          }
+        | null
+        | undefined;
+    }
+  | null
+  | undefined;
 
 type MessageType = {
-    __typename?: "Message" | undefined;
-    id?: number | null | undefined;
-    from_customer: boolean;
-    type?: string | null | undefined;
-    timestamp?: any;
-    createdAt?: any;
-    text?: {
-        body: string
-    } | null | undefined;
-} | null
+  __typename?: "Message" | undefined;
+  id?: number | null | undefined;
+  from_customer: boolean;
+  type?: string | null | undefined;
+  timestamp?: any;
+  createdAt?: any;
+  text?:
+    | {
+        body: string;
+      }
+    | null
+    | undefined;
+} | null;
 
-type SettingType = {
-    __typename?: "Setting" | undefined;
-    callBack_url: string;
-    APP_ID: string;
-    APP_SECRET: string;
-    PHONE_NUMBER_ID: string;
-    BUSINESS_ACCOUNT_ID: string;
-    ACCESS_TOKEN: string;
-    API_VERSION: string;
-    WEBHOOK_VERIFICATION_TOKEN: string;
-    RECIPIENT_PHONE_NUMBER?: string | undefined;
-} | null | undefined
-
+type SettingType =
+  | {
+      __typename?: "Setting" | undefined;
+      callBack_url: string;
+      APP_ID: string;
+      APP_SECRET: string;
+      PHONE_NUMBER_ID: string;
+      BUSINESS_ACCOUNT_ID: string;
+      ACCESS_TOKEN: string;
+      API_VERSION: string;
+      WEBHOOK_VERIFICATION_TOKEN: string;
+      RECIPIENT_PHONE_NUMBER?: string | undefined;
+    }
+  | null
+  | undefined;
 
 type RemoteTemplateObj = {
-    category: string;
-    name: string;
-    language: string;
-    status: string;
-    id: string;
-    components: ComponentObj[]
-}
+  category: string;
+  name: string;
+  language: string;
+  status: string;
+  id: string;
+  components: ComponentObj[];
+};
 
 interface PreviewObj {
-    HEADER?: PrevContent;
-    BODY?: PrevContent;
-    FOOTER?: PrevContent;
-    BUTTONS?: PrevContent;
+  HEADER?: PrevContent;
+  BODY?: PrevContent;
+  FOOTER?: PrevContent;
+  BUTTONS?: PrevContent;
 }
 
 interface PrevContent {
-    static?: StaticInput;
-    dynamic?: DynamicContent
-    buttons?: StaticButton
+  static?: StaticInput;
+  dynamic?: DynamicContent;
+  buttons?: StaticButton;
 }
 
 interface StaticContent {
-    [key: string]: any
+  [key: string]: any;
 }
 
 interface StaticInput {
-    type?: string;
-    format?: string;
-    content?: StaticContent;
+  type?: string;
+  format?: string;
+  content?: StaticContent;
 }
 
 interface StaticButton {
-    type: string;
-    [key: string]: any
+  type: string;
+  [key: string]: any;
 }
 
 interface DynamicContent {
-    type?: string;
-    format?: string;
-    content?: StaticContent;
-    inputs?: InputElement[]
+  type?: string;
+  format?: string;
+  content?: StaticContent;
+  inputs?: InputElement[];
 }
 
 interface ComponentObj {
-    [key: string]: any
-    type: string
+  [key: string]: any;
+  type: string;
 }
 
 interface InputElement {
-    type: string;
-    placeholder?: string;
-    id?: string;
-    name?: string;
+  type: string;
+  placeholder?: string;
+  id?: string;
+  name?: string;
 }
 
-type AddMessageType = {
-    __typename: "Message";
-    id: number;
-    from_customer: boolean;
-    text: string;
-    timestamp: number;
-    createdAt: any;
-    chat: {
+type AddMessageType =
+  | {
+      __typename: "Message";
+      id: number;
+      from_customer: boolean;
+      text: string;
+      timestamp: number;
+      createdAt: any;
+      chat: {
         __typename: "Chat";
         id: number;
-    };
-} | null | undefined
+      };
+    }
+  | null
+  | undefined;
 
+type StoreType =
+  | {
+      __typename?: "Store" | undefined;
+      id?: number | null | undefined;
+      name?: string | null | undefined;
+    }
+  | null
+  | undefined;
 
-type StoreType = {
-    __typename?: "Store" | undefined;
-    id?: number | null | undefined;
-    name?: string | null | undefined;
-} | null | undefined
-
-
-type BillboardType = {
-    __typename?: "Billboard" | undefined;
-    id?: number | null | undefined;
-    label?: string | null | undefined;
-    imageUrl?: string | null | undefined;
-    store?: {
-        __typename?: "Store" | undefined;
-        id?: number | undefined;
-    } | null | undefined;
-} | null | undefined
+type BillboardType =
+  | {
+      __typename?: "Billboard" | undefined;
+      id?: number | null | undefined;
+      label?: string | null | undefined;
+      imageUrl?: string | null | undefined;
+      store?:
+        | {
+            __typename?: "Store" | undefined;
+            id?: number | undefined;
+          }
+        | null
+        | undefined;
+    }
+  | null
+  | undefined;
 
 type CategoryType = {
-    __typename?: "Category" | undefined;
+  __typename?: "Category" | undefined;
+  id: number;
+  name: string;
+  updatedAt: any;
+  billboard: {
+    __typename?: "Billboard" | undefined;
     id: number;
-    name: string;
-    updatedAt: any;
-    billboard: {
-        __typename?: "Billboard" | undefined;
-        id: number;
-        label: string;
-    };
-} | null
+    label: string;
+  };
+} | null;
 
 type ColorType = {
-    __typename?: "Color" | undefined;
+  __typename?: "Color" | undefined;
+  id: number;
+  name: string;
+  value: string;
+  updatedAt: any;
+  store: {
+    __typename?: "Store" | undefined;
     id: number;
-    name: string;
-    value: string;
-    updatedAt: any;
-    store: {
-        __typename?: "Store" | undefined;
-        id: number;
-    };
-} | null
+  };
+} | null;
 
-type  SizeType = {
-    __typename?: "Size" | undefined;
+type SizeType = {
+  __typename?: "Size" | undefined;
+  id: number;
+  name: string;
+  value: string;
+  store: {
+    __typename?: "Store" | undefined;
     id: number;
-    name: string;
-    value: string;
-    store: {
-        __typename?: "Store" | undefined;
-        id: number;
-    };
-}
+  };
+};
 
 type ProductType = {
-    __typename?: "Product" | undefined;
+  __typename?: "Product" | undefined;
+  id: number;
+  name: string;
+  price: number;
+  description?: string;
+  brand?: string;
+  stockCode?: string;
+  isArchived?: boolean | null | undefined;
+  isFeatured?: boolean | null | undefined;
+  images?: ImageType[];
+  updatedAt?: any;
+  store: {
     id: number;
     name: string;
-    price: number;
-    isArchived?: boolean | null | undefined;
-    isFeatured?: boolean | null | undefined;
-    images?: ImageType[];
-    updatedAt?: any;
-    store: {
+  };
+  category: {
+    id: number;
+    name: string;
+  };
+  size?:
+    | {
         id: number;
         name: string;
-    };
-    category: {
+      }
+    | undefined;
+  color?:
+    | {
         id: number;
-        name: string
-    };
-    size?: {
-       id: number;
-       name: string;
-    } | undefined;
-    color?: {
-       id: number;
-       name: string;
-       value: string;
-    } | undefined;
-} | null
+        name: string;
+        value: string;
+      }
+    | undefined;
+} | null;
+
+type SimilarProductFormatted = {
+  id: number;
+  name: string;
+  price: string;
+  category: string;
+  brand: string;
+  description: string;
+  score: string;
+};
+
+type SimilarProductResponseType = {
+  target: {
+    brand: string;
+    category: string;
+    description: string;
+    id: string;
+    name: string;
+    price: float;
+  };
+  value: {
+    productId: string;
+    name: string;
+    price: string;
+    category: string;
+    brand: string;
+  };
+  description: string;
+  score: string;
+};
 
 type ImageType = {
-    id: number;
-    url: string;
-}
-
+  id: number;
+  url: string;
+};
 
 type OrderType = {
-    __typename?: "Order" | undefined;
-    id: number;
-    phone: string;
-    isPaid: boolean;
-    address: string;
-    createdAt?: any;
-    orderItems: ({
-        __typename?: "OrderItem" | undefined;
-        orderProduct: {
-            __typename?: "Product" | undefined;
-            id: number;
-            name: string;
-            price: number;
-        };
-    } | null)[];
-} | null
+  __typename?: "Order" | undefined;
+  id: number;
+  phone: string;
+  isPaid: boolean;
+  address: string;
+  createdAt?: any;
+  orderItems: ({
+    __typename?: "OrderItem" | undefined;
+    orderProduct: {
+      __typename?: "Product" | undefined;
+      id: number;
+      name: string;
+      price: number;
+    };
+  } | null)[];
+} | null;
 
 // Template types
 interface ParamObj {
-    type: "image" | "text" | "document"
-    image?: {
-        link: string
-    }
-    text?: string
+  type: "image" | "text" | "document";
+  image?: {
+    link: string;
+  };
+  text?: string;
 }
 
 export interface FileObj {
-    type: '',
-    file: any
-    fileObj: Models.File
+  type: "";
+  file: any;
+  fileObj: Models.File;
 }
-
 
 // File store appwrite
 interface Asset {
-    columns: Map<TypedColumn, Column>
+  columns: Map<TypedColumn, Column>;
 }
 
-type TypedColumn = "IMAGE" | "DOCUMENT" | "VIDEO"
+type TypedColumn = "IMAGE" | "DOCUMENT" | "VIDEO";
 
 interface Column {
-    id: TypedColumn;
-    files: File[]
+  id: TypedColumn;
+  files: File[];
 }
 
 interface File {
-    $id: string;
-    $createdAt: string;
-    name: string;
-    type: TypedColumn;
-    file: ActualFile;
+  $id: string;
+  $createdAt: string;
+  name: string;
+  type: TypedColumn;
+  file: ActualFile;
 }
 
 interface ActualFile {
-    bucketId: string;
-    fileId: string;
+  bucketId: string;
+  fileId: string;
 }
-
 
 interface MediaMessageObj {
-    messaging_product: string;
-    recipient_type: string;
-    to: string;
-    type: string;
-    [key: string]: {
-        link: string;
-        caption: string;
-        filename?: string;
-    };
+  messaging_product: string;
+  recipient_type: string;
+  to: string;
+  type: string;
+  [key: string]: {
+    link: string;
+    caption: string;
+    filename?: string;
+  };
 }
-
 
 //  Message props
 
 type InteractiveButtonProps = {
-    button: {
-        header: string;
-        image: ImageHeaderType;
-        body: string;
-        buttons: [ButtonReplyType];
-        footer: string;
-    }
-}
-
-
+  button: {
+    header: string;
+    image: ImageHeaderType;
+    body: string;
+    buttons: [ButtonReplyType];
+    footer: string;
+  };
+};
 
 // LIST MESSAGE PROPS
 
 type InteractiveListProps = {
-    list: {
-        header: string;
-        listTextHead: TextHeaderType;
-        body: string;
-        sections: ListSectionsType[];
-        footer: string;
-        button: string;
-    }
-}
+  list: {
+    header: string;
+    listTextHead: TextHeaderType;
+    body: string;
+    sections: ListSectionsType[];
+    footer: string;
+    button: string;
+  };
+};
 
 type ListSectionsType = {
-    title: string;
-    rows: ListRowType;
-  }
-type ListRowType  = {
-    id: number;
-    buttonId: string;
-    title: string;
-    description: string;
-    product: ProductType;
-}
+  title: string;
+  rows: ListRowType;
+};
+type ListRowType = {
+  id: number;
+  buttonId: string;
+  title: string;
+  description: string;
+  product: ProductType;
+};
 
 type ProductType = {
-    id: number;
-    name: string;
-    store: StoreType;
-}
+  id: number;
+  name: string;
+  store: StoreType;
+};
 
 export type MesContextProductType = {
-    product: {
-        name: string;
-        price: string;
-        store: {
-            name: string;
-        }
-    }
-}
+  product: {
+    name: string;
+    price: string;
+    store: {
+      name: string;
+    };
+  };
+};
 
 type StoreType = {
-    id: number;
-    name: string;
-}
+  id: number;
+  name: string;
+};
 
 // #################### INTERACTIVE BUTTON DATA ###################
 interface FormattedInteractiveButtonData {
-    header?: ButtonHeader
-    body: ButtonBody
-    footer: ButtonFooter
-    buttons: ButtonButton[]
+  header?: ButtonHeader;
+  body: ButtonBody;
+  footer: ButtonFooter;
+  buttons: ButtonButton[];
 }
 
 type ButtonHeader = {
-    type: string;
-    text?: string;
-    filename?: string;
-    link: string;
-}
+  type: string;
+  text?: string;
+  filename?: string;
+  link: string;
+};
 
 type ButtonBody = {
-    text: string
-}
+  text: string;
+};
 type ButtonFooter = {
-    text: string
-}
+  text: string;
+};
 type ButtonButton = {
-    type: 'reply',
-    reply: {
-        id: string,
-        title: string
-    }
-}
+  type: "reply";
+  reply: {
+    id: string;
+    title: string;
+  };
+};
 
 // ############################# INTERACTIVE LIST #######################
 interface FormattedInteractiveListData {
-    header?: ListHeaderType;
-    body: ButtonBody;
-    footer?: ButtonFooter;
-    button: string
-    sections: ListSectionType[]; 
+  header?: ListHeaderType;
+  body: ButtonBody;
+  footer?: ButtonFooter;
+  button: string;
+  sections: ListSectionType[];
 }
 
 type ListHeaderType = {
-    type: string;
-    text: string
-}
+  type: string;
+  text: string;
+};
 
 type ListSectionType = {
-    rows: ListRowType[]
-}
+  rows: ListRowType[];
+};
 
 type ListRowType = {
-    id: string;
-    title: string;
-    description: string;
-}
-
+  id: string;
+  title: string;
+  description: string;
+};
 
 // adTemplate customer response
 interface MarketResponseObj {
-    customer: {
-        customerId: number;
-        name: string;
-        phone: string;
-    };
-    chatId: number;
-    response: string;
-    createdAt: string;
+  customer: {
+    customerId: number;
+    name: string;
+    phone: string;
+  };
+  chatId: number;
+  response: string;
+  createdAt: string;
 }
 
 // Customer360 view
-export type OrderItemType = {productId?: number, name: string, price: string, quantity: number, subtotal: string}
+export type OrderItemType = {
+  productId?: number;
+  name: string;
+  price: string;
+  quantity: number;
+  subtotal: string;
+};
 interface Customer360OrderObj {
-    orderID: string;
-    id: number
-    isPaid: boolean
-    phone: string;
-    address: string;
-    updatedAt: string;
-    status: string;
-    orderItems: OrderItemType;
-    storeOrder: {
-      id: number
-      name: string;
-    }
+  orderID: string;
+  id: number;
+  isPaid: boolean;
+  phone: string;
+  address: string;
+  updatedAt: string;
+  status: string;
+  orderItems: OrderItemType;
+  storeOrder: {
+    id: number;
+    name: string;
+  };
 }
-
 
 // ##################################PRODUCT VARIATIONS ###############
 type OptionType = {
-    value: string;
-}
+  value: string;
+};
 
 type VariantImageType = {
-    link:string
-}
+  link: string;
+};
 interface ProdVariationObject {
-    name: string;
-    prodVarOptions: OptionType[]
+  name: string;
+  prodVarOptions: OptionType[];
 }
 
 interface ProdCombinationObject {
-    variantImage: VariantImageType;
-    price: string;
-    sku: string;
-    availableStock: number;
+  variantImage: VariantImageType;
+  price: string;
+  sku: string;
+  availableStock: number;
 }

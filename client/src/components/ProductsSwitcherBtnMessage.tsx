@@ -12,7 +12,8 @@ import { Button } from '@/components/ui/button'
 import { Command, CommandList, CommandInput, CommandEmpty, CommandGroup, CommandItem, CommandSeparator } from '@/components/ui/command'
 
 import { useProductModal } from '@/hooks/useProductModal';
-import { useInteractiveButtonStore, ProductType, StoreType } from '@/store/InteractiveButtonStore';
+import { useInteractiveButtonStore,  } from '@/store/InteractiveButtonStore';
+import {ProductType, StoreType} from "@/types"
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 

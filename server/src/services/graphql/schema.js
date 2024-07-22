@@ -292,7 +292,10 @@ const typeDefinitions = `#graqhql
         isArchived: Boolean
         category: Category!
         store: Store!
-        images: [Image]
+        description: String
+        brand: String
+        stockCode: String
+        images: [Image]!
 
         prodVariations: [ProductVariation]
         prodCombinations: [ProductCombination]
@@ -561,6 +564,7 @@ const typeDefinitions = `#graqhql
         setting(username: String): Setting
         stores: [Store] @auth
         allProducts: [Store] @auth
+        productSearch(page: Int, limit: Int, text: String!, storeId: Int!): [Product] @auth
    
         store(storeId: Int):Store @auth
         billboards(storeId: Int): [Billboard]
