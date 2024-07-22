@@ -9,24 +9,24 @@ type MostSoldProps ={
 }
 export const MostSold = ({base_url, storeId}: MostSoldProps) => {
   const [imageUrl, setImageURL] = useState("");
-
-  const fetchImage = async () => {
-    try {
-      const response = await fetch(`${base_url}?storeId=${storeId}`); 
-      if (!response.ok) {
-        throw new Error(`Error fetching image: ${response.statusText}`);
-      }
-      const blob = await response.blob();
-      const objectURL = URL.createObjectURL(blob);
-      setImageURL(objectURL);
-    } catch (error) {
-      toast.error("Something went wrong.")
-    }
-  };
   
   useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(`${base_url}?storeId=${storeId}`); 
+        if (!response.ok) {
+          throw new Error(`Error fetching image: ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        const objectURL = URL.createObjectURL(blob);
+        setImageURL(objectURL);
+      } catch (error) {
+        toast.error("Something went wrong.")
+      }
+    };
+
     fetchImage();
-  }, [fetchImage])
+  }, [base_url, storeId])
   console.log("THE RESPONSE", imageUrl)
   return(
     <div className="flex items-center justify-center">

@@ -23,19 +23,19 @@ type TrainProps = {
 
 export const Train = ({storeId}: TrainProps) => {
     const [training, setTraining] = useState(false)
-    const baseUrl = "/memory/content/tfidf/train"
+    const baseUrl = "/memory/collaborative/user_to_user_filter"
 
-    const onTrain = async () => {
+    const onTrain = async () => { 
       setTraining(true)
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${2}`, {
           method: 'GET', // Assuming a GET request (adjust if necessary)
         });
-    
+        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-    
+        
         const jsonData = await response.json(); // Parse JSON response
         toast.success(jsonData.success, {duration: 1500})
       } catch (error) {
@@ -50,9 +50,9 @@ export const Train = ({storeId}: TrainProps) => {
         <TrainingCard
           onTrain={onTrain}
           training={training}
-          title={"Build content filter model"}
-          description={"This model processes product description and finds similar products based on description. Press Train button to train the model."}
-          btnTitle={"Train content filter model"}
+          title={"Build collaborative filter model"}
+          description={"This model processes product or customer information products a customer is likely to buy."}
+          btnTitle={"Train collaborative filter model"}
         />
         <TestRecommendation storeId={storeId}/>
       </div>
@@ -116,7 +116,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     if(products && products.length){
       productSwitcher.onOpen()
     } else productSwitcher.onClose()
-  }, [products, searchString])
+  }, [products, searchString, productSwitcher])
 
   useEffect(() => {
     if(similarity){
@@ -127,7 +127,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
       toast("Select similarity first before selecting a product", {duration: 2000})
     }
     
-  }, [product])
+  }, [product, onPredict, similarity])
 
   return <Card>
           <CardHeader className="">

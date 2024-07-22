@@ -14,7 +14,7 @@ def encode_units(x):
     if x >= 1:
         return 1
 
-@router.get("/user_to_user_filter")
+@router.get("/user-to-user-filter")
 async def user_to_user_filter(storeId:int, customerId: int, k:int=5, sample:int=10):
     repo = SaleDetailsRepository()
     data = await repo.get_sales_details(storeId=storeId)

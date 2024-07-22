@@ -10,25 +10,25 @@ type MostBoughtProps ={
 export const MostFrequentlyBought = ({base_url, storeId}: MostBoughtProps) => {
   const [imageUrl, setImageURL] = useState("");
 
-  const fetchImage = async () => {
-    try {
-      const response = await fetch(`${base_url}?storeId=${storeId}`);  // Assuming endpoint is at root
-      if (!response.ok) {
-        throw new Error(`Error fetching image: ${response.statusText}`);
-      }
-      const blob = await response.blob();
-      const objectURL = URL.createObjectURL(blob);
-      setImageURL(objectURL);  // Update state with object URL
-    } catch (error) {
-      console.error('Error:', error);
-      toast.error("Something went wrong.")
-      // Handle errors appropriately (e.g., display error message)
-    }
-  };
-  
   useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const response = await fetch(`${base_url}?storeId=${storeId}`);  // Assuming endpoint is at root
+        if (!response.ok) {
+          throw new Error(`Error fetching image: ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        const objectURL = URL.createObjectURL(blob);
+        setImageURL(objectURL);  // Update state with object URL
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error("Something went wrong.")
+        // Handle errors appropriately (e.g., display error message)
+      }
+    };
+
     fetchImage();
-  }, [])
+  }, [storeId, base_url])
   console.log("THE RESPONSE", imageUrl)
   return(
     <div className="flex items-center justify-center">

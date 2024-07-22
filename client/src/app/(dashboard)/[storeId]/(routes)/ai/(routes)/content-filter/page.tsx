@@ -10,7 +10,6 @@ type Props = {
 }
 
 function page({params: {storeId}}: Props) {
-  console.log("Store ids>>>>>>>>", storeId)
   const tabs = [
     {
       key: 1,
