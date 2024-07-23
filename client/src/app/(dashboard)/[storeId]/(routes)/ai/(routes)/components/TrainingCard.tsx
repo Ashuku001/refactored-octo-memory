@@ -17,7 +17,7 @@ export const TrainingCard = ({onTrain, training, title, description, btnTitle}: 
       <CardHeader className="">
         <div className="flex flex-row items-center space-x-5">
           <FlaskConicalIcon size={"30"} className="text-muted-foreground"/>
-          <CardTitle className="text-md font-semibold">
+          <CardTitle className="text-lg font-semibold">
             {title}
           </CardTitle>
         </div>

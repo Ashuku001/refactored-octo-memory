@@ -16,14 +16,14 @@ function SidePanel() {
             group: "Memory filters",
             links: [
                 {
-                    href: `/${params.storeId}/ai/content-filter`,
-                    label: `Content filter`,
-                    active: pathname.includes(`/ai/content-filter`)
-                },
-                {
                     href: `/${params.storeId}/ai/collaborative-filter`,
                     label: `Collaborative filter`,
                     active: pathname.includes(`collaborative-filter`) ,
+                },
+                {
+                    href: `/${params.storeId}/ai/content-filter`,
+                    label: `Content filter`,
+                    active: pathname.includes(`/ai/content-filter`)
                 },
             ]
         },

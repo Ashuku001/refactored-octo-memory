@@ -5,16 +5,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { FlaskConical } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
-import { ProductSearchDocument, ProductSearchQuery } from "@/graphql";
-import { ProductSwitcher } from "./ProductSwitcher";
-import { useProductSwitcher } from "@/hooks/useProductSwitcher";
+import { CustomerSearchDocument, CustomerSearchQuery } from "@/graphql";
+import { CustomerSwitcher } from "./CustomerSwitcher";
 import Image from "next/image";
 import { formatter } from "@/lib/currencyformat";
 import { Separator } from "@/components/ui/separator";
 import { columns } from "./Columns";
 import { DataTable } from "@/components/ui/DataTable";
 import { SimilarProductFormatted, SimilarProductResponseType } from "@/types";
-import { TrainingCard } from "./TrainingCard";
+import { CustomFormLabel } from "@/components/ui/CustomFormLabel";
+import { TrainingCard } from "../../components/TrainingCard";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 
 type TrainProps = {
@@ -23,7 +23,7 @@ type TrainProps = {
 
 export const Train = ({storeId}: TrainProps) => {
     const [training, setTraining] = useState(false)
-    const baseUrl = "/memory/collaborative/user_to_user_filter"
+    const baseUrl = "/memory/collaborative/user-to-user-filter/train"
 
     const onTrain = async () => { 
       setTraining(true)
@@ -39,8 +39,7 @@ export const Train = ({storeId}: TrainProps) => {
         const jsonData = await response.json(); // Parse JSON response
         toast.success(jsonData.success, {duration: 1500})
       } catch (error) {
-        console.error('Error fetching data:', error);
-        toast.error("Something went wrong. Try again later.")
+        toast.error("Something went wrong while training. Try again later.")
       }
       setTraining(false)
     }
@@ -64,129 +63,96 @@ type TestRecommendationProps = {
 }
 
 export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
-  const [open, setOpen] = useState(false);
   const [searchString, setSearchString] = useState("")
   const [formattedProducts, setFormattedProducts] = useState<SimilarProductFormatted[] | null>(null)
-  const [product, setProduct] = useState<ProductSearchQuery["productSearch"] | null>(null)
-  const productSwitcher  = useProductSwitcher()
-  const [similarity, setSimilarity] = useState("")
-  const similarityOptions = ["Cosine",  "Manhattan"]
-  const [productSearch, {loading, error, data}] = useLazyQuery(ProductSearchDocument)
-  let products: ProductSearchQuery["productSearch"] = data?.productSearch
-
-  const baseUrl = "/memory/content/tfidf/predict"
-  const onPredict = async (productId: number, similarity: string) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${2}&productId=${productId}&similarity=${similarity}`, {
-        method: 'GET', // Assuming a GET request (adjust if necessary)
-      });
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-      const jsonData = await response.json(); // Parse JSON response
-      console.log(jsonData)
-      const data = jsonData["similar_products"].map((item: SimilarProductResponseType) => ({
-        id: item?.value.productId,
-        name: item?.value.name,
-        price: formatter.format(item?.value.price),
-        category: item?.value.category,
-        brand: item?.value.brand,
-        description: item?.description,
-        score: similarity == "manhattan" ? item?.score : similarity == "cosine" ? item?.score * 100 : item?.score
-      })) as SimilarProductFormatted[]
-      setFormattedProducts(data)
-      toast.success("Similar products found.", {duration: 1500})
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      toast.error("Something went wrong. Try again later.")
-    }
-  }
+  const [customer, setCustomer] = useState<CustomerSearchQuery["customerSearch"] | null>(null)
+  const [customerSearch, {loading, error, data}] = useLazyQuery(CustomerSearchDocument)
+  const baseUrl = "/memory/collaborative/user-to-user-filter/predict"
+  let customers: CustomerSearchQuery["customerSearch"] = data?.customerSearch
 
   useEffect(() => {
-    if(searchString.length > 2){
-      productSearch({variables: {page: 0, limit:10, text:searchString, storeId: parseInt(storeId)}})
+    if(searchString?.length > 2){
+      customerSearch({variables: {page: 0, limit:10, text:searchString}})
     } else {
-      products = []
+      customers = []
     }
   }, [searchString])
 
   useEffect(() => {
-    if(products && products.length){
-      productSwitcher.onOpen()
-    } else productSwitcher.onClose()
-  }, [products, searchString, productSwitcher])
-
-  useEffect(() => {
-    if(similarity){
-      if(product?.length) {
-        onPredict(product[0]?.id as number, similarity.toLowerCase())
-      } 
-    } else {
-      toast("Select similarity first before selecting a product", {duration: 2000})
-    }
+    const onPredict = async (customerIds: number[], k:number=5, sample:number=10) => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${parseInt(storeId)}&merchantId=${2}&k=${k}&sample=${sample}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(customerIds),
+        })
     
-  }, [product, onPredict, similarity])
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+    
+        const jsonData = await response.json(); // Parse JSON response
+        const data = []
+        if(jsonData["success"]?.length > 0){
+          const data = jsonData["success"][0]["recommendations"].map((item: SimilarProductResponseType) => ({
+            id: item?.productId,
+            name: item?.name,
+            price: formatter.format(item?.price),
+            // category: item?.category,
+            brand: item?.brand,
+            description: item?.description,
+            // score: similarity == "manhattan" ? item?.score : similarity == "cosine" ? item?.score * 100 : item?.score
+          })) as SimilarProductFormatted[]
+
+          setFormattedProducts(data)
+          toast.success("Similar products found.", {duration: 1500})
+        } else {
+          toast("Could not find recommendations for the customer. The customer seems to be new and has never made a purchase.", {duration:4000})
+        }
+      } catch (error) {
+        toast.error("Something went wrong. Try again later.")
+      }
+    }
+
+    if(customer?.length) {
+      onPredict([customer[0]?.id] as number)
+    } 
+  }, [customer])
 
   return <Card>
           <CardHeader className="">
             <div className="flex flex-row items-center space-x-5">
               <FlaskConical size={"30"} className="text-muted-foreground"/>
-              <CardTitle className="text-md font-semibold">
+              <CardTitle className="text-lg font-semibold">
                 Test model
               </CardTitle>
             </div> 
             <CardDescription>
-              To test the model search a product to find similar products
+              To test the model search a customer to find similar products
             </CardDescription>
           </CardHeader>
           <CardContent >
-            <div className="flex space-x-5">
+            <div className="flex space-x-10">
               <div className="flex flex-col space-y-2">
-                <Select
-                  onValueChange={(value) => setSimilarity(value)}
-                  value={similarity}
-                >
-                  <SelectTrigger className=' focus:ring-0'>
-                  <SelectValue
-                      placeholder="Select similarity"
-                      className="font-bold"
-                  />
-                  </SelectTrigger>
-                  <SelectContent>
-                      {similarityOptions?.map((option) => (
-                      <SelectItem
-                          key={option}
-                          value={option}
-                      >
-                          {option}</SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-                <ProductSwitcher
+                <CustomFormLabel title="Customer" description="Select a customer to recommend products for." variant="required" />
+                <CustomerSwitcher
                   value={searchString}
+                  className="w-[350px] h-10"
                   onValueChange={setSearchString}
-                  products={products ?? []}
-                  product={product ? product[0] : null}
-                  setProduct={setProduct}
+                  customers={customers ?? []}
+                  customer={customer ? customer[0] : null}
+                  setCustomer={setCustomer}
                 />
               </div>
-              {product?.length && 
-                <div className="flex space-x-2">
-                  <Image
-                    src={product[0]?.images[0]?.url ?? "/default-product.png"}
-                    height={100}
-                    width={100}
-                    alt=""
-                    className="object-cover w-[100px] h-[100px] rounded-md"
-                  />
-                  <div>
-                    <p className="line-clamp-1">{product[0]?.name}</p>
-                    <p className="line-clamp-1">{formatter.format(product[0]?.price)}</p>
-                    <p className="line-clamp-1">{product[0]?.category.name}</p>
-                    <p className="line-clamp-2">{product[0]?.description}</p>
-                  </div>
+              {customer &&
+                <div>
+                  <h1>Target Customer</h1>
+                    <p className="line-clamp-1">{(customer?.first_name && customer?.last_name)  ? customer?.first_name.trim() + " " + customer?.last_name.trim() : customer?.first_name ?? customer?.last_name ?? "No name result"}</p>
+                    <p className="line-clamp-1">{customer?.phone_number ?? "No phone number result"}</p>
+                    <p className="line-clamp-1">{customer?.customerSegment ?? ""}</p>
+                    <p className="line-clamp-1">{customer?.incomeCategory ?? ""}</p>
+                    <p className="line-clamp-1">{customer?.age ?? ""}</p>
+                    <p className="line-clamp-1">{customer?.gender ?? ""}</p>
                 </div>
               }
             </div>

@@ -1,0 +1,12 @@
+query CustomerSearch($page: Int, $limit: Int, $text: String!) {
+    customerSearch(page: $page, limit: $limit, text: $text){
+        id
+        first_name
+        last_name
+        customerSegment
+        incomeCategory
+        phone_number
+        age
+        gender
+    }
+}
