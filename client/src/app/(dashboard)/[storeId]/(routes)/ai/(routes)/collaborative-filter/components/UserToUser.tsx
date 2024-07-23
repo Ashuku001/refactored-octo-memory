@@ -78,7 +78,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     } else {
       customers = []
     }
-  }, [searchString])
+  }, [searchString, customers])
 
   useEffect(() => {
     const onPredict = async (customerIds: number[], k:number=5, sample:number=10) => {
@@ -121,7 +121,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     if(customer?.length) {
       setLoading(true)
       onPredict([customer[0]?.id] as number)
-      setLoading(false) 
+      setLoading(false)
     }
   }, [customer, storeId])
 

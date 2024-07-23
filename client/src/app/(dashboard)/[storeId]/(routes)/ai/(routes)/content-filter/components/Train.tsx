@@ -83,7 +83,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     } else {
       products = []
     }
-  }, [searchString])
+  }, [searchString, products])
 
   useEffect(() => {
     const onPredict = async (productId: number, similarity: string) => {

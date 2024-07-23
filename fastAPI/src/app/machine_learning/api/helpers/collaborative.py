@@ -84,6 +84,7 @@ def simi_recommendation(customerId, item_similarities: DataFrame, df: DataFrame,
         simi = similar_items(item_id, item_similarities, k)
         simular_items_recommendation_list.append(simi)# add the items to the list
     
+    print("FINAL RECOMMENDATIONS",item_similarities)
     #this gives us multi-dimensional list
     # we need to flatten it
     flat_list = []
