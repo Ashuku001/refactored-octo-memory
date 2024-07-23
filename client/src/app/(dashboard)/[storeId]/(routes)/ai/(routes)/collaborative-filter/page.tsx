@@ -1,7 +1,8 @@
 import { TabsContent, Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {Home} from './components/Home';
-import { Train } from './components/Train';
+import { UserToUserTrain } from './components/UserToUser';
+import { ItemToItemTrain } from './components/ItemToItem';
 
 type Props = {
   params: {
@@ -17,7 +18,11 @@ function page({params: {storeId}}: Props) {
     },
     {
       key: 2, 
-      head: "Train",
+      head: "User to user train",
+    },
+    {
+      key: 3, 
+      head: "Item to item train",
     },
   ]
 
@@ -38,8 +43,9 @@ function page({params: {storeId}}: Props) {
         <ScrollArea className='mt-1 px-1 h-full bg-gradient-to-b from-muted/20 to-muted/50'>
             {tabs?.map((tab, i) => (
                 <TabsContent key={i} value={tab.head} className={'flex-1 h-full'}>
-                    {tab.head == "Home" && <Home />}
-                    {tab.head == "Train" && <Train storeId={storeId}/>}
+                    {tab.key == 1 && <Home />}
+                    {tab.key == 2 && <UserToUserTrain storeId={storeId}/>}
+                    {tab.key == 3 && <ItemToItemTrain storeId={storeId}/>}
                 </TabsContent>
             ))}
             <div className="pb-20"/>

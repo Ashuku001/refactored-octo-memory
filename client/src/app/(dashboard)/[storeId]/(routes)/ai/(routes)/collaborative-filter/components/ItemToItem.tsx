@@ -15,15 +15,16 @@ import { DataTable } from "@/components/ui/DataTable";
 import { SimilarProductFormatted, SimilarProductResponseType } from "@/types";
 import { CustomFormLabel } from "@/components/ui/CustomFormLabel";
 import { TrainingCard } from "../../components/TrainingCard";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 
 type TrainProps = {
   storeId: string;
 }
 
-export const Train = ({storeId}: TrainProps) => {
+export const ItemToItemTrain = ({storeId}: TrainProps) => {
     const [training, setTraining] = useState(false)
-    const baseUrl = "/memory/collaborative/user-to-user-filter/train"
+    const baseUrl = "/memory/collaborative/item-to-item-filter/train"
 
     const onTrain = async () => { 
       setTraining(true)
@@ -63,11 +64,12 @@ type TestRecommendationProps = {
 }
 
 export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
+  const [loading, setLoading] = useState(false)
   const [searchString, setSearchString] = useState("")
   const [formattedProducts, setFormattedProducts] = useState<SimilarProductFormatted[] | null>(null)
   const [customer, setCustomer] = useState<CustomerSearchQuery["customerSearch"] | null>(null)
-  const [customerSearch, {loading, error, data}] = useLazyQuery(CustomerSearchDocument)
-  const baseUrl = "/memory/collaborative/user-to-user-filter/predict"
+  const [customerSearch, {loading: queryloading, error, data}] = useLazyQuery(CustomerSearchDocument)
+  const baseUrl = "/memory/collaborative/item-to-item-filter/predict"
   let customers: CustomerSearchQuery["customerSearch"] = data?.customerSearch
 
   useEffect(() => {
@@ -80,6 +82,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
 
   useEffect(() => {
     const onPredict = async (customerIds: number[], k:number=5, sample:number=10) => {
+      setFormattedProducts(null)
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${parseInt(storeId)}&merchantId=${2}&k=${k}&sample=${sample}`, {
           method: "POST",
@@ -107,6 +110,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
           setFormattedProducts(data)
           toast.success("Similar products found.", {duration: 1500})
         } else {
+          setFormattedProducts(null)
           toast("Could not find recommendations for the customer. The customer seems to be new and has never made a purchase.", {duration:4000})
         }
       } catch (error) {
@@ -115,9 +119,11 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     }
 
     if(customer?.length) {
+      setLoading(true)
       onPredict([customer[0]?.id] as number)
-    } 
-  }, [customer])
+      setLoading(false) 
+    }
+  }, [customer, storeId])
 
   return <Card>
           <CardHeader className="">
@@ -156,16 +162,17 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
                 </div>
               }
             </div>
-            {formattedProducts &&
-            <>
-              <Separator />
-              <div className="">
-                <h1 className="font-semibold">Top 10 similar products</h1>
-                <div className="bg-gradient-to-b  from-muted/20 to-muted/50 rounded-sm">
-                    <DataTable columns={columns} data={formattedProducts ?? []} searchKey="name" />
+            {loading ? <LoadingSpinner /> :
+              formattedProducts &&
+              <>
+                <Separator />
+                <div className="">
+                  <h1 className="font-semibold">Top 10 similar products</h1>
+                  <div className="bg-gradient-to-b  from-muted/20 to-muted/50 rounded-sm">
+                      <DataTable columns={columns} data={formattedProducts ?? []} searchKey="name" />
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
             } 
           </CardContent>
         </Card>

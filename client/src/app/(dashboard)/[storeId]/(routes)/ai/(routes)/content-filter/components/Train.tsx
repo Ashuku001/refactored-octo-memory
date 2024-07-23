@@ -12,6 +12,7 @@ import { formatter } from "@/lib/currencyformat";
 import { Separator } from "@/components/ui/separator";
 import { columns } from "../../components/Columns";
 import { DataTable } from "@/components/ui/DataTable";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { SimilarProductFormatted, SimilarProductResponseType } from "@/types";
 import { TrainingCard } from "../../components/TrainingCard";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
@@ -66,11 +67,12 @@ type TestRecommendationProps = {
 
 export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
   const [searchString, setSearchString] = useState("")
+  const [loading, setLoading] = useState(false)
   const [formattedProducts, setFormattedProducts] = useState<SimilarProductFormatted[] | null>(null)
   const [product, setProduct] = useState<ProductSearchQuery["productSearch"] | null>(null)
   const [similarity, setSimilarity] = useState("Cosine")
   const similarityOptions = ["Cosine",  "Manhattan"]
-  const [productSearch, {loading, error, data}] = useLazyQuery(ProductSearchDocument)
+  const [productSearch, {loading: queryloading, error, data}] = useLazyQuery(ProductSearchDocument)
   let products: ProductSearchQuery["productSearch"] = data?.productSearch
 
   const baseUrl = "/memory/content/tfidf/predict"
@@ -114,11 +116,13 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     if(product?.length) {
       if(!similarity){
         toast("Select similarity first before selecting a product", {duration: 2000})
+      } else{
+        setLoading(true)
+        onPredict(product[0]?.id as number, similarity.toLowerCase())
+        setLoading(false)
       }
-      onPredict(product[0]?.id as number, similarity.toLowerCase())
     } 
-    
-  }, [product, similarity])
+  }, [product, similarity, storeId])
 
   return <Card>
           <CardHeader className="">
@@ -175,7 +179,8 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
                 <TargetProduct product={product[0]}/>
               }
             </div>
-            {formattedProducts &&
+            {loading ? <LoadingSpinner /> :
+            formattedProducts &&
               <SimilarProducts columns={columns} formattedProducts={formattedProducts}/>
             } 
           </CardContent>
