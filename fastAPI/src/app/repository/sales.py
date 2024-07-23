@@ -14,6 +14,7 @@ class SaleDetailsRepository:
             SaleDetail.productId.name,
             SaleDetail.productId.id,
             SaleDetail.productId.brand,
+            SaleDetail.productId.description,
             SaleDetail.productId.stockCode,
             # SaleDetail.productId.categoryId.name,
             SaleDetail.unitPrice,

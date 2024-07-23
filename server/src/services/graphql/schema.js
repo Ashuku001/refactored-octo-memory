@@ -565,6 +565,7 @@ const typeDefinitions = `#graqhql
         stores: [Store] @auth
         allProducts: [Store] @auth
         productSearch(page: Int, limit: Int, text: String!, storeId: Int!): [Product] @auth
+        customerSearch(page: Int, limit: Int, text: String!): [Customer] @auth
    
         store(storeId: Int):Store @auth
         billboards(storeId: Int): [Billboard]

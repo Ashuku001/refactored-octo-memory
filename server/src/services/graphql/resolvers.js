@@ -1138,6 +1138,56 @@ function resolvers() {
         return products
       },
 
+      async customerSearch(root, { page, limit, text }, context) {
+        const merchant = context.merchant
+        if(!merchant) throw new Error("Unauthenticated ensure you are logged in first.")
+        // if text length less than three skip
+        let customers = [];
+        if (text.length < 3) {
+          return {
+            customers,
+          };
+        }
+
+        var skip = 0;
+        if (page && limit) {
+          skip = page * limit;
+        }
+
+        var query = {
+          order: [["createdAt", "DESC"]],
+          offset: skip,
+        };
+        if (limit) {
+          query.limit = limit;
+        }
+
+
+        query.where = {
+          [Op.or]: [
+            {
+              first_name: { [Op.iLike]: "%" + text + "%" },
+              merchantId: context.merchant.id,
+            },
+            {
+              last_name: { [Op.iLike]: "%" + text + "%" },
+              merchantId: context.merchant.id,
+            },
+            {
+              phone_number: { [Op.iLike]: "%" + text + "%" },
+              merchantId: context.merchant.id,
+            },
+          ],
+        };
+
+        customers = await Customer.findAll(query);
+        if (customers.length === 0) {
+          throw new Error(`No results found for "${text}"`);
+        }
+
+        return customers
+      },
+
       async orders(root, { storeId }, context) {
         if (!context.merchant) {
           throw new Error(

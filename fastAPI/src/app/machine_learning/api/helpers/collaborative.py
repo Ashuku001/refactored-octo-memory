@@ -21,8 +21,9 @@ def similar_users(customerId, user_similarities: DataFrame, k):
     # sort by similarity
     index_similarity_sorted = sorted(index_similarity.items(),reverse=True)
     
+    sample = k if k < len(index_similarity_sorted) else len(index_similarity_sorted)
     # grab k users off the top
-    top_users_similarities = index_similarity_sorted[:k]
+    top_users_similarities = index_similarity_sorted[:sample]
     users = [u[0] for u in top_users_similarities] # returns the index of top 5 similar users
     
     return users
@@ -37,6 +38,7 @@ def simu_recommendation(simu: list, df: DataFrame, sample):
                     "name": row["name"],
                     "productId": row["productId"],
                     "price": row["unitPrice"],
+                    "description": row["description"],
                     # "category": row["category"],
                     "brand": row["brand"]
             })
@@ -64,8 +66,10 @@ def similar_items(item_id, item_similarity_data: DataFrame, k):
     index_similarity_pair = dict(zip(item_indices, similarities))
     # sort by similarity
     sorted_index_similarity_pair = sorted(index_similarity_pair.items())
+    
+    sample = k if k < len(sorted_index_similarity_pair) else len(sorted_index_similarity_pair)
     # grab k items from the top
-    top_k_item_similarities = sorted_index_similarity_pair[:k]
+    top_k_item_similarities = sorted_index_similarity_pair[:sample]
     similar_items = [u[0] for u in top_k_item_similarities]
     
     return similar_items
@@ -90,7 +94,7 @@ def simi_recommendation(customerId, item_similarities: DataFrame, df: DataFrame,
     
     # storing 10 random recommendations in a list
     s = sample if len(final_recommendations_list) >= sample else len(final_recommendations_list)
-    ten_random_rec = random.sample(final_recommendations_list, sample)
+    ten_random_rec = random.sample(final_recommendations_list, s)
     
     prod_rec = []
     for id in ten_random_rec:
