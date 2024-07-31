@@ -40,6 +40,18 @@ type CustomerType = {
   phone_number: string;
 } | null;
 
+type CustomerSearchType = {
+  __typename?: "Customer";
+  id: number;
+  first_name?: string | null;
+  last_name?: string | null;
+  customerSegment?: string | null;
+  incomeCategory?: string | null;
+  phone_number: string;
+  age?: number | null;
+  gender?: string | null;
+}
+
 type ChatAddedType = {
   __typename?: "Chat" | undefined;
   id?: number | null | undefined;

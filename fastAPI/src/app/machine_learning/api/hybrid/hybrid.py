@@ -127,7 +127,7 @@ async def hybrid_train(storeId: int, merchantId: int):
     model_path = os.environ.get("hybrid")
     
     # save the filename to a db that includes the username and id and storeId
-    model_filename = f"{model_name}_lightFM_model.pkl"
+    model_filename = f"{model_name}_lightFM_model{storeId}-{merchantId}.pkl"
     if not os.path.exists(model_path):
         os.makedirs(model_path)
         
@@ -137,8 +137,8 @@ async def hybrid_train(storeId: int, merchantId: int):
     return JSONResponse(content={"success": f"{model_name} agent has been trained and validated with a auc of {model_info['auc']:.4f}."})
 
 
-@router.get("/recommend")
-async def hybrid_train(storeId: int, merchantId: int, sample:int = 10, userIds:  list[int] = Body(...)):
+@router.get("/predict")
+async def hybrid_predict(storeId: int, merchantId: int, sample:int = 10, userIds:  list[int] = Body(...)):
     repo_order = SaleDetailsRepository()
     raw_orders = await repo_order.get_sales_hybrid(storeId=storeId)
     repo_cus = CustomerRepository()

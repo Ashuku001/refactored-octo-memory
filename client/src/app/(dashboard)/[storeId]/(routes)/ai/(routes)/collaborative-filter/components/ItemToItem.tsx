@@ -16,6 +16,8 @@ import { SimilarProductFormatted, SimilarProductResponseType } from "@/types";
 import { CustomFormLabel } from "@/components/ui/CustomFormLabel";
 import { TrainingCard } from "../../components/TrainingCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import { SimilarProducts } from "../../components/SimilarProducts";
+import { TargetCustomer } from "../../components/TargetCustomer";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 
 type TrainProps = {
@@ -50,9 +52,9 @@ export const ItemToItemTrain = ({storeId}: TrainProps) => {
         <TrainingCard
           onTrain={onTrain}
           training={training}
-          title={"Build collaborative filter model"}
+          title={"Build Item to item filter model"}
           description={"This model processes product or customer information products a customer is likely to buy."}
-          btnTitle={"Train collaborative filter model"}
+          btnTitle={"Train Item to item filter model"}
         />
         <TestRecommendation storeId={storeId}/>
       </div>
@@ -82,6 +84,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
 
   useEffect(() => {
     const onPredict = async (customerIds: number[], k:number=5, sample:number=10) => {
+      setLoading(true)
       setFormattedProducts(null)
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${parseInt(storeId)}&merchantId=${2}&k=${k}&sample=${sample}`, {
@@ -95,7 +98,6 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
         }
     
         const jsonData = await response.json(); // Parse JSON response
-        const data = []
         if(jsonData["success"]?.length > 0){
           const data = jsonData["success"][0]["recommendations"].map((item: SimilarProductResponseType) => ({
             id: item?.productId,
@@ -115,13 +117,13 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
         }
       } catch (error) {
         toast.error("Something went wrong. Try again later.")
+      } finally {
+        setLoading(false)
       }
     }
 
     if(customer?.length) {
-      setLoading(true)
-      onPredict([customer[0]?.id] as number)
-      setLoading(false) 
+      onPredict([customer[0]?.id] as number) 
     }
   }, [customer, storeId])
 
@@ -146,33 +148,18 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
                   className="w-[350px] h-10"
                   onValueChange={setSearchString}
                   customers={customers ?? []}
+                  loading={loading}
                   customer={customer ? customer[0] : null}
                   setCustomer={setCustomer}
                 />
               </div>
               {customer &&
-                <div>
-                  <h1>Target Customer</h1>
-                    <p className="line-clamp-1">{(customer?.first_name && customer?.last_name)  ? customer?.first_name.trim() + " " + customer?.last_name.trim() : customer?.first_name ?? customer?.last_name ?? "No name result"}</p>
-                    <p className="line-clamp-1">{customer?.phone_number ?? "No phone number result"}</p>
-                    <p className="line-clamp-1">{customer?.customerSegment ?? ""}</p>
-                    <p className="line-clamp-1">{customer?.incomeCategory ?? ""}</p>
-                    <p className="line-clamp-1">{customer?.age ?? ""}</p>
-                    <p className="line-clamp-1">{customer?.gender ?? ""}</p>
-                </div>
+                <TargetCustomer customer={customer[0]}/>
               }
             </div>
-            {loading ? <LoadingSpinner /> :
+            {loading ? <div className=" flex items-center justify-center space-x-2"><LoadingSpinner /> <span className="text-blue-600 animate-pulse duration-2000 ease-in-out"> Loading recommendations...</span></div> :
               formattedProducts &&
-              <>
-                <Separator />
-                <div className="">
-                  <h1 className="font-semibold">Top 10 similar products</h1>
-                  <div className="bg-gradient-to-b  from-muted/20 to-muted/50 rounded-sm">
-                      <DataTable columns={columns} data={formattedProducts ?? []} searchKey="name" />
-                  </div>
-                </div>
-              </>
+              <SimilarProducts formattedProducts={formattedProducts} columns={columns}/>
             } 
           </CardContent>
         </Card>

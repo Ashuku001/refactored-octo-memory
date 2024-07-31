@@ -3,6 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {Home} from './components/Home';
 import { UserToUserTrain } from './components/UserToUser';
 import { ItemToItemTrain } from './components/ItemToItem';
+import { KNNTrain } from './components/KNN';
 
 type Props = {
   params: {
@@ -23,6 +24,10 @@ function page({params: {storeId}}: Props) {
     {
       key: 3, 
       head: "Item to item train",
+    },
+    {
+      key: 4, 
+      head: "k-nearest neighbour",
     },
   ]
 
@@ -46,6 +51,7 @@ function page({params: {storeId}}: Props) {
                     {tab.key == 1 && <Home />}
                     {tab.key == 2 && <UserToUserTrain storeId={storeId}/>}
                     {tab.key == 3 && <ItemToItemTrain storeId={storeId}/>}
+                    {tab.key == 4 && <KNNTrain storeId={storeId}/>}
                 </TabsContent>
             ))}
             <div className="pb-20"/>

@@ -209,4 +209,3 @@ async def item_to_item_filter(storeId:int, merchantId:int, userIds: list[int]=Bo
             failed_recom.append(userId)
 
     return {"success": recommendations, "failed": failed_recom}
-    

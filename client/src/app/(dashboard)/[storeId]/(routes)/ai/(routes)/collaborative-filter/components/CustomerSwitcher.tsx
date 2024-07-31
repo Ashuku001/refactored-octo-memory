@@ -13,6 +13,7 @@ interface CustomerSwitcherProps extends PopoverTriggerProps {
     children?: React.ReactNode;
     customers: CustomerType[];
     value: string;
+    loading: boolean;
     onValueChange: (value: string) => void;
     customer: CustomerType | null,
     setCustomer: Dispatch<SetStateAction<({
@@ -29,6 +30,7 @@ interface CustomerSwitcherProps extends PopoverTriggerProps {
 export function CustomerSwitcher({
     className,
     customers,
+    loading,
     value,
     onValueChange,
     customer,
@@ -46,10 +48,11 @@ export function CustomerSwitcher({
   
     return (
         <Popover>
-            <PopoverTrigger className='w-full'>
+            <PopoverTrigger className='w-full' disabled={loading}>
                 <Button
                     variant="outline"
                     size='sm'
+                    disabled={loading}
                     role='combobox'
                     aria-expanded={open}
                     aria-label='Select a customer'
@@ -64,7 +67,7 @@ export function CustomerSwitcher({
                     <ChevronsUpDown className="ml-auto h-4 shrink-0 opacity=50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent side={'bottom'} className='w-[400px] p-0' onOpenAutoFocus={() => {console.log('focused')}}>
+            <PopoverContent side={'bottom'} className='w-[400px] p-0'>
                 <Command>
                     <CommandList>
                         <div className="flex items-center relative w-full">

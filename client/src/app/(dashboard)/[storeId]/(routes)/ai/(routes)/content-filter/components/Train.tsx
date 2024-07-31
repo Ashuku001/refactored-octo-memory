@@ -87,6 +87,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
 
   useEffect(() => {
     const onPredict = async (productId: number, similarity: string) => {
+      setLoading(true)
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${2}&productId=${productId}&similarity=${similarity}`, {
           method: 'GET', // Assuming a GET request (adjust if necessary)
@@ -110,6 +111,8 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
         toast.success("Similar products found.", {duration: 1500})
       } catch (error) {
         toast.error("Something went wrong. Try again later.")
+      } finally {
+        setLoading(false)
       }
     }
     
@@ -117,9 +120,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
       if(!similarity){
         toast("Select similarity first before selecting a product", {duration: 2000})
       } else{
-        setLoading(true)
         onPredict(product[0]?.id as number, similarity.toLowerCase())
-        setLoading(false)
       }
     } 
   }, [product, similarity, storeId])
@@ -179,7 +180,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
                 <TargetProduct product={product[0]}/>
               }
             </div>
-            {loading ? <LoadingSpinner /> :
+            {loading ? <div className=" flex items-center justify-center space-x-2"><LoadingSpinner /> <span className="text-blue-600 animate-pulse duration-2000 ease-in-out"> Loading recommendations...</span></div> :
             formattedProducts &&
               <SimilarProducts columns={columns} formattedProducts={formattedProducts}/>
             } 

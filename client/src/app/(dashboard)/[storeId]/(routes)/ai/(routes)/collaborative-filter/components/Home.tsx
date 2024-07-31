@@ -13,10 +13,10 @@ export const Home = () => {
             Collaborative-based recommendation filter is used to process and analyze customers&apos; information and recommend products a customer is likely to purchase. 
           </p>
           <p>
-            Collaborative filtering algorithms use a customer&apos;s purchase history and ratings to find similar customers and then suggest items that the other customer liked. For example to find a new restaurant you can ask your friends for suggestions.
+            Collaborative filtering algorithms use a customer&apos;s purchase history and product ratings to find similar customers, then suggest items that the other customer liked. For example; to find a new restaurant you can ask your friends for suggestions.
           </p>
           <p>
-            There are two types of collaborative filters; <b>User-to-User</b> and <b>Item-to-Item</b> filtering.
+            There are two types of collaborative filters; <b>User-to-User</b>, <b>Item-to-Item</b> filtering and <em>machine learning algorithm</em> <b>k-Nearest Neighbor</b>.
           </p>
         </div>
       </Banner>

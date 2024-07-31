@@ -13,6 +13,7 @@ interface ProductSwitcherProps extends PopoverTriggerProps {
     children?: React.ReactNode;
     products: ProductType[];
     value: string;
+    loading: boolean;
     onValueChange: (value: string) => void;
     product: ProductType | null,
     setProduct: Dispatch<SetStateAction<({
@@ -65,7 +66,7 @@ export function ProductSwitcher({
                     <ChevronsUpDown className="ml-auto h-4 shrink-0 opacity=50" />
                 </Button>
             </PopoverTrigger>
-            <PopoverContent side={'bottom'} className='w-[400px] p-0' onOpenAutoFocus={() => {console.log('focused')}}>
+            <PopoverContent side={'bottom'} className='w-[400px] p-0'>
                 <Command>
                     <CommandList>
                         <div className="flex items-center relative w-full">

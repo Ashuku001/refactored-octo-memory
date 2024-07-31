@@ -58,13 +58,12 @@ async def nmf_svd_knn_coClustering_train(storeId:int):
     df_3 = None
     if df_2.shape[0] > 500000:
         for threshold in range(500, 1, -30):
-            df_3 = shortlist_customers(df_1, df_2, 260)
-            break # we will remove this
-            # print("THRESHOLD",df_3.shape[0])
-            # if(df_3.shape[0] > 500000 or df_3.shape[0] < 450000):
-            #     continue
-            # else:
-            #     break
+            df_3 = shortlist_customers(df_1, df_2, threshold)
+            print("THRESHOLD",df_3.shape[0])
+            if(df_3.shape[0] > 500000 or df_3.shape[0] < 450000):
+                continue
+            else:
+                break
     
     print("DF 2", df_2.head(), "\n DF 3", df_3.head())
     # read data in format surpoted by surprise    

@@ -17,16 +17,16 @@ import { CustomFormLabel } from "@/components/ui/CustomFormLabel";
 import { TrainingCard } from "../../components/TrainingCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { SimilarProducts } from "../../components/SimilarProducts";
-import { TargetCustomer } from "../../components/TargetCustomer";
+import {TargetCustomer} from "../../components/TargetCustomer";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 
 type TrainProps = {
   storeId: string;
 }
 
-export const UserToUserTrain = ({storeId}: TrainProps) => {
+export const KNNTrain = ({storeId}: TrainProps) => {
     const [training, setTraining] = useState(false)
-    const baseUrl = "/memory/collaborative/user-to-user-filter/train"
+    const baseUrl = "/model/collaborative/knn-model/train"
 
     const onTrain = async () => { 
       setTraining(true)
@@ -52,9 +52,9 @@ export const UserToUserTrain = ({storeId}: TrainProps) => {
         <TrainingCard
           onTrain={onTrain}
           training={training}
-          title={"Build User to user filter model"}
-          description={"This model processes product or customer information products a customer is likely to buy."}
-          btnTitle={"Train User to user filter model"}
+          title={"Build k-nearest neighbour model"}
+          description={"This is a supervised machine learning model for classifying similar users and recommend based on similar users."}
+          btnTitle={"Train k-nearest model model"}
         />
         <TestRecommendation storeId={storeId}/>
       </div>
@@ -71,7 +71,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
   const [formattedProducts, setFormattedProducts] = useState<SimilarProductFormatted[] | null>(null)
   const [customer, setCustomer] = useState<CustomerSearchQuery["customerSearch"] | null>(null)
   const [customerSearch, {loading: queryloading, error, data}] = useLazyQuery(CustomerSearchDocument)
-  const baseUrl = "/memory/collaborative/user-to-user-filter/predict"
+  const baseUrl = "/model/collaborative/knn-model/predict"
   let customers: CustomerSearchQuery["customerSearch"] = data?.customerSearch
 
   useEffect(() => {
@@ -84,8 +84,8 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
 
   useEffect(() => {
     const onPredict = async (customerIds: number[], k:number=5, sample:number=10) => {
-      setLoading(true)
       setFormattedProducts(null)
+      setLoading(true)
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${parseInt(storeId)}&merchantId=${2}&k=${k}&sample=${sample}`, {
           method: "POST",
@@ -98,7 +98,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
         }
     
         const jsonData = await response.json(); // Parse JSON response
-        const data = []
+        console.log(jsonData)
         if(jsonData["success"]?.length > 0){
           const data = jsonData["success"][0]["recommendations"].map((item: SimilarProductResponseType) => ({
             id: item?.productId,
@@ -147,11 +147,11 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
                 <CustomerSwitcher
                   value={searchString}
                   className="w-[350px] h-10"
+                  loading={loading}
                   onValueChange={setSearchString}
                   customers={customers ?? []}
                   customer={customer ? customer[0] : null}
                   setCustomer={setCustomer}
-                  loading={loading}
                 />
               </div>
               {customer &&
@@ -160,7 +160,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
             </div>
             {loading ? <div className=" flex items-center justify-center space-x-2"><LoadingSpinner /> <span className="text-blue-600 animate-pulse duration-2000 ease-in-out"> Loading recommendations...</span></div> :
               formattedProducts &&
-                <SimilarProducts formattedProducts={formattedProducts} columns={columns}/>
+              <SimilarProducts formattedProducts={formattedProducts} columns={columns}/>
             } 
           </CardContent>
         </Card>

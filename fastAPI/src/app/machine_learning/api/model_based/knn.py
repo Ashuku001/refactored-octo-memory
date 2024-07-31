@@ -1,6 +1,6 @@
 from fastapi.responses import JSONResponse
 import pandas as pd
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Body, HTTPException
 from dotenv import load_dotenv
 from sklearn.neighbors import NearestNeighbors
 from scipy.sparse import csr_matrix
@@ -20,7 +20,7 @@ def encode_units(x):
         return 1
 
 @router.get("/knn-model/train")
-async def knn_train(storeId:int):
+async def knn_train(storeId:int, merchantId: int):
     repo = SaleDetailsRepository()
     data = await repo.get_sales_details(storeId=storeId)
     df = {
@@ -57,17 +57,17 @@ async def knn_train(storeId:int):
     model_path = os.environ.get("collaborative_filtering_path")
     
     # save the filename to a db that includes the username and id and storeId
-    model_filename = "knn_model.pkl"
+    model_filename = f"knn_model-{storeId}-{merchantId}.pkl"
     if not os.path.exists(model_path):
         os.makedirs(model_path)
         
     # save the model path to a database to have stats about the models performance   
     joblib.dump(model, os.path.join(model_path, model_filename))
     
-    return JSONResponse(content={"success": "k nearest neighbor model is ready for use. Please save the model to use it for prediction."})
+    return JSONResponse(content={"success": "k-nearest neighbor agent has been trained successfully and ready for prediction."})
 
-@router.get("/knn-model/predict")
-async def knn_train(storeId:int, customerId: int, k:int=10, sample:int=10):
+@router.post("/knn-model/predict")
+async def knn_predict(storeId:int, merchantId:int, userIds: list[int] = Body(...), k:int=10, sample:int=10):
     repo = SaleDetailsRepository()
     data = await repo.get_sales_details(storeId=storeId)
     df = {
@@ -78,12 +78,14 @@ async def knn_train(storeId:int, customerId: int, k:int=10, sample:int=10):
         "brand": [],
         "unitPrice": [],
         "customerId": [],
+        "description": []
     }
     for el in data:
         df["stockCode"].append(el["productId"]["stockCode"])
         df["name"].append(el["productId"]["name"])
         df["productId"].append(el["productId"]["id"])
         df["brand"].append(el["productId"]["brand"])
+        df["description"].append(el["productId"]["description"])
         df["quantity"].append(el["quantity"])
         df["unitPrice"].append(el["unitPrice"])
         df["customerId"].append(el["salesId"]["customerId"])
@@ -96,23 +98,22 @@ async def knn_train(storeId:int, customerId: int, k:int=10, sample:int=10):
     
     model_path = os.environ.get("collaborative_filtering_path")
     #filename retrive from a database
-    model_filename = "knn_model.pkl"
+    model_filename = f"knn_model-{storeId}-{merchantId}.pkl"
     
     try:
         model = joblib.load(os.path.join(model_path, model_filename))
     except:
         raise HTTPException(status_code=404, detail={"model_not_found": "Could not find a model train and save the model"})
-    sim_u = []
-
-    # if customerId in purchase_df.index:
-    sim_u += similar_users_knn(model, purchase_df, customerId)
-    # else:
-    #     raise HTTPException(status_code=404, detail=f"query_index {customerId} not found in the DataFrame index.")
-
-    print("SIMILAR USER", sim_u)       
-
-    products =  knn_recommendation(sim_u, df)
-    if products is not None:
-        return products
-    else:
-        raise HTTPException(status_code=404, detail={"not_found": "No similar products found"})
+    
+    
+    recommendations = []
+    failed_rec = []
+    for userId in userIds:
+        try:
+            sim_u = []
+            sim_u += similar_users_knn(model, purchase_df, userId, k)
+            products =  knn_recommendation(sim_u, df, sample)
+            recommendations.append({"user": userId, "recommendations": products})
+        except:
+            failed_rec.append(userId)
+    return {"success": recommendations, "failed": failed_rec}

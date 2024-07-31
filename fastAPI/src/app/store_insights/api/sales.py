@@ -64,7 +64,7 @@ async def get_sales(storeId: int):
         "quantity": [],
     }
     for el in data:
-        df["name"].append(el["productId"]["name"][:25])
+        df["name"].append(el["productId"]["name"])
         df["stockCode"].append(el["productId"]["stockCode"])
         df["quantity"].append(el["quantity"])
     
@@ -105,7 +105,7 @@ async def get_sales(storeId: int):
     }
     for el in data:
         df["customerId"].append(el["salesId"]["customerId"])
-        df["name"].append(el["productId"]["name"][:25])
+        df["name"].append(el["productId"]["name"])
         df["stockCode"].append(el["productId"]["stockCode"])
         df["quantity"].append(el["quantity"])
     
@@ -142,7 +142,7 @@ async def get_sales(storeId: int):
         "name": [],
     }
     for el in data:
-        df["name"].append(el["productId"]["name"][:50])
+        df["name"].append(el["productId"]["name"])
     
     df = pd.DataFrame(df)
     
@@ -174,7 +174,7 @@ async def get_first_choice(storeId: int):
     }
     for el in data:
         df["invoiceNo"].append(el["salesId"]["invoiceNo"]) 
-        df["name"].append(el["productId"]["name"][:25])
+        df["name"].append(el["productId"]["name"])
         df["stockCode"].append(el["productId"]["stockCode"])
         df["quantity"].append(el["quantity"])
     
@@ -242,7 +242,7 @@ async def bought_together(storeId: int, item_code, number:int=6):
     for el in data:
         df["invoiceNo"].append(el["salesId"]["invoiceNo"]) 
         df["customerId"].append(el["salesId"]["customerId"])
-        df["name"].append(el["productId"]["name"][:25])
+        df["name"].append(el["productId"]["name"])
         df["stockCode"].append(el["productId"]["stockCode"])
         df["quantity"].append(el["quantity"])
 
@@ -591,7 +591,6 @@ async def deal_of_the_day(storeId: int, date:str):
     # sorting the data on given date based on quantity (ascending)
     data = datewise_sales[datewise_sales['date']==date].sort_values(by='quantity')
     print('The most appropriate items to provide Deals on {0} are :'.format(date))
-    print(data['name'].head(10))
     products = []
     for index, row in data.head(10).iterrows():
         products.append({
