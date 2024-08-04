@@ -103,7 +103,7 @@ const DashBoardPage: React.FC<DashBoardProps> = async ({
           </CardContent>
         </Card>
       </div>
-      <div className="mb-20"/>
+      <div className="mb-[10px]"/>
     </ScrollArea>
   )
 }

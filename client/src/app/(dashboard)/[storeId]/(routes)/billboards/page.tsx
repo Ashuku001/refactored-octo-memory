@@ -25,7 +25,7 @@ async function BillBoardsPage({ params: { storeId } }: Props) {
       updatedAt: format(new Date(item?.updatedAt), "MMM do, yy")
     })) as BillboardColumn[]
   } catch (error) {
-    toast.error("Unable to retrieve billboards.")
+    console.error("Unable to retrieve billboards.")
   }
 
   return (

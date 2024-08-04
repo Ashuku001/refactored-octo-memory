@@ -16,6 +16,13 @@ query GetOrders($storeId: Int!) {
       orderProduct {
         id
         name
+        brand{
+          id
+          name
+        }
+        category {
+          name
+        }
       }
     }
     createdAt

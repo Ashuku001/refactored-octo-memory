@@ -6,6 +6,10 @@ mutation UpdateProduct($productId: Int!, $payload: ProductInput!){
         price
         isArchived
         isFeatured
+        brand{
+            id
+            name
+        }
         store{
             __typename
             id

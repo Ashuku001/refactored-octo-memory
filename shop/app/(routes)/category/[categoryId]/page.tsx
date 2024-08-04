@@ -14,16 +14,16 @@ interface CategoryPageProps {
         categoryId: string;
     }
     searchParams: {
-        colorId: string;
-        sizeId: string;
+        // colorId: string;
+        // sizeId: string;
     }
 
 }
 async function CategoryPage({params, searchParams}: CategoryPageProps) {
     const prodData = await getProducts({
         categoryId: params.categoryId,
-        colorId: searchParams.colorId,
-        sizeId: searchParams.sizeId
+        // colorId: searchParams.colorId,
+        // sizeId: searchParams.sizeId
     })
     const products = prodData.products
     const sizes = await getSizes();

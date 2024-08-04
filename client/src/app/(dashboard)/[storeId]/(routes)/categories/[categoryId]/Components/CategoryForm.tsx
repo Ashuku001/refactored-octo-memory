@@ -21,6 +21,7 @@ import ImageUpload from '@/components/ui/ImageUpload'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { CategoryType } from '@/types'
 import { BillboardType } from "@/types"
+import { CustomFormLabel } from '@/components/ui/CustomFormLabel'
 
 
 type Props = {
@@ -30,7 +31,7 @@ type Props = {
 
 const formSchema = z.object({
   name: z.string().min(3),
-  billboardId: z.string().min(1)
+  billboard: z.string().min(1)
 })
 
 type CategoryFormvalue = z.infer<typeof formSchema>
@@ -53,9 +54,9 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
 
   const form = useForm<CategoryFormvalue>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: {...initialData, billboard: initialData?.billboard ?? ''} || {
       name: '',
-      billboardId: ''
+      billboard: ''
     }
   })
 
@@ -68,22 +69,23 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
       categoryId: initialData.id,
       payload: {
         name: data.name,
-        billboardId: parseInt(data.billboardId),
+        billboardId: parseInt(billboards.find(b => b.label.includes(data.billboard)).id),
       }
     } : addData = {
       category: {
         name: data.name,
-        billboardId: parseInt(data.billboardId),
+        billboardId: parseInt(billboards.find(b => b.label.includes(data.billboard)).id),
 
       }
     }
 
-    mutation({ variables })
-    if(creError) {
-      toast.error(creError.message)
-    } else
+    try{
+      mutation({ variables })
       toast.success(toastMessage)
       router.push(`/${params.storeId}/categories`)
+    } catch(error){
+      toast.error("Something went wrong")
+    }
 
   }
 
@@ -135,7 +137,7 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <CustomFormLabel title='Name' variant='required' description=''/>
                   <FormControl>
                     <Input disabled={upLoading} placeholder='Category name' {...field} value={field.value} onValueChange={field.onChange} className="border-none focus:outline-none" />
                   </FormControl>
@@ -145,31 +147,29 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
             />
             <FormField
               control={form.control}
-              name="billboardId"
+              name="billboard"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Billboard</FormLabel>
+                  <CustomFormLabel title='Billboard' variant='required' description=''/>
                   <Select
                     disabled={upLoading}
                     onValueChange={field.onChange}
                     value={field.value}
-                    defaultValue={field.value}
                   >
-                    <FormControl>
-                      <SelectTrigger>
+                    <FormControl >
+                      <SelectTrigger className='border-none ring-0 focus:ring-0'>
                         <SelectValue
-                          defaultValue={field.value}
-                          placeholder="Select a billboard"
+                          placeholder="Select billboard"
                         />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {billboards?.map((billboard) => (
+                      {billboards?.map((b) => (
                         <SelectItem
-                          key={billboard.id}
-                          value={billboard.id}
+                          key={b.id}
+                          value={b.label}
                         >
-                          {billboard.label}</SelectItem>
+                          {b.label}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>

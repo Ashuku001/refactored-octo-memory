@@ -1,0 +1,17 @@
+mutation UpdateBrand($payload: BrandInput!, $brandId: Int!){
+    updateBrand(payload: $payload, brandId: $brandId){
+        __typename
+        id
+        name
+        joinDate
+        description
+        phoneNumber
+        industry
+        loc_name
+        loc_address
+        loc_latitude
+        loc_longitude
+        loc_url
+        storeId
+    }
+}

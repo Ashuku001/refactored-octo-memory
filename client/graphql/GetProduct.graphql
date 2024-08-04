@@ -6,6 +6,12 @@ query GetProduct($productId: Int!) {
     price
     isArchived
     isFeatured
+    stockCode
+    description
+    brand {
+      id
+      name
+    }
     images {
       __typename
       id

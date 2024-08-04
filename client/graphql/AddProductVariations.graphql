@@ -5,6 +5,12 @@ mutation AddProdVariation($product: ProductInput) {
     price
     isArchived
     isFeatured
+    brand{
+      id
+      name
+    }
+    description
+    stockCode
     prodVariations {
       name
       prodVarOptions {

@@ -25,24 +25,6 @@ module.exports = {
         defaultValue: false,
         allowNull: false,
       },
-      sizeId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Sizes",
-          key: "id",
-        },
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      },
-      colorId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "Colors",
-          key: "id",
-        },
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      },
       categoryId: {
         type: Sequelize.INTEGER,
         references: {

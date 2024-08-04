@@ -265,6 +265,20 @@ const typeDefinitions = `#graqhql
         createdAt: Date!
         updatedAt: Date!
     }
+    type Brand {
+        id: Int!
+        name: String!
+        joinDate: Date
+        description: String!
+        phoneNumber: String!
+        industry: String!
+        loc_name: String!
+        loc_address: String!
+        loc_latitude: String
+        loc_longitude: String
+        loc_url: String
+        storeId: Int
+    }
     type Billboard {
         id: Int!
         label: String!
@@ -293,7 +307,7 @@ const typeDefinitions = `#graqhql
         category: Category!
         store: Store!
         description: String
-        brand: String
+        brand: Brand
         stockCode: String
         images: [Image]!
 
@@ -562,12 +576,14 @@ const typeDefinitions = `#graqhql
         chat(chatId: Int!): ReturnedChat @auth
         lastMessage(chatId: Int!): Message @auth
         setting(username: String): Setting
-        stores: [Store] @auth
         allProducts: [Store] @auth
         productSearch(page: Int, limit: Int, text: String!, storeId: Int!): [Product] @auth
         customerSearch(page: Int, limit: Int, text: String!): [Customer] @auth
-   
+        
+        stores: [Store] @auth
         store(storeId: Int):Store @auth
+        brand(brandId: Int!): Brand @auth
+        brands(storeId: Int!): [Brand] @auth
         billboards(storeId: Int): [Billboard]
         billboard( billboardId: Int!):Billboard! 
         categories(storeId: Int!): [Category]
@@ -809,11 +825,24 @@ const typeDefinitions = `#graqhql
     }
 
     type Response {
-        success: String
+        response: String
     }
 
     input StoreInput{
         name: String!
+    }
+    input BrandInput {
+        name: String!
+        joinDate: Date!
+        description: String!
+        phoneNumber: String
+        industry: String!
+        loc_name: String!
+        loc_address: String!
+        loc_latitude: String
+        loc_longitude: String
+        loc_url: String
+        storeId: Int
     }
 
     input BillboardInput {
@@ -831,10 +860,12 @@ const typeDefinitions = `#graqhql
         price: Decimal!
         description: String
         stockCode: String
+        brand: String
         images: [ImageInput]
         isFeatured: Boolean
         isArchived: Boolean
         categoryId: Int!
+        brandId: Int!
         storeId: Int!
 
         prodVariations: [ProductVariationInput]
@@ -1083,6 +1114,9 @@ const typeDefinitions = `#graqhql
         addStore (
             store: StoreInput!
         ): Store @auth
+        addBrand (
+            brand: BrandInput!
+        ): Brand @auth
         addBillboard (
             billboard: BillboardInput!
         ): Billboard @auth
@@ -1121,6 +1155,10 @@ const typeDefinitions = `#graqhql
             storeId: Int!
             payload: StoreInput!
         ): Store @auth
+        updateBrand (
+            brandId: Int!
+            payload: BrandInput!
+        ): Brand @auth
         updateBillboard (
             billboardId: Int!
             payload: BillboardInput!
@@ -1152,6 +1190,10 @@ const typeDefinitions = `#graqhql
         ): Response
 
         deleteStore (
+            storeId: Int!
+        ): Response @auth
+        deleteBrand (
+            brandId: Int!
             storeId: Int!
         ): Response @auth
         deleteBillboard (

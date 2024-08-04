@@ -1,0 +1,5 @@
+mutation DeleteBrand($storeId: Int!, $brandId: Int!){
+    deleteBrand(storeId: $storeId, brandId: $brandId){
+        response
+    }
+}

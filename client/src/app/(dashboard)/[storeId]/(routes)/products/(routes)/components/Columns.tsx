@@ -7,8 +7,6 @@ export type ProductColumn = {
   id: number;
   name: string;
   price: string;
-  size: string;
-  color: string;
   category: string;
   isFeatured: boolean;
   isArchived: boolean;

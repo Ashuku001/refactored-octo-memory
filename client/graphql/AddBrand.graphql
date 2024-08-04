@@ -1,0 +1,16 @@
+mutation AddBrand($brand: BrandInput!){
+    addBrand(brand: $brand){
+        __typename
+        name
+        joinDate
+        description
+        phoneNumber
+        industry
+        loc_name
+        loc_address
+        loc_latitude
+        loc_longitude
+        loc_url
+        storeId
+    }
+}

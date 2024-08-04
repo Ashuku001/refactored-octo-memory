@@ -14,8 +14,8 @@ export async function GET(req: Request,  {params: {storeId }}: Props) {
     const {searchParams} = new URL(req.url)
 
     const categoryId = parseInt(searchParams.get("categoryId") as string);
-    const colorId = parseInt(searchParams.get("colorId") as string) || undefined;
-    const sizeId = parseInt(searchParams.get("sizeId") as string) || undefined;
+    // const colorId = parseInt(searchParams.get("colorId") as string) || undefined;
+    // const sizeId = parseInt(searchParams.get("sizeId") as string) || undefined;
     const isFeatured = searchParams.get("isFeatured") || undefined;
 
     try {
@@ -25,14 +25,14 @@ export async function GET(req: Request,  {params: {storeId }}: Props) {
         if(categoryId){
             variables = {...variables, categoryId: categoryId}
         }
-        if(sizeId){
-            variables = {...variables, sizeId: sizeId}
-        }
-        if(colorId){
-            variables = {...variables, colorId: colorId}
-        }
+        // if(sizeId){
+        //     variables = {...variables, sizeId: sizeId}
+        // }
+        // if(colorId){
+        //     variables = {...variables, colorId: colorId}
+        // }
         if(isFeatured){
-            variables = {...variables, isFeatured: isFeatured}
+            variables = {...variables, isFeatured: isFeatured as unknown as boolean}
         }
         const { data } = await getClient().query({
             query: GetProductsDocument,

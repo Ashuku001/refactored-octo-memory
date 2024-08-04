@@ -1,5 +1,5 @@
 mutation deleteBillboard($billboardId: Int!, $storeId: Int!){
     deleteBillboard(billboardId: $billboardId, storeId: $storeId){
-        success
+        response
     }
 }

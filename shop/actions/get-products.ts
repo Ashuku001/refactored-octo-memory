@@ -8,8 +8,8 @@ interface PromiseProps {
 
 interface Query {
     categoryId?: string;
-    colorId?: string;
-    sizeId?: string;
+    // colorId?: string;
+    // sizeId?: string;
     isFeatured?: boolean;
 }
 
@@ -18,8 +18,8 @@ const getProducts = async (query: Query): Promise<PromiseProps> => {
     const url = qs.stringifyUrl({
         url: URL,
         query: {
-            colorId: query.colorId,
-            sizeId: query.sizeId,
+            // colorId: query.colorId,
+            // sizeId: query.sizeId,
             categoryId: query.categoryId,
             isFeatured: query.isFeatured
         }

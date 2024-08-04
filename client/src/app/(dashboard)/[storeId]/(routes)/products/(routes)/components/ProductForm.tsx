@@ -9,7 +9,7 @@ import { toast } from "react-hot-toast"
 import { useRouter, useParams } from 'next/navigation'
 
 
-import { UpdateProductDocument, DeleteProductDocument, AddProductDocument, AddProdVariationDocument } from "@/graphql"
+import { UpdateProductDocument, DeleteProductDocument, AddProductDocument, AddProdVariationDocument, GetBrandsQuery } from "@/graphql"
 
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
 import { Checkbox } from "@/components/ui/checkbox"
@@ -20,7 +20,7 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import AlertModal from "@/components/modals/AlertModal"
-import { ProductType, CategoryType, ColorType, SizeType } from '@/types'
+import { ProductType, CategoryType} from '@/types'
 import { useProductsStore } from '@/store/ProductsStore';
 import { TipTool } from '@/components/ui/TipTool';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -32,16 +32,20 @@ import { useFileStore } from '@/store/FileStore';
 import {ImageUpload} from '@/components/appwrite/AppWriteImageUpload'
 import { ProdCombinationType } from '@/lib/store/addVarProductUtil';
 import {CategoryModal} from "@/components/modals/AddCategory"
+import { Textarea } from '@/components/ui/textarea';
 
 
 type Props = {
   productData?: ProductType | null;
   categories?: CategoryType[] | null | undefined;
+  brands: GetBrandsQuery["brands"]
 }
 
 const formSchema = z.object({
   name: z.string().min(3),
   images: z.object({ url: z.string() }).array(),
+  brand: z.string().min(1),
+  description: z.string().min(10),
   price: z.coerce.number().min(1),
   category: z.string().min(1),
   variantName: z.string().optional(),
@@ -56,7 +60,7 @@ formSchema.extend({
 
 type ProductFormValue = z.infer<typeof formSchema>
 
-const ProductForm = ({ productData, categories }: Props) => {
+const ProductForm = ({ productData, categories, brands }: Props) => {
   const [openDel, setOpenDel] = useState(false)
   const [openCat, setOpenCat] = useState(false)
   const [billboards, setBillboards] = useState([])
@@ -88,12 +92,17 @@ const ProductForm = ({ productData, categories }: Props) => {
       images: [],
       price: '',
       category: "",
+      brand: "",
+      description: "",
       variantName: '',
       variantOptions: [],
       isFeatured: false,
       isArchived: false,
     }
   })
+
+  console.log(">>>>>>>",initialData)
+  console.log(">>>>>>>",categories.map(c => c.name))
 
 
   const onSubmit = (data: ProductFormValue) => {
@@ -128,9 +137,11 @@ const ProductForm = ({ productData, categories }: Props) => {
       payload: {
         name: data.name,
         price: parseInt(data.price),
+        description: data.description,
         isFeatured: data.isFeatured,
         isArchived: data.isArchived,
         categoryId: parseInt(categories.find(c => c.name.includes(data.category)).id),
+        brandId: parseInt(brands.find(b => b.name.includes(data.brand)).id),
         prodVariations:prodVariations,
         prodCombinations:prodCombinations,
         images: data.images,
@@ -140,11 +151,13 @@ const ProductForm = ({ productData, categories }: Props) => {
       product: {
         name: data.name,
         price: parseInt(data.price),
+        description: data.description,
         isFeatured: data.isFeatured,
         isArchived: data.isArchived,
         prodVariations:prodVariations,
         prodCombinations:prodCombinations,
         categoryId: parseInt(categories.find(c => c.name.includes(data.category)).id),
+        brandId: parseInt(brands.find(b => b.name.includes(data.brand)).id),
         images:data.images,
         storeId: parseInt(params.storeId)
       }
@@ -179,13 +192,15 @@ const ProductForm = ({ productData, categories }: Props) => {
   useEffect(() => {
     setInitialData(productData)
     form.reset(initialData ? {
-      ...initialData, price: parseFloat(String(initialData?.price))
+      ...initialData, price: parseFloat(String(initialData?.price)), brand: initialData?.brand ?? '',
     } : {
       name: '',
       images: [],
       price: 0.00,
       category: "",
       variantName: '',
+      brand: "",
+      description: "",
       variantOptions: [],
       isFeatured: false,
       isArchived: false,
@@ -264,6 +279,7 @@ const ProductForm = ({ productData, categories }: Props) => {
                   </FormItem>
                 )}
               />
+              
               <FormField
                 control={form.control}
                 name="images"
@@ -285,13 +301,72 @@ const ProductForm = ({ productData, categories }: Props) => {
               />
               <FormField
                 control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <CustomFormLabel title='Product description' variant='required' description=''/>
+                    <FormControl>
+                      <Textarea disabled={upLoading} placeholder='Product description' {...field} className=" focus-visible:ring-0" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
                 name="price"
                 render={({ field }) => (
                   <FormItem>
                     <CustomFormLabel title='Price' variant='required' description=''/>
                     <FormControl>
-                      <Input min="0" disabled={upLoading} type='number' placeholder='9.99' {...field} className=" focus:outline-none" />
+                      <Input min="0" disabled={upLoading} type='float' placeholder='9.99' {...field} className=" focus:outline-none" />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="brand"
+                render={({ field }) => (
+                  <FormItem>
+                    <CustomFormLabel title='Brand' variant='optional' description=''/>
+                    <div className='flex items-center space-x-1'>
+                      <Select
+                        disabled={upLoading}
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        defaultValue={initialData?.brand?.name}
+                      >
+                        <FormControl >
+                          <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                            <SelectValue
+                              // defaultValue={initialData?.brand?.name}
+                              placeholder="Select a brand"
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className='h-[200px]'>
+                          <ScrollArea className='h-full'>
+                            {brands?.map((brand) => (
+                              <SelectItem
+                                key={brand.id}
+                                value={brand.name}
+                              >
+                                {brand.name}</SelectItem>
+                            ))}
+                          </ScrollArea>
+                        </SelectContent>
+                      </Select>
+                      <TipTool
+                        tip="Add new brand"
+                        sideOffset={4}
+                        className='flex items-center space-x-2 z-50 bg-secondary p-2 rounded-sm'
+                        onClick={() => { setOpenCat(true) }}
+                      >
+                        <PlusIcon size={'20'} />
+                      </TipTool>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -309,20 +384,22 @@ const ProductForm = ({ productData, categories }: Props) => {
                         value={field.value}
                       >
                         <FormControl >
-                          <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                          <SelectTrigger defaultValue={initialData?.category?.name}className='border-none ring-0 focus:ring-0'>
                             <SelectValue
                               placeholder="Select a category"
                             />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent>
-                          {categories?.map((category) => (
-                            <SelectItem
-                              key={category.id}
-                              value={category.name}
-                            >
-                              {category.name}</SelectItem>
-                          ))}
+                        <SelectContent className='h-[200px]'>
+                          <ScrollArea className='h-full'>
+                            {categories?.map(c => c.name)?.map((category) => (
+                              <SelectItem
+                                key={category}
+                                value={category}
+                              >
+                                {category}</SelectItem>
+                            ))}
+                          </ScrollArea>
                         </SelectContent>
                       </Select>
                       <TipTool

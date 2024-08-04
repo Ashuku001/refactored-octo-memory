@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { TipTool } from "@/components/ui/TipTool";
-import { SettingsIcon, ShoppingCartIcon, WalletCards, GiftIcon, BrainCircuitIcon, BoxesIcon, BarChart3Icon, PresentationIcon } from "lucide-react";
+import { SettingsIcon, ShoppingCartIcon, WalletCards, GiftIcon, BrainCircuitIcon, BoxesIcon, BarChart3Icon, PresentationIcon, TagIcon } from "lucide-react";
 
 function MainNav({
     className,
@@ -32,18 +32,13 @@ function MainNav({
             icon: <BoxesIcon size={"25"} />,
             active: pathname.includes(`categories`)
         },
-        // {
-        //     href: `/${params.storeId}/sizes`,
-        //     label: 'Sizes',
-        //     icon: <SettingsIcon size={"25"} />,
-        //     active: pathname === `/${params.storeId}/sizes`
-        // },
-        // {
-        //     href: `/${params.storeId}/colors`,
-        //     label: 'Colors',
-        //     icon: <SettingsIcon size={"25"} className="text-slate-700 hover:text-slate-400"/>,
-        //     active: pathname === `/${params.storeId}/colors`
-        // },
+        {
+            href: `/${params.storeId}/brands`,
+            label: 'Brands',
+            icon: <TagIcon size={"25"} />,
+            active: pathname.includes(`brands`)
+        },
+        
         {
             href: `/${params.storeId}/products`,
             label: 'Products',

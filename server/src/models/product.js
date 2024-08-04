@@ -17,6 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.ListRowButton, {foreignKey: "productId", as: "listProduct"})
       this.hasMany(models.MarketingResponse, {foreignKey: "productId", as: "productLead"})
       this.hasMany(models.AdTemplate, {foreignKey: "productId", as: "adTempProduct"})
+      this.belongsTo(models.Brand, {foreignKey: "brandId",  as: "brand"})
 
       // #################### PRODUCT #####################
       this.hasMany(models.ProductVariation, {foreignKey: "productId", as: "prodVariations"})
@@ -36,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     price: DataTypes.DECIMAL,
     description: DataTypes.TEXT,
-    brand: DataTypes.STRING,
+    brandId: DataTypes.INTEGER,
     stockCode: DataTypes.STRING,
     isFeatured: DataTypes.BOOLEAN,
     isArchived: DataTypes.BOOLEAN,

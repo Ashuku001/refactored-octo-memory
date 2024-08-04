@@ -8,14 +8,13 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Merchant, {foreignKey: "merchantId"})
       this.hasMany(models.Billboard, {foreignKey: "storeId"})
       this.hasMany(models.Category, {foreignKey: "storeId"})
-      this.hasMany(models.Size, {foreignKey: "storeId"})
-      this.hasMany(models.Color, {foreignKey: "storeId"})
       this.hasMany(models.Product, {foreignKey: "storeId"})
       this.hasMany(models.Order, {foreignKey: "storeId", as: 'storeOrder'})
       this.hasMany(models.Promotion, {foreignKey: "storeId", as: "storePromotions"})
       this.hasMany(models.PromotionProduct, {foreignKey: "storeId", as: 'promotionProducts'})
       this.hasMany(models.PromotionCustomer, {foreignKey: "storeId", as: 'promotionCustomers'})
       this.hasMany(models.Sale, {foreignKey: "storeId", as: "storeSales"})
+      this.hasMany(models.Brand, {foreignKey: "storeId"})
     }
   }
   Store.init({

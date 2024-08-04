@@ -13,6 +13,7 @@ import {
 import { setContext } from '@apollo/client/link/context'
 import { isLoggedInVar, merchantId } from "@/components/AuthGuard";
 import { createFragmentRegistry } from "@apollo/client/cache";
+import { RetryLink } from "@apollo/client/link/retry";
 
 
 // client schema
@@ -24,6 +25,18 @@ const typeDefs = gql`
 
 `
 
+const retryLink = new RetryLink({
+    delay: {
+      initial: 300,
+      max: Infinity,
+      jitter: true,
+    },
+    attempts: {
+      max: 5,
+      retryIf: (error, _operation) => !!error,
+    },
+  });
+  
 
 // this client will be SSR-rendered for the initial request
 export function makeClient() {
@@ -47,6 +60,7 @@ export function makeClient() {
     })
 
     const authHttpLink = authLink.concat(httpLink)
+    const link = retryLink.concat(authHttpLink);
 
     const wsLink = new GraphQLWsLink(createClient({
         url: `${process.env.NEXT_PUBLIC_WS_URL}/subscriptions`,

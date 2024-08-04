@@ -1,5 +1,5 @@
 mutation DeleteProduct($productId: Int!, $storeId: Int!){
     deleteProduct(productId: $productId, storeId: $storeId){
-        success
+        response
     }
 }

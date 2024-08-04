@@ -81,6 +81,27 @@ const getDupCategory = async (Category, name, billboardId) => {
   return category;
 };
 
+const getBrand = async (Brand, categoryId) => {
+  const brand = await Brand.findOne({
+    where: {
+      id: parseInt(categoryId),
+    },
+  });
+
+  return brand;
+};
+
+const getDupBrand = async (Brand, name, storeId) => {
+  const brand = await Brand.findOne({
+    where: {
+      name: name,
+      storeId: parseInt(storeId),
+    },
+  });
+
+  return brand;
+};
+
 const getSize = async (Size, sizeId) => {
   const size = await Size.findOne({
     where: {
@@ -102,26 +123,7 @@ const getDupSize = async (Size, name, storeId) => {
   return size;
 };
 
-const getColor = async (Color, colorId) => {
-  const color = await Color.findOne({
-    where: {
-      id: parseInt(colorId),
-    },
-  });
 
-  return color;
-};
-
-const getDupColor = async (Color, name, storeId) => {
-  const color = await Color.findOne({
-    where: {
-      name: name,
-      storeId: parseInt(storeId),
-    },
-  });
-
-  return color;
-};
 
 const getCustomer = async (Customer, customerId, merchantId) => {
   const customer = await Customer.findOne({
@@ -218,8 +220,6 @@ module.exports = {
   getDupCategory: getDupCategory,
   getSize: getSize,
   getDupSize: getDupSize,
-  getColor: getColor,
-  getDupColor: getDupColor,
   getProduct: getProduct,
   getDupProduct: getDupProduct,
   getCustomer: getCustomer,
@@ -227,5 +227,7 @@ module.exports = {
   getChat: getChat,
   getMessage: getMessage,
   getAdTemplate: getAdTemplate,
-  getAd: getAd
+  getAd: getAd,
+  getBrand: getBrand,
+  getDupBrand,
 };

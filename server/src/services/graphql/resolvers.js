@@ -47,6 +47,7 @@ function resolvers() {
     Store,
     Billboard,
     Category,
+    Brand,
     TextMessage,
     ImageMessage,
     DocumentMessage,
@@ -895,6 +896,65 @@ function resolvers() {
         }
       },
 
+      async brands(root, { storeId }, context) {
+        const merchant = context.merchant;
+        if (!merchant) {
+          throw new Error("Unauthenticated make sure you are logged in");
+        }
+        if (!storeId) {
+          throw new Error("We couldn't find a store ID");
+        }
+        try {
+          const store = await getStore(Store, storeId, merchant.id);
+          if (!store) {
+            throw new Error("Unauthorized operation");
+          }
+
+          const brands = Brand.findAll({
+            where: {
+              storeId: storeId,
+            },
+          });
+
+          if (!brands) {
+            throw new Error("This store has no billboards yet");
+          }
+          return brands;
+        } catch (error) {
+          logger.log({
+            level: "error",
+            message: `An error occurred for ${merchant.id} while querying for brands`,
+          });
+          throw new Error(
+            "Something went wrong while getting your brands",
+            error
+          );
+        }
+      },
+
+      async brand(root, { brandId }, context) {
+        if(!context.merchant){
+          throw new Error("Unauthenticated make sure you are logged in")
+        }
+
+        try {
+          const brand = await Brand.findOne({
+            where: {
+              id: brandId,
+
+            },
+          });
+
+          if (!brand) {
+            throw new Error("Could not find the brand");
+          }
+
+          return brand;
+        } catch (error) {
+          throw new Error("Something went wrong", error);
+        }
+      },
+
       async categories(root, { storeId }, context) {
         const merchant = context.merchant;
         if (!storeId) {
@@ -980,6 +1040,7 @@ function resolvers() {
             id: productIds,
             storeId: storeId,
           },
+          order: [["updatedAt", "ASC"]],
         });
 
         if (!products) {
@@ -1050,6 +1111,10 @@ function resolvers() {
             {
               as: "images",
               model: Image,
+            },
+            {
+              model: Brand,
+              as: 'brand'
             },
             {
               association: "prodVariations",
@@ -3083,6 +3148,169 @@ function resolvers() {
         return true;
       },
 
+      async addBrand(root, { brand }, context) {
+        const merchant = context.merchant;
+        if (!merchant) {
+          throw new Error(
+            "Unauthenticated make sure you are logged in to add a brand"
+          );
+        }
+        if  (!brand.storeId) {
+          throw new Error("Store Id is required");
+        }
+
+        const store = await getStore(Store, brand.storeId, merchant.id);
+
+        if (!store) {
+          throw new Error("Unauthorized operation");
+        }
+
+        let existingBrand = await Category.findOne({
+          where: {
+            name: brand.name,
+            storeId: store.id,
+          },
+        });
+
+        if (existingBrand) {
+          throw new Error(
+            `Brand of name ${existingBrand.name} already exists.`
+          );
+        }
+
+        try {
+          const newBrand = await Brand.create({
+            ...brand,
+          }).then((newBrand) => {
+            newBrand.setStore(store.id);
+            return newBrand;
+          });
+          return newBrand;
+        } catch (error) {
+          if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error(`Brand of name ${brand.name} already exists.`);
+          } else {
+            logger.log({
+              level: "error",
+              message: `An error occured while creating brand for ${
+                merchant.id
+              } at ${new Date().toLocaleDateString()}`,
+            });s
+            throw error;
+          }
+        }
+      },
+
+      async updateBrand(root, { brandId, payload }, context) {
+        if (!context.merchant) {
+          throw new Error("Unauthorized make sure you are logged in.");
+        }
+        if (!brandId) {
+          throw new Error("Brand id is required.");
+        } else if (!payload.storeId) {
+          throw new Error("Store id is required");
+        }
+
+        const store = await getStore(
+          Store,
+          payload.storeId,
+          context.merchant.id
+        );
+        if (!store) {
+          throw new Error("Unauthorized operation.");
+        }
+
+        let brand = await Brand.findOne({
+          where: {
+            id: brandId,
+            storeId: store.id,
+          },
+        });
+
+        if (!brand) {
+          throw new Error("Could not find the brand.");
+        }
+
+        // if (brand.name.toLowerCase() == payload.name.toLowerCase()) {
+        //   throw new Error(
+        //     `Brand of name ${payload.name} already exists.`
+        //   );
+        // }
+
+        try {
+          const updatedBrand = await Brand.update(
+            {
+              ...brand,
+              name: payload.name,
+              joinDate: payload.joinDate,
+              description: payload.description,
+              phoneNumber: payload.phoneNumber,
+              industry: payload.industry,
+              loc_name: payload.loc_name,
+              loc_address: payload.loc_address,
+              loc_latitude: payload.loc_address,
+              loc_url: payload.loc_url
+            },
+            {
+              where: {
+                id: parseInt(brandId),
+              },
+              returning: true,
+              plain: true,
+            }
+          ).then((result) => {
+            const temp = result[1];
+            return temp
+          })
+
+          return updatedBrand;
+        } catch (error) {
+          if (error.name === 'SequelizeUniqueConstraintError') {
+            throw new Error(`Brand of name ${payload.name} already exists.`);
+          } else {
+            logger.log({
+              level: "error",
+              message: `An error occured while updating brand for ${
+                context.merchant.id
+              } at ${new Date().toLocaleDateString()}`,
+            });s
+            throw error;
+          }
+        }
+      },
+
+      async deleteBrand(root, { brandId, storeId }, context) {
+        if (!context.merchant.id) {
+          throw new Error("Unauthenticated make sure you are logged in");
+        }
+
+        if (!brandId) {
+          throw new Error("Brand ID is requreid");
+        }
+
+        if (!storeId) {
+          throw new Error("Store Id id required");
+        }
+
+        const store = await getStore(Store, storeId, context.merchant.id);
+
+        if (!store) {
+          throw new Error("Unauthaurized operation");
+        }
+
+        try {
+          await Brand.destroy({
+            where: {
+              id: brandId,
+              storeId: store.id,
+            },
+          });
+        } catch (error) {
+          return "failed";
+        }
+        return "success";
+      },
+
       async addCategory(root, { category }, context) {
         const merchant = context.merchant;
         if (!merchant) {
@@ -3388,12 +3616,7 @@ function resolvers() {
           const id = await Product.update(
             {
               ...product,
-              name: payload.name,
-              price: payload.price,
-              isFeatured: payload.isFeatured,
-              isArchived: payload.isArchived,
-              categoryId: payload.categoryId,
-              storeId: payload.storeId,
+              ...payload,
             },
             {
               where: {
@@ -3510,6 +3733,10 @@ function resolvers() {
             include: [
               {
                 association: "images",
+              },
+              {
+                model: Brand,
+                as: 'brand'
               },
               {
                 association: "prodVariations",

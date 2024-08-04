@@ -77,9 +77,13 @@ const BillboardForm = ({ initialData }: Props) => {
       }
     }
 
-    mutation({ variables })
-    toast.success(toastMessage)
-    router.push(`/${params.storeId}/billboards`)
+    try{
+      mutation({ variables })
+      toast.success(toastMessage)
+      router.push(`/${params.storeId}/billboards`)
+    } catch(error){
+      toast.error("Something went wrong")
+    }
   }
 
   const onDelete = async () => {
@@ -136,7 +140,7 @@ const BillboardForm = ({ initialData }: Props) => {
                 <FormControl>
                   <ImageUpload
                     imageSize="w-[200px] mb-2 h-auto"
-                    value={field.value?.map((image) => image)}
+                    value={field?.value?.map((image) => image)}
                     disabled={upLoading || !!form.getValues("imageUrl")?.length}
                     onChange={(url) => {
                       field.onChange([...field.value, url])

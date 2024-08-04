@@ -7,6 +7,12 @@ query GetProducts($storeId: Int!, $categoryId: Int) {
     isArchived
     isFeatured
     updatedAt
+    description
+    stockCode
+    brand {
+      id
+      name
+    }
     images {
       __typename
       id
