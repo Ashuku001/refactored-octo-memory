@@ -1,0 +1,5 @@
+mutation DeleteMpesa($mpesaId: Int!, $storeId: Int!) {
+  deleteMpesa(mpesaId: $mpesaId, storeId: $storeId) {
+    response
+  }
+}

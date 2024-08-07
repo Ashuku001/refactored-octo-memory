@@ -17,7 +17,6 @@ import { Separator } from "@/components/ui/separator"
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import AlertModal from "@/components/modals/AlertModal"
-import {ImageUpload} from '@/components/appwrite/AppWriteImageUpload'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Textarea } from '@/components/ui/textarea'
 import { CustomFormLabel } from '@/components/ui/CustomFormLabel';
@@ -42,7 +41,6 @@ const formSchema = z.object({
 type BrandFormValue = z.infer<typeof formSchema>
 
 const BrandForm = ({ initialData }: Props) => {
-  const [fileObj, setFileObj] = useState<Models.File | null>(null)
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const params = useParams() // GET STORE ID

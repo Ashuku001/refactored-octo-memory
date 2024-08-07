@@ -23,31 +23,30 @@ type Props = {
 };
 
 type OrderItemType = { productId: number; price: number; quantity: number };
-
+type CheckoutProduct = {
+  id: number;
+  name: string;
+  price: number;
+  totalPrice: number;
+  quantity: number;
+}
+type ResponseType = {
+  products:CheckoutProduct[]
+}
 export async function POST(req: Request, { params: { storeId } }: Props) {
-  const { productIds } = await req.json();
+  let { products }: ResponseType= await req.json();
 
-  if (!productIds || productIds.length === 0) {
+  if (!products || products.length === 0) {
     return new NextResponse("Product ids are required", { status: 400 });
   }
 
-  // a query for products of the given ids
-  let { data: productIdsdata } = await getClient().query({
-    query: GetProductsOfIdsDocument,
-    variables: {
-      storeId: parseInt(storeId),
-      productsIds: productIds,
-    },
-  });
-
-  const products = productIdsdata.productsIds ?? [];
-
+  console.log(products)
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
   products.forEach((product) => {
     line_items.push({
-      quantity: 1,
-      price_data: {
+      quantity: product.quantity,
+      price_data: { 
         currency: "USD",
         product_data: {
           name: product!.name,

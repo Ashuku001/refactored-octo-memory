@@ -262,6 +262,7 @@ const typeDefinitions = `#graqhql
         merchant: Merchant
         billboards: [Billboard]
         products: [Product]
+        mpesa: MpesaSetting
         createdAt: Date!
         updatedAt: Date!
     }
@@ -567,6 +568,19 @@ const typeDefinitions = `#graqhql
         updatedAt: Date
     }
 
+    ################## TYPE PAYMENT ###############
+    type MpesaSetting {
+        id: Int
+        consumer_key: String!
+        consumer_secret: String!
+        pass_key: String!
+        business_shortcode: String!
+        account_reference: String!
+        transaction_desc: String!
+        store: Store
+        callback_url: String
+    }
+
     ##########################################################################
     type RootQuery {
         customers: [Customer] @auth
@@ -582,6 +596,7 @@ const typeDefinitions = `#graqhql
         
         stores: [Store] @auth
         store(storeId: Int):Store @auth
+        mpesa(storeId: Int!): MpesaSetting
         brand(brandId: Int!): Brand @auth
         brands(storeId: Int!): [Brand] @auth
         billboards(storeId: Int): [Billboard]
@@ -1030,6 +1045,17 @@ const typeDefinitions = `#graqhql
 
         customerLoyalty: LoyaltyInput
     }
+
+    input MpesaSettingInput {
+        consumer_key: String
+        consumer_secret: String
+        pass_key: String
+        business_shortcode: String
+        account_reference: String
+        transaction_desc: String
+        callback_url: String
+        storeId: Int
+    }
   
 
     type RootMutation {
@@ -1123,6 +1149,9 @@ const typeDefinitions = `#graqhql
         addCategory (
             category: CategoryInput!
         ): Category @ auth
+        addMpesa (
+            mpesa: MpesaSettingInput
+        ): MpesaSetting @auth
 
 
         addProduct (
@@ -1155,6 +1184,10 @@ const typeDefinitions = `#graqhql
             storeId: Int!
             payload: StoreInput!
         ): Store @auth
+        updateMpesa (
+            mpesaId: Int!
+            payload: MpesaSettingInput!
+        ): MpesaSetting @auth
         updateBrand (
             brandId: Int!
             payload: BrandInput!
@@ -1191,6 +1224,10 @@ const typeDefinitions = `#graqhql
 
         deleteStore (
             storeId: Int!
+        ): Response @auth
+        deleteMpesa (
+            storeId: Int!
+            mpesaId: Int!
         ): Response @auth
         deleteBrand (
             brandId: Int!

@@ -1,0 +1,12 @@
+query GetMpesa($storeId: Int!) {
+  mpesa(storeId: $storeId) {
+    id
+    consumer_key
+    consumer_secret
+    pass_key
+    business_shortcode
+    account_reference
+    transaction_desc
+    callback_url
+  }
+}

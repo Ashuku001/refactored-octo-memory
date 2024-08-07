@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.PromotionCustomer, {foreignKey: "storeId", as: 'promotionCustomers'})
       this.hasMany(models.Sale, {foreignKey: "storeId", as: "storeSales"})
       this.hasMany(models.Brand, {foreignKey: "storeId"})
+      this.hasOne(models.MpesaSetting, {foreignKey: "storeId", as: "mpesa"})
     }
   }
   Store.init({

@@ -1,0 +1,11 @@
+mutation UpdateMpesa($mpesaId: Int!, $payload: MpesaSettingInput!) {
+  updateMpesa(mpesaId: $mpesaId, payload: $payload) {
+    id
+    consumer_key
+    consumer_secret
+    pass_key
+    business_shortcode
+    account_reference
+    transaction_desc
+  }
+}

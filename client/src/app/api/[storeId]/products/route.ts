@@ -34,6 +34,8 @@ export async function GET(req: Request,  {params: {storeId }}: Props) {
         if(isFeatured){
             variables = {...variables, isFeatured: isFeatured as unknown as boolean}
         }
+        console.log(variables)
+
         const { data } = await getClient().query({
             query: GetProductsDocument,
             variables: variables

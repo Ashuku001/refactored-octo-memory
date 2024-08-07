@@ -5554,3 +5554,9 @@
 {"level":"error","message":"An error occured while creating brand for 2 at 04/08/2024"}
 {"level":"error","message":"An error occured while creating brand for 2 at 04/08/2024"}
 {"level":"error","message":"An error occured while creating brand for 2 at 04/08/2024"}
+{"level":"error","message":"[MPESA PAYMENT INITIATION ERROR], {message: Request failed with status code 404, data: [object Object]}"}
+{"level":"error","message":"[MPESA PAYMENT INITIATION ERROR], {message: Request failed with status code 404, data: [object Object]}"}
+{"level":"error","message":"[MPESA PAYMENT INITIATION ERROR], {message: Request failed with status code 404, data: [object Object]}"}
+{"level":"error","message":"update mpesa for 2 failed 06/08/2024"}
+{"level":"error","message":"update mpesa for 2 failed 06/08/2024"}
+{"level":"error","message":"update mpesa for 2 failed 06/08/2024"}

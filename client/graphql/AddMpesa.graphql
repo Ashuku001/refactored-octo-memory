@@ -1,0 +1,11 @@
+mutation AddMpesa($mpesa: MpesaSettingInput!) {
+  addMpesa(mpesa: $mpesa) {
+    id
+    consumer_key
+    consumer_secret
+    pass_key
+    business_shortcode
+    account_reference
+    transaction_desc
+  }
+}

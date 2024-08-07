@@ -4,7 +4,7 @@ require("dotenv").config();
 const { sendWhatsAppMessage } = require("../../utils/messageHelper.js");
 const bcrypt = require("bcrypt");
 const JWT = require("jsonwebtoken");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const { setCookie } = require("./helpers/setCookies.js");
 const { withFilter, PubSub } = require("graphql-subscriptions");
 const {
@@ -27,6 +27,7 @@ const {
   getCreateChatForMessage,
 } = require("./helpers/GetCreateChatToAddMessage.js");
 const { tempMarketPerformance } = require("./helpers/tempMarketPerformance.js");
+const { level } = require("winston");
 // const { pubsub } = require("../subscriptions/redisSetup.js");
 const pubsub = new PubSub();
 
@@ -70,7 +71,8 @@ function resolvers() {
 
     Promotion,
     Coupon,
-    Sale
+    Sale,
+    MpesaSetting
   } = db.models;
 
   const resolvers = {
@@ -827,18 +829,26 @@ function resolvers() {
             throw new Error("Could not find the store");
           }
           return store;
-        } else {
-          const store = await Store.findAll({
-            limit: 1,
-            where: {
-              merchantId: context.merchant.id,
-            },
-            order: [["createdAt", "DESC"]],
-          }).then((stores) => {
-            return stores[0];
-          });
+        }
+      },
 
-          return store;
+      async mpesa(root, { storeId }, context) {
+        if(!storeId){
+          throw new Error("Store id is required.")
+        }
+        try{
+
+          return await MpesaSetting.findOne({
+            where: {
+              storeId: storeId
+            }
+          })
+        } catch {
+          logger.log({
+            level: "error",
+            message: `Could not retrieve mpesa settings for store ${storeId}`
+          })
+          throw new Error("Something went wrong")
         }
       },
 
@@ -2685,6 +2695,216 @@ function resolvers() {
         }
       },
 
+      async updateStore(root, { storeId, payload }, context) {
+        if (!context.merchant) {
+          throw new Error("Unauthenticated please make sure you are logged in");
+        }
+
+        if (!storeId) {
+          throw new Error(
+            "Unathorized operation store Id and the new name required"
+          );
+        }
+
+        let store = await getStore(Store, storeId, context.merchant.id);
+
+        if (!store) {
+          throw new Error("Unathorized operation could not find the store");
+        }
+
+        const duplicateStore = await getDupStore(
+          Store,
+          payload.name,
+          context.merchant.id
+        );
+
+        if (duplicateStore) {
+          if (store.id !== duplicateStore.id) {
+            throw new Error(`Store of name "${payload.name}" already exists.`);
+          }
+        }
+
+        try {
+          const id = await Store.update(
+            {
+              ...store,
+              name: payload.name,
+            },
+            {
+              where: {
+                id: parseInt(storeId),
+                merchantId: context.merchant.id,
+              },
+            }
+          );
+
+          if (id[0] === 0) {
+            throw new Error("Update failed");
+          }
+
+          store = await getStore(Store, storeId, context.merchant.id);
+        } catch (error) {
+          console.log("[UPDATING STORE ERROR]", error);
+          if (error.validatorKey === "not_unique") {
+            throw new Error(
+              `A store of the give name ${payload.name} already exists`
+            );
+          }
+          logger.log({
+            level: "error",
+            message: `update store for ${
+              context.merchant.id
+            } failed ${new Date().toLocaleDateString()}`,
+          });
+        }
+
+        return store;
+      },
+
+      async deleteStore(root, { storeId }, context) {
+        if (!context.merchant) {
+          throw new Error("Unauthorized make sure you are logged in.");
+        }
+
+        const store = await getStore(Store, storeId, context.merchant.id);
+
+        if (!store) {
+          throw new Error("Unauthorized operation");
+        }
+        try {
+          const store = await Store.destroy({
+            where: {
+              id: storeId,
+              merchantId: context.merchant.id,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+          return false;
+        }
+        return true;
+      },
+
+      async addMpesa(root, { mpesa }, context) {
+        const merchant = context.merchant;
+        
+        if(!merchant)
+          throw new Error("Unathenticated please make sure you are logged in.");
+
+        const store = await getStore(Store, mpesa.storeId, merchant.id)
+        if(!store){
+          throw new Error("Unauthorized operation.")
+        }
+
+        const exisistingMpesa = await MpesaSetting.findOne({
+          where: {
+            storeId: mpesa.storeId
+          }
+        })
+        if(exisistingMpesa)
+          throw new Error("A store can only have one Mpesa payment service. ${store.name} has an existing payment service. Update or delete.");
+      
+        try {
+          const newMpesa = await MpesaSetting.create({
+            ...mpesa,
+          })
+  
+          return newMpesa;
+        } catch {
+          logger.log({
+            level: "error",
+            message: `Failed to create mpesa for ${merchant.id}`
+          })
+          throw new Error ("Failed to create mpesa settings.")
+        }
+      },
+
+      async updateMpesa(root, { mpesaId, payload }, context) {
+        if (!context.merchant) {
+          throw new Error("Unauthenticated please make sure you are logged in");
+        }
+        if (!payload.storeId) {
+          throw new Error(
+            "Store Id is required"
+          );
+        }
+        let store = await getStore(Store, payload.storeId, context.merchant.id);
+
+        if (!store) {
+          throw new Error("Unathorized operation could not find the store");
+        }
+
+
+        let mpesa = MpesaSetting.findOne({
+          where: {
+            id: mpesaId,
+            storeId: payload.storeId
+          }
+        })
+
+        if(!mpesa){
+          throw new Error("Could of find Mpesa settings")
+        }
+
+        try {
+          const updatedMpesa = await MpesaSetting.update(
+            {
+              ...mpesa,
+              consumer_key: payload.consumer_key,
+              consumer_secret: payload.consumer_secret,
+              pass_key: payload.pass_key,
+              business_shortcode: payload.business_shortcode,
+              account_reference: payload.account_reference,
+              transaction_desc: payload.transaction_desc,
+              callBack_url: payload.callBack_url,
+            },
+            {
+              where: {
+                id: parseInt(mpesaId),
+                storeId: payload.storeId,
+              },
+              returning: true,
+              plain: true,
+            }
+          ).then((result) => {
+            return result[1]
+          });
+          return updatedMpesa
+        } catch (error) {
+          logger.log({
+            level: "error",
+            message: `update mpesa for ${
+              context.merchant.id
+            } failed ${new Date().toLocaleDateString()}`,
+          });
+        }
+      },
+
+      async deleteMpesa(root, { mpesaId, storeId }, context) {
+        if (!context.merchant) {
+          throw new Error("Unauthorized make sure you are logged in.");
+        }
+
+        const store = await getStore(Store, storeId, context.merchant.id);
+
+        if (!store) {
+          throw new Error("Unauthorized operation");
+        }
+
+
+        try {
+          await MpesaSetting.destroy({
+            where: {
+              storeId: storeId,
+              id: mpesaId,
+            },
+          });
+        } catch (error) {
+          return "failed";
+        }
+        return "success";
+      },
+
       async updateChatStatus(root, { participants, payload }, context) {
         // from webhook
         let merchant = null;
@@ -2875,96 +3095,7 @@ function resolvers() {
         }
       },
 
-      async updateStore(root, { storeId, payload }, context) {
-        if (!context.merchant) {
-          throw new Error("Unauthenticated please make sure you are logged in");
-        }
-
-        if (!storeId) {
-          throw new Error(
-            "Unathorized operation store Id and the new name required"
-          );
-        }
-
-        let store = await getStore(Store, storeId, context.merchant.id);
-
-        if (!store) {
-          throw new Error("Unathorized operation could not find the store");
-        }
-
-        const duplicateStore = await getDupStore(
-          Store,
-          payload.name,
-          context.merchant.id
-        );
-
-        if (duplicateStore) {
-          if (store.id !== duplicateStore.id) {
-            throw new Error(`Store of name "${payload.name}" already exists.`);
-          }
-        }
-
-        try {
-          const id = await Store.update(
-            {
-              ...store,
-              name: payload.name,
-            },
-            {
-              where: {
-                id: parseInt(storeId),
-                merchantId: context.merchant.id,
-              },
-            }
-          );
-
-          if (id[0] === 0) {
-            throw new Error("Update failed");
-          }
-
-          store = await getStore(Store, storeId, context.merchant.id);
-        } catch (error) {
-          console.log("[UPDATING STORE ERROR]", error);
-          if (error.validatorKey === "not_unique") {
-            throw new Error(
-              `A store of the give name ${payload.name} already exists`
-            );
-          }
-          logger.log({
-            level: "error",
-            message: `update store for ${
-              context.merchant.id
-            } failed ${new Date().toLocaleDateString()}`,
-          });
-        }
-
-        return store;
-      },
-
-      async deleteStore(root, { storeId }, context) {
-        if (!context.merchant) {
-          throw new Error("Unauthorized make sure you are logged in.");
-        }
-
-        const store = await getStore(Store, storeId, context.merchant.id);
-
-        if (!store) {
-          throw new Error("Unauthorized operation");
-        }
-        try {
-          const store = await Store.destroy({
-            where: {
-              id: storeId,
-              merchantId: context.merchant.id,
-            },
-          });
-        } catch (error) {
-          console.log(error);
-          return false;
-        }
-        return true;
-      },
-
+      
       async addBillboard(root, { billboard }, context) {
         const merchant = context.merchant;
         if (!merchant) {
