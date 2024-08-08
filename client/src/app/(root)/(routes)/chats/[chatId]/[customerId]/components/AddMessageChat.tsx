@@ -62,7 +62,6 @@ function AddMessageChat({ initialData, customerId }: Props) {
             // @ts-ignore
             update: (store, { data: { addTextMessage } }) => {
                 let data = store.readQuery({query: GetChatDocument, variables: {chatId: chatId} });
-                console.log(addTextMessage)
                 const newMessage = {...addTextMessage,
                     context :  null, 
                     document :  null, 

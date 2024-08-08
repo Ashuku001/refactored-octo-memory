@@ -21,7 +21,7 @@ const CategoryClient = ({ categories }: Props) => {
     const params = useParams()
     return (
         <div className='h-full'>
-            <div className="flex items-center justify-between px-2">
+            <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50  px-2  py-1">
                 <Heading
                     title={`Categories (${categories?.length})`}
                     description="Manage categories for your store"

@@ -8,8 +8,8 @@ import { useMutation } from '@apollo/client'
 import { toast } from "react-hot-toast"
 import { useRouter, useParams } from 'next/navigation'
 
-import { UpdateBillboardDocument, DeleteBillboardDocument, AddBillboardDocument } from "@/graphql"
-
+import { UpdateBillboardDocument, DeleteBillboardDocument, AddBillboardDocument, GetBillboardsDocument } from "@/graphql"
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { StoreType } from "@/types"
 import Heading from "@/components/ui/Heading"
 import { Button } from "@/components/ui/button"
@@ -38,7 +38,22 @@ const BillboardForm = ({ initialData }: Props) => {
   const router = useRouter()
   const params = useParams() // GET STORE ID
 
-  const [updateBillboard, { loading: upLoading, error: upError, data: upData }] = useMutation(UpdateBillboardDocument)
+  const [updateBillboard, { loading: upLoading, error: upError, data: upData }] = useMutation(UpdateBillboardDocument,
+    //   {
+    //   update(cache, { data: { updateItem } }) {
+    //     const data = cache.readQuery({ query: GetBillboardsDocument, variables: { storeId: parseInt(params.storeId) } });
+    //     console.log(">>>..", data)
+    //     const updatedItems = billboards.map(item =>
+    //       item.id === updateItem.id ? updateItem : item
+    //     );
+    //     cache.writeQuery({
+    //       query: GetBillboardsDocument,
+    //       data: { billboards: updatedItems },
+    //       variables: { storeId: parseInt(params.storeId) } 
+    //     });
+    //   },
+    // }
+  )
   const [addBillboard, { loading: creLoading, error: creError, data: creData }] = useMutation(AddBillboardDocument)
   const [deleteBillboard, { loading: delLoading, error: delError }] = useMutation(DeleteBillboardDocument)
 
@@ -48,10 +63,9 @@ const BillboardForm = ({ initialData }: Props) => {
   const action = initialData ? "Save changes" : "Create"
   const mutation = initialData ? updateBillboard : addBillboard
 
-
   const form = useForm<BillboardFormvalue>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: {...initialData, imageUrl: initialData ? [initialData?.imageUrl ] : []} || {
       label: '',
       imageUrl: []
     }
@@ -78,10 +92,11 @@ const BillboardForm = ({ initialData }: Props) => {
     }
 
     try{
-      mutation({ variables })
+      await mutation({ variables })
       toast.success(toastMessage)
       router.push(`/${params.storeId}/billboards`)
     } catch(error){
+      console.log(error)
       toast.error("Something went wrong")
     }
   }
@@ -102,14 +117,14 @@ const BillboardForm = ({ initialData }: Props) => {
 }
 
   return (
-    <>
+    <div className='h-full'>
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={delLoading}
       />
-      <div className="flex items-center justify-between w-full">
+      <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50   px-2  py-2">
         <Heading
           title={title}
           description={description}
@@ -125,7 +140,8 @@ const BillboardForm = ({ initialData }: Props) => {
           </Button>
         }
       </div>
-      <Separator />
+      <Separator className=""/>
+      <ScrollArea className="h-full w-full px-2">
       <Form {...form}>
         <form 
           onSubmit={form.handleSubmit(onSubmit)}
@@ -171,7 +187,8 @@ const BillboardForm = ({ initialData }: Props) => {
         </form>
       </Form>
       <Separator />
-    </>
+      </ScrollArea>
+    </div>
   )
 }
 

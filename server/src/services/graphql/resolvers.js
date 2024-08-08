@@ -2856,7 +2856,7 @@ function resolvers() {
               business_shortcode: payload.business_shortcode,
               account_reference: payload.account_reference,
               transaction_desc: payload.transaction_desc,
-              callBack_url: payload.callBack_url,
+              callback_url: payload.callback_url,
             },
             {
               where: {
@@ -3286,7 +3286,7 @@ function resolvers() {
             "Unauthenticated make sure you are logged in to add a brand"
           );
         }
-        if  (!brand.storeId) {
+        if(!brand.storeId) {
           throw new Error("Store Id is required");
         }
 
@@ -3326,7 +3326,7 @@ function resolvers() {
               message: `An error occured while creating brand for ${
                 merchant.id
               } at ${new Date().toLocaleDateString()}`,
-            });s
+            });
             throw error;
           }
         }

@@ -33,8 +33,20 @@ module.exports = {
       loc_latitude: {
         type: Sequelize.STRING
       },
+      loc_longitude: {
+        type: Sequelize.STRING
+      },
       loc_url: {
         type: Sequelize.STRING
+      },
+      storeId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "Stores",
+          key: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
       },
       createdAt: {
         allowNull: false,

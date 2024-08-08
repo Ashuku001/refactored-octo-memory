@@ -3,14 +3,16 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return Promise.all([
-      queryInterface.addColumn("Messages", "adId", {
+    // return Promise.all([
+      await queryInterface.addColumn("Messages", "adId", {
         type: Sequelize.INTEGER,
-      }),
-      queryInterface.addColumn("Messages", "isAd", {
+      })
+
+      await queryInterface.addColumn("Messages", "isAd", {
         type: Sequelize.BOOLEAN,
-      }),
-      queryInterface.addConstraint("Messages", {
+      })
+      
+      await queryInterface.addConstraint("Messages", {
         fields: ["adId"],
         type: "foreign key",
         name: "fk_ad_id",
@@ -20,8 +22,8 @@ module.exports = {
         },
         onDelete: "cascade",
         onUpdate: "cascade",
-      }),
-    ]);
+      })
+    // ]);
   },
 
   async down(queryInterface, Sequelize) {

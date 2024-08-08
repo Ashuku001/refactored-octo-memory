@@ -24,7 +24,7 @@ const page = async ({ params: { billboardId } }: Props) => {
 
 
   return (
-    <div className="flex-1 space-y-4 pt-1 px-2">
+    <div className="flex-1 space-y-4 pt-1 h-full">
       <BillboardForm initialData={billboard} />
     </div>
   )

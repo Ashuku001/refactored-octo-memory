@@ -21,7 +21,7 @@ const BillboardClient = ({ billboards }: Props) => {
     const params = useParams()
     return (
         <div className='h-full'>
-            <div className="flex items-center justify-between px-2">
+            <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50 rounded-md  px-2  py-1">
                 <Heading
                     title={`Billboards (${billboards?.length})`}
                     description="Manage billbords for your store"

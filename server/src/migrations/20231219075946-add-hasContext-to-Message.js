@@ -3,17 +3,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await Promise.all([
-      queryInterface.addColumn("Messages", "hasContext", {
+    // await Promise.all([
+      await queryInterface.addColumn("Messages", "hasContext", {
         type: Sequelize.BOOLEAN,
-      }),
-      queryInterface.addColumn("Messages", "contextId", {
+      })
+      
+      await queryInterface.addColumn("Messages", "contextId", {
         type: Sequelize.INTEGER,
-      }),
-    ])
+      })
+    // ])
 
-    await Promise.all([
-      queryInterface.addConstraint("Messages", {
+    // await Promise.all([
+      await queryInterface.addConstraint("Messages", {
         fields: ["contextId"],
         type: "foreign key",
         name: "fk_messageContext_id",
@@ -23,8 +24,8 @@ module.exports = {
         },
         onDelete: "SET NULL",
         onUpdate: "SET NULL",
-      }),
-    ])
+      })
+    // ])
 
   },
 

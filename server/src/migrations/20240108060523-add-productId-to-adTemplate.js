@@ -3,11 +3,10 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    return Promise.all([
-      queryInterface.addColumn("AdTemplates", "productId", {
+      await queryInterface.addColumn("AdTemplates", "productId", {
         type: Sequelize.INTEGER,
       }),
-      queryInterface.addConstraint("AdTemplates", {
+      await queryInterface.addConstraint("AdTemplates", {
         fields: ["productId"],
         type: "foreign key",
         name: "fk_product_id",
@@ -16,7 +15,6 @@ module.exports = {
           field: "id",
         },
       })
-    ])
   },
 
   async down (queryInterface, Sequelize) {

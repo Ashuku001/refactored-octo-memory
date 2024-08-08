@@ -22,6 +22,7 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { CategoryType } from '@/types'
 import { BillboardType } from "@/types"
 import { CustomFormLabel } from '@/components/ui/CustomFormLabel'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 
 type Props = {
@@ -80,7 +81,7 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
     }
 
     try{
-      mutation({ variables })
+      await mutation({ variables })
       toast.success(toastMessage)
       router.push(`/${params.storeId}/categories`)
     } catch(error){
@@ -105,14 +106,14 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
   }
 
   return (
-    <>
+    <div className="h-full">
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={delLoading}
       />
-      <div className="flex items-center justify-between w-full">
+      <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50  px-2  py-1">
         <Heading
           title={title}
           description={description}
@@ -129,60 +130,62 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
         }
       </div>
       <Separator />
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className='grid grid-cols-3 gap-8 space-y-2 items-end'>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <CustomFormLabel title='Name' variant='required' description=''/>
-                  <FormControl>
-                    <Input disabled={upLoading} placeholder='Category name' {...field} value={field.value} onValueChange={field.onChange} className="border-none focus:outline-none" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="billboard"
-              render={({ field }) => (
-                <FormItem>
-                  <CustomFormLabel title='Billboard' variant='required' description=''/>
-                  <Select
-                    disabled={upLoading}
-                    onValueChange={field.onChange}
-                    value={field.value}
-                  >
-                    <FormControl >
-                      <SelectTrigger className='border-none ring-0 focus:ring-0'>
-                        <SelectValue
-                          placeholder="Select billboard"
-                        />
-                      </SelectTrigger>
+      <ScrollArea className='h-full px-2'>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className='grid grid-cols-3 gap-8 space-y-2 items-end'>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <CustomFormLabel title='Name' variant='required' description=''/>
+                    <FormControl>
+                      <Input disabled={upLoading} placeholder='Category name' {...field} value={field.value} onValueChange={field.onChange} className="border-none focus:outline-none" />
                     </FormControl>
-                    <SelectContent>
-                      {billboards?.map((b) => (
-                        <SelectItem
-                          key={b.id}
-                          value={b.label}
-                        >
-                          {b.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <Button disabled={upLoading} className='ml-auto mt-2' type='submit'>{action}</Button>
-        </form>
-      </Form>
-      <Separator />
-    </>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="billboard"
+                render={({ field }) => (
+                  <FormItem>
+                    <CustomFormLabel title='Billboard' variant='required' description=''/>
+                    <Select
+                      disabled={upLoading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl >
+                        <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                          <SelectValue
+                            placeholder="Select billboard"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {billboards?.map((b) => (
+                          <SelectItem
+                            key={b.id}
+                            value={b.label}
+                          >
+                            {b.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button disabled={upLoading} className='ml-auto mt-2' type='submit'>{action}</Button>
+          </form>
+        </Form>
+        <Separator />
+      </ScrollArea>
+    </div>
   )
 }
 

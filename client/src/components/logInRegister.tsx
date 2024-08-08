@@ -1,5 +1,5 @@
 'use client'
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import secureLocalStorage from 'react-secure-storage';
 import {setCookie} from 'cookies-next'
@@ -35,13 +35,14 @@ export const LandingPage = () => {
     )
 }
 
-
-const LoginForm = () => {
+type LoginProps = {
+    showLogin: boolean
+}
+const LoginForm = ({showLogin}: LoginProps) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false)
     const [loginMerchant, { data, loading, error }] = useMutation(LoginMerchantDocument)
-
 
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -63,6 +64,10 @@ const LoginForm = () => {
         setPassword('')
     }
 
+    useEffect(() => {
+        setUsername('')
+        setPassword('')
+    }, [showLogin, setUsername, setPassword])
 
     return (
         <div className='flex flex-col w-full'>
@@ -91,7 +96,7 @@ const LoginForm = () => {
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-0"
                         >
-                            {showPassword ? <EyeOffIcon size="20"/> : <EyeIcon size={"20"}/>}
+                            {showPassword ? <EyeIcon size={"20"}/> : <EyeOffIcon size="20"/> }
                         </Button>
                     </div>
                     <FacebookEmbeddedSignup />
@@ -103,7 +108,11 @@ const LoginForm = () => {
     )
 }
 
-const RegisterForm = () => {
+type RegisterProps = {
+    showLogin: boolean
+}
+
+const RegisterForm = ({showLogin}: RegisterProps) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [whatsapp_phone_number, setWhatsapp_phone_number] = useState('')
@@ -130,6 +139,11 @@ const RegisterForm = () => {
         setPassword('')
         setWhatsapp_phone_number('')
     }
+
+    useEffect(() => {
+        setUsername('')
+        setPassword('')
+    },[showLogin, setUsername, setPassword])
 
     return (
     <div className='w-full'>
@@ -190,11 +204,11 @@ const LoginRegisterForm = () => {
             {showLogin
                 ?
                 <div className='text-center w-full'>
-                    <LoginForm />
+                    <LoginForm showLogin={showLogin} />
                     <Button className='text-blue-400' onClick={e => setShowLogin(false)} variant={'ghost'}>Or sign up </Button>
                 </div>
                 : <div className='text-center w-full'>
-                    <RegisterForm />
+                    <RegisterForm showLogin={showLogin}/>
                     <Button onClick={e => setShowLogin(true)} className='text-blue-400' variant={'ghost'}>Or login</Button>
                 </div>
             }

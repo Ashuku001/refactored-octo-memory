@@ -41,7 +41,7 @@ const page = async ({ params: { storeId, categoryId } }: Props) => {
 
 
   return (
-    <div className="flex-1 space-y-4 pt-1 px-2">
+    <div className="flex-1 space-y-4 pt-1">
       <CategoryForm initialData={category} billboards={formattedBillboards} />
     </div>
   )

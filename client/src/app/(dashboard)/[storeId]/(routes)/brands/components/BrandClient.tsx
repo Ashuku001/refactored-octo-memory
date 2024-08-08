@@ -21,7 +21,7 @@ const BrandClient = ({ brands }: Props) => {
     const params = useParams()
     return (
         <div className='h-full'>
-            <div className="flex items-center justify-between px-2">
+            <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50 rounded-md  px-2  py-1">
                 <Heading
                     title={`Brands (${brands?.length})`}
                     description="Manage brands for your store"

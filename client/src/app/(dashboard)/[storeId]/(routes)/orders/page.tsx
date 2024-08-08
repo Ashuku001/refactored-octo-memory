@@ -25,7 +25,7 @@ async function OrdersPage({ params: { storeId } }: Props) {
       isPaid: order?.isPaid,
       phone: order?.phone,
       orderID: order?.orderID,
-      name: !(order?.customerOrder?.first_name && order?.customerOrder?.last_name) ? undefined : (order?.customerOrder?.first_name ?? '').concat(` ${order?.customerOrder?.last_name}` ?? ''),
+      name: !(order?.customerOrder?.first_name && order?.customerOrder?.last_name) ? undefined : (order?.customerOrder?.first_name ?? '').concat(` ${order?.customerOrder?.last_name ?? ''} ` ),
       address: order?.address,
       products: order?.orderItems?.map((orderItem) => orderItem?.orderProduct?.name).join(', '),
       orderItems: order?.orderItems?.reduce((acc, orderItem) => {
