@@ -270,11 +270,12 @@ const typeDefinitions = `#graqhql
         id: Int!
         name: String!
         joinDate: Date
-        description: String!
-        phoneNumber: String!
-        industry: String!
-        loc_name: String!
-        loc_address: String!
+        description: String
+        phoneNumber: String
+        email: String
+        industry: String
+        loc_name: String
+        loc_address: String
         loc_latitude: String
         loc_longitude: String
         loc_url: String
@@ -581,6 +582,14 @@ const typeDefinitions = `#graqhql
         callback_url: String
     }
 
+    type StripeSetting {
+        id: Int!
+        api_key: String!
+        webhook_secret: String!
+        callback_url: String!
+        storeId: Store
+    }
+
     ##########################################################################
     type RootQuery {
         customers: [Customer] @auth
@@ -597,6 +606,7 @@ const typeDefinitions = `#graqhql
         stores: [Store] @auth
         store(storeId: Int):Store @auth
         mpesa(storeId: Int!): MpesaSetting
+        stripe(storeId: Int!): StripeSetting
         brand(brandId: Int!): Brand @auth
         brands(storeId: Int!): [Brand] @auth
         billboards(storeId: Int): [Billboard]
@@ -851,7 +861,8 @@ const typeDefinitions = `#graqhql
         joinDate: Date!
         description: String!
         phoneNumber: String
-        industry: String!
+        email: String
+        industry: String
         loc_name: String!
         loc_address: String!
         loc_latitude: String
@@ -1056,6 +1067,13 @@ const typeDefinitions = `#graqhql
         callback_url: String
         storeId: Int
     }
+
+    input StripeSettingInput {
+        api_key: String
+        webhook_secret: String
+        callback_url: String
+        storeId: Int!
+    }
   
 
     type RootMutation {
@@ -1150,8 +1168,11 @@ const typeDefinitions = `#graqhql
             category: CategoryInput!
         ): Category @ auth
         addMpesa (
-            mpesa: MpesaSettingInput
+            mpesa: MpesaSettingInput!
         ): MpesaSetting @auth
+        addStripe (
+            stripe: StripeSettingInput!
+        ): StripeSetting @auth
 
 
         addProduct (
@@ -1188,6 +1209,10 @@ const typeDefinitions = `#graqhql
             mpesaId: Int!
             payload: MpesaSettingInput!
         ): MpesaSetting @auth
+        updateStripe (
+            stripeId: Int!
+            payload: StripeSettingInput!
+        ): StripeSetting @auth
         updateBrand (
             brandId: Int!
             payload: BrandInput!
@@ -1228,6 +1253,10 @@ const typeDefinitions = `#graqhql
         deleteMpesa (
             storeId: Int!
             mpesaId: Int!
+        ): Response @auth
+        deleteStripe (
+            storeId: Int!
+            stripeId: Int!
         ): Response @auth
         deleteBrand (
             brandId: Int!

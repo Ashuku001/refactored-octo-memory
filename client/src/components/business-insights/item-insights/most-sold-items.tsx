@@ -27,7 +27,6 @@ export const MostSold = ({base_url, storeId}: MostSoldProps) => {
 
     fetchImage();
   }, [base_url, storeId])
-  console.log("THE RESPONSE", imageUrl)
   return(
     <div className="flex items-center justify-center">
       {imageUrl 

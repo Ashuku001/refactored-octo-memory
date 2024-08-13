@@ -4,6 +4,7 @@ import {Home} from './components/Home';
 import { UserToUserTrain } from './components/UserToUser';
 import { ItemToItemTrain } from './components/ItemToItem';
 import { KNNTrain } from './components/KNN';
+import secureLocalStorage from 'react-secure-storage';
 
 type Props = {
   params: {
@@ -12,6 +13,7 @@ type Props = {
 }
 
 function page({params: {storeId}}: Props) {
+  const merchantId = secureLocalStorage.getItem('merchantId')
   const tabs = [
     {
       key: 1,
@@ -49,12 +51,12 @@ function page({params: {storeId}}: Props) {
             {tabs?.map((tab, i) => (
                 <TabsContent key={i} value={tab.head} className={'flex-1 h-full'}>
                     {tab.key == 1 && <Home />}
-                    {tab.key == 2 && <UserToUserTrain storeId={storeId}/>}
-                    {tab.key == 3 && <ItemToItemTrain storeId={storeId}/>}
-                    {tab.key == 4 && <KNNTrain storeId={storeId}/>}
+                    {tab.key == 2 && <UserToUserTrain storeId={storeId} merchantId={merchantId as string}/>}
+                    {tab.key == 3 && <ItemToItemTrain storeId={storeId} merchantId={merchantId as string}/>}
+                    {tab.key == 4 && <KNNTrain storeId={storeId} merchantId={merchantId as string}/>}
                 </TabsContent>
             ))}
-            <div className="pb-20"/>
+            <div className='mb-20'/>
         </ScrollArea>
     </Tabs>
   </div>);

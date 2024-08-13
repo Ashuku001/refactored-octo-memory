@@ -9,6 +9,7 @@ import { ModalProvider } from '@/providers/modalProvider'
 import ToastProvider from '@/providers/ToastProvider'
 import { Separator } from '@/components/ui/separator'
 import { Toaster } from "@/components/ui/sonner"
+import { RecommendationModal } from "@/components/modals/RecommendationModal";
 
 export const dynamic = 'force-dynamic'
 
@@ -47,6 +48,7 @@ export default function RootLayout({
                       <ToastProvider />
                       <Toaster />
                       <ModalProvider />
+                      <RecommendationModal />
                   </main>
               </AuthGuard>
             </ApolloWrapper>

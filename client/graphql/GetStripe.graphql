@@ -1,0 +1,8 @@
+query GetStripe($storeId: Int!){
+    stripe(storeId: $storeId){
+        id
+        api_key
+        webhook_secret
+        callback_url
+    }
+}

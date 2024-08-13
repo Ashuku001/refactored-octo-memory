@@ -19,6 +19,7 @@ import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@
 import { SimilarProducts } from "../../components/SimilarProducts";
 import { TargetProduct } from "../../components/TargetProduct";
 import { CustomFormLabel } from "@/components/ui/CustomFormLabel";
+import secureLocalStorage from 'react-secure-storage';
 
 type TrainProps = {
   storeId: string;
@@ -27,11 +28,12 @@ type TrainProps = {
 export const Train = ({storeId}: TrainProps) => {
     const [training, setTraining] = useState(false)
     const baseUrl = "/memory/content/tfidf/train"
+    const merchantId = secureLocalStorage.getItem('merchantId')
 
     const onTrain = async () => {
       setTraining(true)
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${2}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${merchantId}`, {
           method: 'GET', // Assuming a GET request (adjust if necessary)
         });
     
@@ -56,17 +58,19 @@ export const Train = ({storeId}: TrainProps) => {
           description={"This model processes product description and finds similar products based on description. Press Train button to train the model."}
           btnTitle={"Train content filter model"}
         />
-        <TestRecommendation storeId={storeId}/>
+        <TestRecommendation storeId={storeId} merchantId={merchantId}/>
       </div>
     );
 };
 
 type TestRecommendationProps = {
   storeId: string;
+  merchantId: string;
 }
 
 export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
   const [searchString, setSearchString] = useState("")
+  const merchantId = secureLocalStorage.getItem('merchantId')
   const [loading, setLoading] = useState(false)
   const [formattedProducts, setFormattedProducts] = useState<SimilarProductFormatted[] | null>(null)
   const [product, setProduct] = useState<ProductSearchQuery["productSearch"] | null>(null)
@@ -89,7 +93,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     const onPredict = async (productId: number, similarity: string) => {
       setLoading(true)
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${2}&productId=${productId}&similarity=${similarity}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${merchantId}&productId=${productId}&similarity=${similarity}`, {
           method: 'GET', // Assuming a GET request (adjust if necessary)
         });
     
@@ -148,10 +152,10 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
                     defaultValue="Cosine"
                   >
                     <SelectTrigger className=' focus:ring-0 w-[350px]'>
-                    <SelectValue
-                        placeholder="Select similarity"
-                        className="font-bold"
-                    />
+                      <SelectValue
+                          placeholder="Select similarity"
+                          className="font-bold"
+                      />
                     </SelectTrigger>
                     <SelectContent>
                         {similarityOptions?.map((option) => (

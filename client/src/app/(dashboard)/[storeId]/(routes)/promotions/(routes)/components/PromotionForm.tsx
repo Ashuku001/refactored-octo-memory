@@ -42,7 +42,7 @@ export function PromotionForm({type}: Props) {
               onConfirm={onDelete}
               loading={delLoading}
           />
-          <div className='flex w-full justify-end bg-muted/80 dark:bg-muted/50 rounded-md   px-2 py-1'>
+          <div className='flex w-full justify-end bg-muted/80 dark:bg-muted/50    px-2 py-1'>
           <div className="flex items-center space-x-5">
             <Button 
               variant={'ghost'}

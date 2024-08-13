@@ -72,7 +72,8 @@ function resolvers() {
     Promotion,
     Coupon,
     Sale,
-    MpesaSetting
+    MpesaSetting,
+    StripeSetting
   } = db.models;
 
   const resolvers = {
@@ -301,6 +302,8 @@ function resolvers() {
             customers,
           };
         }
+
+        console.log(">>>>>>>>>>>>>>>>", context.merchant.id)
 
         var skip = 0;
         if (page && limit) {
@@ -847,6 +850,26 @@ function resolvers() {
           logger.log({
             level: "error",
             message: `Could not retrieve mpesa settings for store ${storeId}`
+          })
+          throw new Error("Something went wrong")
+        }
+      },
+
+      async stripe(root, { storeId }, context) {
+        if(!storeId){
+          throw new Error("Store id is required.")
+        }
+        try{
+
+          return await StripeSetting.findOne({
+            where: {
+              storeId: storeId
+            }
+          })
+        } catch {
+          logger.log({
+            level: "error",
+            message: `Could not retrieve stripe settings for store ${storeId}`
           })
           throw new Error("Something went wrong")
         }
@@ -2802,7 +2825,7 @@ function resolvers() {
           }
         })
         if(exisistingMpesa)
-          throw new Error("A store can only have one Mpesa payment service. ${store.name} has an existing payment service. Update or delete.");
+          throw new Error(`A store can only have one Mpesa payment service. ${store.name} has an existing mpesa payment service. Update or delete.`);
       
         try {
           const newMpesa = await MpesaSetting.create({
@@ -2835,7 +2858,7 @@ function resolvers() {
         }
 
 
-        let mpesa = MpesaSetting.findOne({
+        let mpesa = await MpesaSetting.findOne({
           where: {
             id: mpesaId,
             storeId: payload.storeId
@@ -2843,7 +2866,7 @@ function resolvers() {
         })
 
         if(!mpesa){
-          throw new Error("Could of find Mpesa settings")
+          throw new Error("Could not find Mpesa settings")
         }
 
         try {
@@ -2897,6 +2920,123 @@ function resolvers() {
             where: {
               storeId: storeId,
               id: mpesaId,
+            },
+          });
+        } catch (error) {
+          return "failed";
+        }
+        return "success";
+      },
+
+      async addStripe(root, { stripe }, context) {
+        const merchant = context.merchant;
+        
+        if(!merchant)
+          throw new Error("Unathenticated please make sure you are logged in.");
+
+        const store = await getStore(Store, stripe.storeId, merchant.id)
+        if(!store){
+          throw new Error("Unauthorized operation.")
+        }
+
+        const existingStripe = await StripeSetting.findOne({
+          where: {
+            storeId: stripe.storeId
+          }
+        })
+        if(existingStripe)
+          throw new Error(`A store can only have one Stripe payment service. ${store.name} has an existing stripe payment service. Update or delete.`);
+      
+        try {
+          const newStripe = await StripeSetting.create({
+            ...stripe,
+          })
+  
+          return newStripe;
+        } catch {
+          logger.log({
+            level: "error",
+            message: `Failed to create stripe for ${merchant.id}`
+          })
+          throw new Error ("Failed to create stripe settings.")
+        }
+      },
+
+      async updateStripe(root, { stripeId, payload }, context) {
+        if (!context.merchant) {
+          throw new Error("Unauthenticated please make sure you are logged in");
+        }
+        if (!payload.storeId) {
+          throw new Error(
+            "Store Id is required"
+          );
+        }
+        let store = await getStore(Store, payload.storeId, context.merchant.id);
+
+        if (!store) {
+          throw new Error("Unathorized operation could not find the store");
+        }
+
+
+        let stripe = await StripeSetting.findOne({
+          where: {
+            id: stripeId,
+            storeId: payload.storeId
+          }
+        })
+
+        if(!stripe){
+          throw new Error("Could not find stripe settings")
+        }
+
+        try {
+          const updatedStripe = await StripeSetting.update(
+            {
+              ...stripe,
+              api_key: payload.api_key,
+              callback_url: payload.callback_url,
+              webhook_secret: payload.webhook_secret,
+            },
+            {
+              where: {
+                id: parseInt(stripeId),
+                storeId: payload.storeId,
+              },
+              returning: true,
+              plain: true,
+            }
+          ).then((result) => {
+            console.log("Result", result)
+            return result[1]
+          });
+          return updatedStripe
+        } catch (error) {
+          logger.log({
+            level: "error",
+            message: `update stripe for ${
+              context.merchant.id
+            } failed ${new Date().toLocaleDateString()}`,
+          });
+        }
+      },
+
+      async deleteStripe(root, { stripeId, storeId }, context) {
+        if (!context.merchant) {
+          throw new Error("Unauthorized make sure you are logged in.");
+        }
+
+        const store = await getStore(Store, storeId, context.merchant.id);
+
+        if (!store) {
+          throw new Error("Unauthorized operation");
+        }
+
+
+        try {
+          await StripeSetting.destroy({
+            where: {
+              storeId: storeId,
+              id: stripeId,
             },
           });
         } catch (error) {

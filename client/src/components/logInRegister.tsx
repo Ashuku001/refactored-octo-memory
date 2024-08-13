@@ -51,7 +51,7 @@ const LoginForm = ({showLogin}: LoginProps) => {
             update(cache, { data: { loginMerchant } }) {
 
                 if (loginMerchant.token && loginMerchant.merchant.id) {
-                    setCookie('jwt', loginMerchant.token, {maxAge: 60 * 6 * 24})
+                    setCookie('jwt', loginMerchant.token, {maxAge: 60*1000*24})
                     localStorage.setItem('jwt', loginMerchant.token);
                     secureLocalStorage.setItem('merchantId', loginMerchant.merchant.id)
                     isLoggedInVar(true)

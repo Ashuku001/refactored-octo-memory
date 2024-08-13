@@ -8,7 +8,7 @@ import { useMutation } from '@apollo/client'
 import { toast } from "react-hot-toast"
 import { useRouter, useParams } from 'next/navigation'
 
-import { UpdateStoreDocument, DeleteStoreDocument, GetStoreQuery, GetMpesaQuery } from "@/graphql"
+import { UpdateStoreDocument, DeleteStoreDocument, GetStoreQuery, GetMpesaQuery, GetStripeQuery } from "@/graphql"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { StoreType } from "@/types"
@@ -24,10 +24,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { CustomFormLabel } from '@/components/ui/CustomFormLabel'
 import {MpesaForm} from "./MpesaForm"
 import { TipTool } from '@/components/ui/TipTool'
+import { StripeForm } from './StripeForm'
 interface Props {
   initialData: {
     store: GetStoreQuery["store"]
     mpesa: GetMpesaQuery["mpesa"] | null
+    stripe: GetStripeQuery["stripe"] | null
   }
 }
 
@@ -43,7 +45,6 @@ const SettingsForm: React.FC<Props> = ({ initialData }) => {
   const router = useRouter()
   const origin = useOrigin()
   const params = useParams()
-
 
   const [updateStore, { loading: updLoading, error: upError, data }] = useMutation(UpdateStoreDocument)
   const [deleteMutation, { loading: delLoading, error: delError }] = useMutation(DeleteStoreDocument)
@@ -74,14 +75,14 @@ const SettingsForm: React.FC<Props> = ({ initialData }) => {
   }
 
   return (
-    <div className='h-full pl-2'>
+    <div className='h-full'>
       <AlertModal
         isOpen={open}
         onClose={() => setOpen(false)}
         onConfirm={onDelete}
         loading={delLoading}
       />
-      <div className="flex items-center justify-between w-full pr-2">
+      <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50  px-2  py-1">
         <Heading
           title="Settings"
           description="Manage Store"
@@ -95,7 +96,7 @@ const SettingsForm: React.FC<Props> = ({ initialData }) => {
         </TipTool>
       </div>
       <Separator className='my-2' />
-      <ScrollArea className='h-full pr-2'>
+      <ScrollArea className='h-full px-2'>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-lg font-semibold">
@@ -104,6 +105,7 @@ const SettingsForm: React.FC<Props> = ({ initialData }) => {
             <SettingsIcon className="h-4 w-4 text-muted-foreground"/>
           </CardHeader>
           <CardContent>
+            <Separator className='my-2' />
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className='grid grid-cols-3 gap-8 space-y-2'>
@@ -139,10 +141,23 @@ const SettingsForm: React.FC<Props> = ({ initialData }) => {
           </CardContent>
         </Card>
         <Separator className='my-2'/>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-lg font-semibold">
+              Stripe payment settings
+            </CardTitle>
+            <CreditCardIcon className="h-4 w-4 text-muted-foreground"/>
+          </CardHeader>
+          <CardContent>
+            <StripeForm initialData={initialData.stripe}/>
+          </CardContent>
+        </Card>
+        <Separator className='my-2'/>
         <ApiAlert 
           title="NEXT_PUBLIC_API_URL" 
           description={`${origin}/api/${params.storeId}`} 
           variant='public'/>
+          <div className="mb-[100px]"/>
       </ScrollArea>
     </div>
   )

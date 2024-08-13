@@ -19,7 +19,7 @@ class Customer(Table, tablename="Customers"):
     loc_latitude= Varchar()
     loc_longitude= Varchar()
     loc_url= Varchar()
-    merchantId= ForeignKey(Merchant,)
+    merchantId= ForeignKey(Merchant)
     age= Integer()
     gender= Varchar()
     income= Varchar()
@@ -31,40 +31,53 @@ class Customer(Table, tablename="Customers"):
     
 class Store(Table, tablename="Stores"):
     name = Varchar()
-    merchantId = ForeignKey(Merchant,)
+    merchantId = ForeignKey(Merchant)
     
 class Category(Table, tablename="Categories"):
-    storeId = ForeignKey(Store,)
+    storeId = ForeignKey(Store)
     name = Varchar()
     
+class Brand(Table, tablename="Brands"):
+    name= Varchar()
+    joinDate= Date()
+    description=Text()
+    phoneNumber= Varchar()
+    email= Varchar()
+    industry= Varchar()
+    loc_name= Varchar()
+    loc_address= Varchar()
+    loc_latitude= Varchar()
+    loc_longitude= Varchar()
+    loc_url= Varchar()
+    
+    storeId= ForeignKey(Store)
 class Product(Table, tablename="Products"):
     name= Varchar()
     price= Decimal()
     stockCode=Varchar()
     description=Text()
-    brand=Varchar()
     isFeatured= Boolean()
     isArchived= Boolean()
     
+    brandId=ForeignKey(Brand)
     categoryId= ForeignKey(Category)
-    storeId= ForeignKey(Store,)
+    storeId= ForeignKey(Store)
     
 class Image(Table, tablename="Images"):
     url = Varchar()
     productId = ForeignKey(Product)
     storeId = ForeignKey(Store)
 class Sale(Table, tablename="Sales"):
-    customerId= ForeignKey(Customer,)
+    customerId= ForeignKey(Customer)
     saleDate= Varchar()
     invoiceNo= Varchar()
-    storeId= ForeignKey(Store,)
+    storeId= ForeignKey(Store)
     promotionId= Integer()
     totalAmount= Decimal()
     
 class SaleDetail(Table, tablename="SaleDetails"):
-    salesId= ForeignKey(Sale,)
-    productId= ForeignKey(Product,)
+    salesId= ForeignKey(Sale)
+    productId= ForeignKey(Product)
     unitPrice= Decimal()
     discount= Decimal()
     quantity= Integer()
-    

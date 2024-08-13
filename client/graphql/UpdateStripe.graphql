@@ -1,0 +1,8 @@
+mutation UpdateStripe($stripeId: Int!, $payload: StripeSettingInput!){
+    updateStripe(stripeId: $stripeId, payload: $payload){
+        id
+        api_key
+        callback_url
+        webhook_secret
+    }
+}

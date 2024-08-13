@@ -141,52 +141,53 @@ const BillboardForm = ({ initialData }: Props) => {
         }
       </div>
       <Separator className=""/>
-      <ScrollArea className="h-full w-full px-2">
-      <Form {...form}>
-        <form 
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col space-y-2"
-        >
-          <FormField
-            control={form.control}
-            name="imageUrl"
-            render={({ field }) => (
-              <FormItem>
-                <CustomFormLabel title='Main Image' variant='required' description=''/>
-                <FormControl>
-                  <ImageUpload
-                    imageSize="w-[200px] mb-2 h-auto"
-                    value={field?.value?.map((image) => image)}
-                    disabled={upLoading || !!form.getValues("imageUrl")?.length}
-                    onChange={(url) => {
-                      field.onChange([...field.value, url])
-                    }}
-                    onRemove={(url) => field.onChange([...field.value.filter((current) => current !== url)])}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className='grid grid-cols-3 gap-8 space-y-2 items-end'>
+      <ScrollArea className="h-full w-full py-2 px-2">
+        <Form {...form}>
+          <form 
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col space-y-2"
+          >
             <FormField
               control={form.control}
-              name="label"
+              name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <CustomFormLabel title='Label' variant='required' description=''/>
+                  <CustomFormLabel title='Main Image' variant='required' description=''/>
                   <FormControl>
-                    <Input disabled={upLoading} placeholder='Billboard label' {...field} className="focus-visible:ring-0" />
+                    <ImageUpload
+                      imageSize="w-[200px] mb-2 h-auto"
+                      value={field?.value?.map((image) => image)}
+                      disabled={upLoading || !!form.getValues("imageUrl")?.length}
+                      onChange={(url) => {
+                        field.onChange([...field.value, url])
+                      }}
+                      onRemove={(url) => field.onChange([...field.value.filter((current) => current !== url)])}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-          </div>
-          <Button disabled={upLoading} className='mr-auto mt-2' type='submit'>{action}</Button>
-        </form>
-      </Form>
-      <Separator />
+            <div className='grid grid-cols-3 gap-8 space-y-2 items-end'>
+              <FormField
+                control={form.control}
+                name="label"
+                render={({ field }) => (
+                  <FormItem>
+                    <CustomFormLabel title='Label' variant='required' description=''/>
+                    <FormControl>
+                      <Input disabled={upLoading} placeholder='Billboard label' {...field} className="focus-visible:ring-0" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button disabled={upLoading} className='mr-auto mt-2' type='submit'>{action}</Button>
+          </form>
+        </Form>
+        <Separator className="my-2" />
+        <div className="pb-[100px]"/>
       </ScrollArea>
     </div>
   )

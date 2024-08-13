@@ -33,6 +33,7 @@ const documents = {
     "mutation AddProdVariation($product: ProductInput) {\n  addProductVariations(product: $product) {\n    id\n    name\n    price\n    isArchived\n    isFeatured\n    brand {\n      id\n      name\n    }\n    description\n    stockCode\n    prodVariations {\n      name\n      prodVarOptions {\n        value\n      }\n    }\n    prodCombinations {\n      price\n      sku\n      combinationString\n      availableStock\n      variantImage {\n        link\n      }\n    }\n  }\n}": types.AddProdVariationDocument,
     "mutation addSetting($setting: SettingInput!) {\n  addSetting(setting: $setting) {\n    __typename\n    callBack_url\n    ACCESS_TOKEN\n    APP_ID\n    APP_SECRET\n    PHONE_NUMBER_ID\n    BUSINESS_ACCOUNT_ID\n    ACCESS_TOKEN\n    API_VERSION\n    WEBHOOK_VERIFICATION_TOKEN\n    RECIPIENT_PHONE_NUMBER\n  }\n}": types.AddSettingDocument,
     "mutation AddStore($store: StoreInput!) {\n  addStore(store: $store) {\n    __typename\n    id\n    name\n    createdAt\n    updatedAt\n  }\n}": types.AddStoreDocument,
+    "mutation AddStripe($stripe: StripeSettingInput!) {\n  addStripe(stripe: $stripe) {\n    id\n    callback_url\n    webhook_secret\n    api_key\n  }\n}": types.AddStripeDocument,
     "mutation AddTextMessage($message: TextMessageInput!, $participants: ParticipantsInput, $customerId: Int, $template: String) {\n  addTextMessage(\n    message: $message\n    participants: $participants\n    customerId: $customerId\n    template: $template\n  ) {\n    __typename\n    id\n    from_customer\n    type\n    hasContext\n    timestamp\n    createdAt\n    text {\n      __typename\n      body\n    }\n    chat {\n      __typename\n      id\n    }\n  }\n}": types.AddTextMessageDocument,
     "mutation AddVideoMessage($message: VideoMessageInput!, $template: String, $participants: ParticipantsInput, $customerId: Int) {\n  addVideoMessage(\n    message: $message\n    template: $template\n    participants: $participants\n    customerId: $customerId\n  ) {\n    __typename\n    id\n    from_customer\n    type\n    timestamp\n    createdAt\n    messageId\n    video {\n      __typename\n      url\n      sha256\n      mimeType\n      videoId\n      caption\n    }\n    chat {\n      __typename\n      id\n    }\n  }\n}": types.AddVideoMessageDocument,
     "query CustomerChatSearch($page: Int, $limit: Int, $text: String!) {\n  customerChatSearch(page: $page, limit: $limit, text: $text) {\n    customers {\n      __typename\n      id\n      first_name\n      last_name\n      phone_number\n    }\n    chats {\n      __typename\n      id\n      customer {\n        __typename\n        id\n        first_name\n        last_name\n        phone_number\n      }\n      lastMessage {\n        __typename\n        id\n        from_customer\n        type\n        timestamp\n        createdAt\n        text {\n          body\n        }\n      }\n    }\n  }\n}": types.CustomerChatSearchDocument,
@@ -46,6 +47,7 @@ const documents = {
     "mutation DeleteMpesa($mpesaId: Int!, $storeId: Int!) {\n  deleteMpesa(mpesaId: $mpesaId, storeId: $storeId) {\n    response\n  }\n}": types.DeleteMpesaDocument,
     "mutation DeleteProduct($productId: Int!, $storeId: Int!) {\n  deleteProduct(productId: $productId, storeId: $storeId) {\n    response\n  }\n}": types.DeleteProductDocument,
     "mutation DeleteStore($storeId: Int!) {\n  deleteStore(storeId: $storeId) {\n    response\n  }\n}": types.DeleteStoreDocument,
+    "mutation DeleteStripe($stripeId: Int!, $storeId: Int!) {\n  deleteStripe(stripeId: $stripeId, storeId: $storeId) {\n    response\n  }\n}": types.DeleteStripeDocument,
     "query GetAds {\n  ads {\n    __typename\n    id\n    read\n    delivered\n    sent\n    failed\n    response\n    updatedAt\n    adTemplate {\n      __typename\n      id\n      name\n    }\n  }\n}": types.GetAdsDocument,
     "query GetCustomers {\n  customers {\n    id\n    whatsapp_name\n    first_name\n    last_name\n    phone_number\n    __typename\n  }\n}": types.GetCustomersDocument,
     "query GetAllProducts {\n  allProducts {\n    __typename\n    id\n    name\n    products {\n      __typename\n      id\n      name\n      price\n    }\n  }\n}": types.GetAllProductsDocument,
@@ -73,6 +75,7 @@ const documents = {
     "query GetPromotions($storeId: Int!) {\n  promotions(storeId: $storeId) {\n    __typename\n    id\n    name\n    startDate\n    endDate\n    description\n    discountType\n    active\n    discountValue\n    coupon {\n      __typename\n      id\n      code\n      validFrom\n      validTo\n      discount\n      active\n      createdAt\n    }\n    createdAt\n  }\n}": types.GetPromotionsDocument,
     "query GetSetting($username: String) {\n  setting(username: $username) {\n    __typename\n    callBack_url\n    APP_ID\n    PHONE_NUMBER_ID\n    BUSINESS_ACCOUNT_ID\n    ACCESS_TOKEN\n    API_VERSION\n    WEBHOOK_VERIFICATION_TOKEN\n  }\n}": types.GetSettingDocument,
     "query GetStore($storeId: Int) {\n  store(storeId: $storeId) {\n    __typename\n    id\n    name\n  }\n}": types.GetStoreDocument,
+    "query GetStripe($storeId: Int!) {\n  stripe(storeId: $storeId) {\n    id\n    api_key\n    webhook_secret\n    callback_url\n  }\n}": types.GetStripeDocument,
     "query GetTempMarketResponse($adTemplateId: Int!) {\n  tempMarketResponse(adTemplateId: $adTemplateId) {\n    id\n    name\n    leads\n    adTempProduct {\n      id\n      name\n      price\n      images {\n        id\n        url\n      }\n      store {\n        id\n        name\n      }\n    }\n    adTempMessage {\n      id\n      interactive {\n        template {\n          buttons {\n            text\n          }\n        }\n      }\n    }\n    adTempResponses {\n      id\n      cusTempLead {\n        id\n        phone_number\n        first_name\n        last_name\n      }\n      mesTempLead {\n        id\n        createdAt\n        chat {\n          id\n        }\n        mesTempReply {\n          text\n        }\n      }\n    }\n  }\n}": types.GetTempMarketResponseDocument,
     "mutation loginMerchant($username: String!, $password: String!) {\n  loginMerchant(username: $username, password: $password) {\n    __typename\n    token\n    merchant {\n      __typename\n      id\n    }\n  }\n}": types.LoginMerchantDocument,
     "query ProductSearch($page: Int, $limit: Int, $text: String!, $storeId: Int!) {\n  productSearch(page: $page, limit: $limit, text: $text, storeId: $storeId) {\n    id\n    name\n    description\n    price\n    category {\n      name\n    }\n    images {\n      url\n    }\n  }\n}": types.ProductSearchDocument,
@@ -90,6 +93,7 @@ const documents = {
     "mutation UpdateOrderCheckout($orderId: Int!, $storeId: Int!, $payload: OrderCheckoutInput!) {\n  updateOrderCheckout(orderId: $orderId, storeId: $storeId, payload: $payload) {\n    id\n    isPaid\n    phone\n    storeOrder {\n      id\n      name\n    }\n    customerOrder {\n      id\n      phone_number\n    }\n    orderItems {\n      id\n      productId\n      quantity\n    }\n  }\n}": types.UpdateOrderCheckoutDocument,
     "mutation UpdateProduct($productId: Int!, $payload: ProductInput!) {\n  updateProduct(productId: $productId, payload: $payload) {\n    __typename\n    id\n    name\n    price\n    isArchived\n    isFeatured\n    brand {\n      id\n      name\n    }\n    store {\n      __typename\n      id\n      name\n    }\n    category {\n      __typename\n      id\n      name\n    }\n  }\n}": types.UpdateProductDocument,
     "mutation updateStore($storeId: Int!, $payload: StoreInput!) {\n  updateStore(storeId: $storeId, payload: $payload) {\n    __typename\n    id\n    name\n  }\n}": types.UpdateStoreDocument,
+    "mutation UpdateStripe($stripeId: Int!, $payload: StripeSettingInput!) {\n  updateStripe(stripeId: $stripeId, payload: $payload) {\n    id\n    api_key\n    callback_url\n    webhook_secret\n  }\n}": types.UpdateStripeDocument,
 };
 
 /**
@@ -189,6 +193,10 @@ export function gql(source: "mutation AddStore($store: StoreInput!) {\n  addStor
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "mutation AddStripe($stripe: StripeSettingInput!) {\n  addStripe(stripe: $stripe) {\n    id\n    callback_url\n    webhook_secret\n    api_key\n  }\n}"): (typeof documents)["mutation AddStripe($stripe: StripeSettingInput!) {\n  addStripe(stripe: $stripe) {\n    id\n    callback_url\n    webhook_secret\n    api_key\n  }\n}"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "mutation AddTextMessage($message: TextMessageInput!, $participants: ParticipantsInput, $customerId: Int, $template: String) {\n  addTextMessage(\n    message: $message\n    participants: $participants\n    customerId: $customerId\n    template: $template\n  ) {\n    __typename\n    id\n    from_customer\n    type\n    hasContext\n    timestamp\n    createdAt\n    text {\n      __typename\n      body\n    }\n    chat {\n      __typename\n      id\n    }\n  }\n}"): (typeof documents)["mutation AddTextMessage($message: TextMessageInput!, $participants: ParticipantsInput, $customerId: Int, $template: String) {\n  addTextMessage(\n    message: $message\n    participants: $participants\n    customerId: $customerId\n    template: $template\n  ) {\n    __typename\n    id\n    from_customer\n    type\n    hasContext\n    timestamp\n    createdAt\n    text {\n      __typename\n      body\n    }\n    chat {\n      __typename\n      id\n    }\n  }\n}"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -238,6 +246,10 @@ export function gql(source: "mutation DeleteProduct($productId: Int!, $storeId: 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "mutation DeleteStore($storeId: Int!) {\n  deleteStore(storeId: $storeId) {\n    response\n  }\n}"): (typeof documents)["mutation DeleteStore($storeId: Int!) {\n  deleteStore(storeId: $storeId) {\n    response\n  }\n}"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "mutation DeleteStripe($stripeId: Int!, $storeId: Int!) {\n  deleteStripe(stripeId: $stripeId, storeId: $storeId) {\n    response\n  }\n}"): (typeof documents)["mutation DeleteStripe($stripeId: Int!, $storeId: Int!) {\n  deleteStripe(stripeId: $stripeId, storeId: $storeId) {\n    response\n  }\n}"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -349,6 +361,10 @@ export function gql(source: "query GetStore($storeId: Int) {\n  store(storeId: $
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function gql(source: "query GetStripe($storeId: Int!) {\n  stripe(storeId: $storeId) {\n    id\n    api_key\n    webhook_secret\n    callback_url\n  }\n}"): (typeof documents)["query GetStripe($storeId: Int!) {\n  stripe(storeId: $storeId) {\n    id\n    api_key\n    webhook_secret\n    callback_url\n  }\n}"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function gql(source: "query GetTempMarketResponse($adTemplateId: Int!) {\n  tempMarketResponse(adTemplateId: $adTemplateId) {\n    id\n    name\n    leads\n    adTempProduct {\n      id\n      name\n      price\n      images {\n        id\n        url\n      }\n      store {\n        id\n        name\n      }\n    }\n    adTempMessage {\n      id\n      interactive {\n        template {\n          buttons {\n            text\n          }\n        }\n      }\n    }\n    adTempResponses {\n      id\n      cusTempLead {\n        id\n        phone_number\n        first_name\n        last_name\n      }\n      mesTempLead {\n        id\n        createdAt\n        chat {\n          id\n        }\n        mesTempReply {\n          text\n        }\n      }\n    }\n  }\n}"): (typeof documents)["query GetTempMarketResponse($adTemplateId: Int!) {\n  tempMarketResponse(adTemplateId: $adTemplateId) {\n    id\n    name\n    leads\n    adTempProduct {\n      id\n      name\n      price\n      images {\n        id\n        url\n      }\n      store {\n        id\n        name\n      }\n    }\n    adTempMessage {\n      id\n      interactive {\n        template {\n          buttons {\n            text\n          }\n        }\n      }\n    }\n    adTempResponses {\n      id\n      cusTempLead {\n        id\n        phone_number\n        first_name\n        last_name\n      }\n      mesTempLead {\n        id\n        createdAt\n        chat {\n          id\n        }\n        mesTempReply {\n          text\n        }\n      }\n    }\n  }\n}"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -414,6 +430,10 @@ export function gql(source: "mutation UpdateProduct($productId: Int!, $payload: 
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "mutation updateStore($storeId: Int!, $payload: StoreInput!) {\n  updateStore(storeId: $storeId, payload: $payload) {\n    __typename\n    id\n    name\n  }\n}"): (typeof documents)["mutation updateStore($storeId: Int!, $payload: StoreInput!) {\n  updateStore(storeId: $storeId, payload: $payload) {\n    __typename\n    id\n    name\n  }\n}"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "mutation UpdateStripe($stripeId: Int!, $payload: StripeSettingInput!) {\n  updateStripe(stripeId: $stripeId, payload: $payload) {\n    id\n    api_key\n    callback_url\n    webhook_secret\n  }\n}"): (typeof documents)["mutation UpdateStripe($stripeId: Int!, $payload: StripeSettingInput!) {\n  updateStripe(stripeId: $stripeId, payload: $payload) {\n    id\n    api_key\n    callback_url\n    webhook_secret\n  }\n}"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

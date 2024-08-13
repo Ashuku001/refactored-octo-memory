@@ -115,15 +115,14 @@ function MessageList({ id }: Props) {
   return (
     <div ref={list} className=" h-full max-h-full overflow-hidden relative">
       <div className="flex flex-col justify-center absolute top-0 z-10 w-full bg-muted/60 dark:bg-muted/40">
-          {data?.chat?.conversations?.map((conv) => <>
+          {data?.chat?.conversations?.map((conv, i) => <div key={conv.id}>
             {conv?.status === "open" &&
                 <Conversation
-                  key={conv?.id}
                   category={conv?.category}
                   status={conv?.status}
                 /> 
             }
-            </>
+            </div>
           )}
       </div>
       <ScrollArea className='h-full px-2 md:px-6 lg:px-10 '>

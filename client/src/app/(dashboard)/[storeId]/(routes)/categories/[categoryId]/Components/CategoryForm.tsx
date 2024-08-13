@@ -52,10 +52,11 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
   const action = initialData ? "Save changes" : "Create"
   const mutation = initialData ? updateCategory : addCategory
 
+  console.log(initialData)
 
   const form = useForm<CategoryFormvalue>({
     resolver: zodResolver(formSchema),
-    defaultValues: {...initialData, billboard: initialData?.billboard ?? ''} || {
+    defaultValues: {...initialData, billboard: initialData?.billboard.label ?? ''} || {
       name: '',
       billboard: ''
     }
@@ -141,7 +142,7 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
                   <FormItem>
                     <CustomFormLabel title='Name' variant='required' description=''/>
                     <FormControl>
-                      <Input disabled={upLoading} placeholder='Category name' {...field} value={field.value} onValueChange={field.onChange} className="border-none focus:outline-none" />
+                      <Input disabled={upLoading} placeholder='Category name' {...field}  className="border-none focus:outline-none" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -159,8 +160,9 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
                       value={field.value}
                     >
                       <FormControl >
-                        <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                        <SelectTrigger className='border-none ring-0 focus:ring-0 line-clamp-1'>
                           <SelectValue
+                            className='line-clamp-1'
                             placeholder="Select billboard"
                           />
                         </SelectTrigger>
@@ -183,7 +185,7 @@ const CategoryForm = ({ initialData, billboards }: Props) => {
             <Button disabled={upLoading} className='ml-auto mt-2' type='submit'>{action}</Button>
           </form>
         </Form>
-        <Separator />
+        <Separator className='my-2'/>
       </ScrollArea>
     </div>
   )

@@ -103,8 +103,6 @@ const BrandForm = ({ initialData }: Props) => {
     let addData = {}
     const phoneNumber = validateNumber({code: data?.code ,phoneNumber: data.phoneNumber})
 
-
-    console.log(">>>>>>>>>PHONE NUMBER>>>>>", phoneNumber)
     const variables = initialData ? updateData = {
       brandId: initialData.id,
       payload: {
@@ -168,7 +166,7 @@ const BrandForm = ({ initialData }: Props) => {
         onConfirm={onDelete}
         loading={delLoading}
       />
-      <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50 rounded-md  px-2  py-1">
+      <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50   px-2  py-1">
         <Heading
           title={title}
           description={description}
@@ -295,7 +293,8 @@ const BrandForm = ({ initialData }: Props) => {
             <Button disabled={upLoading} className='mr-auto mt-2' type='submit'>{action}</Button>
           </form>
         </Form>
-        <div className="pb-[100px]" />
+        <Separator className='my-2'/>
+        <div className='mb-20'/>
       </ScrollArea>
     </div>
   )

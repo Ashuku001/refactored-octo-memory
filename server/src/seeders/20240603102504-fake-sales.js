@@ -13372,6 +13372,7 @@ module.exports = {
 {'id': 569583, 'customerId': 15039, 'saleDate': new Date('2011-10-05 11:17:00'), 'invoiceNo': '569583', 'storeId': 1, 'createdAt': new Date('2011-10-05 11:17:00'), 'updatedAt': new Date('2011-10-05 11:17:00')},
 {'id': 569590, 'customerId': 13949, 'saleDate': new Date('2011-10-05 11:25:00'), 'invoiceNo': '569590', 'storeId': 1, 'createdAt': new Date('2011-10-05 11:25:00'), 'updatedAt': new Date('2011-10-05 11:25:00')},
 {'id': 569629, 'customerId': 15249, 'saleDate': new Date('2011-10-05 11:37:00'), 'invoiceNo': '569629', 'storeId': 1, 'createdAt': new Date('2011-10-05 11:37:00'), 'updatedAt': new Date('2011-10-05 11:37:00')},
+
       ],
       {}
     );

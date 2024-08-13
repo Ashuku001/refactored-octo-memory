@@ -81,7 +81,7 @@ async def recommend(storeId:int, merchantId:int, productId: int, similarity: str
         df["description"].append(el["description"])
         df["productId"].append(el["id"])
         df["price"].append(el["price"])
-        df["brand"].append(el["brand"])
+        df["brand"].append(el["brandId"]["name"])
         df["category"].append(el["categoryId"]["name"])
     
     df = pd.DataFrame(df)

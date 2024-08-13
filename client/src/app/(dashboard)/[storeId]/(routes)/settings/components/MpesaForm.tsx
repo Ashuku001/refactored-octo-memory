@@ -35,7 +35,7 @@ const formSchema = z.object({
     callback_url: z.string().nonempty({message: "Callback url is required"}),
 })
 
-type BrandFormValue = z.infer<typeof formSchema>
+type MpesaFormValue = z.infer<typeof formSchema>
 
 export const MpesaForm = ({ initialData }: Props) => {
   const [open, setOpen] = useState(false)
@@ -46,14 +46,14 @@ export const MpesaForm = ({ initialData }: Props) => {
   const [addMpesa, { loading: creLoading, error: creError, data: creData }] = useMutation(AddMpesaDocument)
   const [deleteMpesa, { loading: delLoading, error: delError }] = useMutation(DeleteMpesaDocument)
 
-  const title = initialData ? "Edit payment" : "Add payment"
+  const title = initialData ? "Edit mpesa payment" : "Add mpesa payment"
   const description = initialData ? "Edit M-Pesa settings" : "Add a new M-Pesa settings"
   const toastMessage = initialData ? "M-Pesa setting updated" : "M-Pesa setting created"
   const action = initialData ? "Save changes" : "Add"
   const mutation = initialData ? updateMpesa : addMpesa
 
 
-  const form = useForm<BrandFormValue>({
+  const form = useForm<MpesaFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData || {
       consumer_key: "",
@@ -67,7 +67,7 @@ export const MpesaForm = ({ initialData }: Props) => {
   })
 
 
-  const onSubmit = async (data: BrandFormValue) => {
+  const onSubmit = async (data: MpesaFormValue) => {
     let updateData = {}
     let addData = {}
     const error:null | string = initialData ? upError : creError
@@ -110,12 +110,13 @@ export const MpesaForm = ({ initialData }: Props) => {
 
   const onDelete = async () => {
     try {
-        deleteMpesa({
+        await deleteMpesa({
             variables: {
                 mpesaId: initialData.id,
                 storeId: parseInt(params.storeId as string)
             }
         })
+        toast.success("Mpesa account deleted")
         router.push(`/${params.storeId}/settings`)
     } catch (error) {
         toast.error("Something went wrong.")

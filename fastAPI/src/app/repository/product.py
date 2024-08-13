@@ -8,7 +8,7 @@ class ProductRepository:
             Product.name,
             Product.description,
             Product.stockCode,
-            Product.brand,
+            Product.brandId.name,
             Product.price,
             Product.categoryId.name
         ).output(nested=True).where(Product.storeId == storeId)

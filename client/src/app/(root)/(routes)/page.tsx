@@ -16,11 +16,13 @@ async function SetupPage() {
 
   return (
     <div className="flex-col items-center justify-center w-full px-2">
-      <Heading 
-        title={`Stores (${stores?.length})`}
-        description="Overview of all your stores."
-      />
-      <Separator className="my-4" />
+      <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50   px-2  py-2">
+        <Heading 
+          title={`Stores (${stores?.length})`}
+          description="Overview of all your stores."
+        />
+      </div>
+      <Separator className="my-2" />
       <div className="grid grid-cols-3 gap-8 w-full">
         {!stores?.length && <ReactiveStoreModal/> }
         {stores?.map((store) => <StoreCard key={store?.id} store={store} />)}

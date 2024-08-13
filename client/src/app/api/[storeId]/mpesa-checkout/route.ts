@@ -8,7 +8,6 @@ import { getAccessToken } from "@/lib/mpesa";
 import axios from "axios"
 import moment from "moment"
 
-// allow request from different origins
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
@@ -41,7 +40,6 @@ type ResponseType = {
 };
 export async function POST(req: Request, { params: { storeId } }: Props) {
   const { products, phoneNumber, totalPrice }: ResponseType = await req.json();
-  console.log("THE THING IS", products, phoneNumber, totalPrice);
 
   if (!products || products.length === 0) {
     return new NextResponse("Product ids are required", { status: 400 });
@@ -88,32 +86,16 @@ export async function POST(req: Request, { params: { storeId } }: Props) {
       {consumer_key: mpesa.consumer_key, consumer_secret: mpesa.consumer_secret},
     )
     .then( async (accessToken) => {
-      const url =
-        "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest";
+      const url = process.env.MPESA_STKPUSH;
       const auth = "Bearer " + accessToken;
-      //@ts-ignore
       const timestamp = moment().format("YYYYMMDDHHmmss");
       const password = Buffer.from(
         mpesa.business_shortcode + mpesa.pass_key + timestamp
       ).toString("base64");
 
-      console.log({
-        BusinessShortCode: mpesa.business_shortcode,
-        Password: password,
-        Timestamp: timestamp,
-        TransactionType: "CustomerPayBillOnline",
-        Amount: totalPrice,
-        PartyA: phoneNumber, //phone number to receive the stk push
-        PartyB: mpesa.business_shortcode,
-        PhoneNumber: phoneNumber,
-        CallBackURL: `${mpesa.callback_url}/callback`,
-        AccountReference: mpesa.account_reference,
-        TransactionDesc: mpesa.transaction_desc,
-      },)
-
       await axios
         .post(
-          url,
+          url!,
           {
             BusinessShortCode: mpesa.business_shortcode,
             Password: password,
@@ -134,7 +116,6 @@ export async function POST(req: Request, { params: { storeId } }: Props) {
           }
         )
         .then((response) => {
-          console.log("THER ESPONSE", response.data)
           paymentResponse =  {
             ...paymentResponse,
             responseType: 'success',
@@ -157,7 +138,6 @@ export async function POST(req: Request, { params: { storeId } }: Props) {
     .catch(console.log);
   }
 
-  console.log("PAUMENT", paymentResponse)
   return NextResponse.json(
     paymentResponse,
     {

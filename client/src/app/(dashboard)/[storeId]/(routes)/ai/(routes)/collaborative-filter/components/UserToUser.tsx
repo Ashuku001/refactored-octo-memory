@@ -19,6 +19,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { SimilarProducts } from "../../components/SimilarProducts";
 import { TargetCustomer } from "../../components/TargetCustomer";
 import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
+import secureLocalStorage from 'react-secure-storage';
 
 type TrainProps = {
   storeId: string;
@@ -27,11 +28,12 @@ type TrainProps = {
 export const UserToUserTrain = ({storeId}: TrainProps) => {
     const [training, setTraining] = useState(false)
     const baseUrl = "/memory/collaborative/user-to-user-filter/train"
+    const merchantId = secureLocalStorage.getItem('merchantId')
 
     const onTrain = async () => { 
       setTraining(true)
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${2}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${storeId}&merchantId=${merchantId}`, {
           method: 'GET', // Assuming a GET request (adjust if necessary)
         });
         
@@ -66,6 +68,7 @@ type TestRecommendationProps = {
 }
 
 export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
+  const merchantId = secureLocalStorage.getItem('merchantId')
   const [loading, setLoading] = useState(false)
   const [searchString, setSearchString] = useState("")
   const [formattedProducts, setFormattedProducts] = useState<SimilarProductFormatted[] | null>(null)
@@ -87,7 +90,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
       setLoading(true)
       setFormattedProducts(null)
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${parseInt(storeId)}&merchantId=${2}&k=${k}&sample=${sample}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_FASTAPI_URL}${baseUrl}?storeId=${parseInt(storeId)}&merchantId=${merchantId}&k=${k}&sample=${sample}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(customerIds),

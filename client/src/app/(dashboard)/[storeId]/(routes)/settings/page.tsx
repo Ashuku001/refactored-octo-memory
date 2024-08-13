@@ -1,4 +1,4 @@
-import { GetStoreDocument, GetMpesaDocument, GetMpesaQuery } from "@/graphql"
+import { GetStoreDocument, GetMpesaDocument,  GetStripeDocument } from "@/graphql"
 import { getClient } from "@/lib/graphql/ApolloClient"
 import { redirect } from "next/navigation";
 import SettingsForm from "./components/SettingsForm";
@@ -18,17 +18,20 @@ async function SettingsPage({ params: { storeId } }: Props) {
 
     const store = data?.store;
 
-    // let mpesa: null | GetMpesaQuery["mpesa"]= null
-    // try{
     const { data: MpesaData } = await getClient().query({
         query: GetMpesaDocument,
         variables: { storeId: parseInt(storeId) },
     });
 
     const mpesa = MpesaData?.mpesa;
-    // } catch(error){
-    //     console.log("GET MPESA SETTINGS",error)
-    // }
+
+    const { data: StripeData } = await getClient().query({
+        query: GetStripeDocument,
+        variables: { storeId: parseInt(storeId) },
+    });
+
+    const stripe = StripeData?.stripe;
+  
 
 
     if (!store) {
@@ -37,7 +40,7 @@ async function SettingsPage({ params: { storeId } }: Props) {
 
     return (
         <div className="fleX-1 h-full space-y-4">
-            <SettingsForm initialData={{store: store, mpesa: mpesa}} />
+            <SettingsForm initialData={{store: store, mpesa: mpesa, stripe: stripe}} />
         </div>
     )
 }

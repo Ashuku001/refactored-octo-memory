@@ -21,6 +21,7 @@ def encode_units(x):
 async def user_to_user_filter(storeId:int, merchantId:int):
     repo = SaleDetailsRepository()
     data = await repo.get_sales_details(storeId=storeId)
+    # print(">>>>>>>>>......",data)
     df = {
         "stockCode": [],
         "name": [],
@@ -34,7 +35,7 @@ async def user_to_user_filter(storeId:int, merchantId:int):
         df["stockCode"].append(el["productId"]["stockCode"])
         df["name"].append(el["productId"]["name"])
         df["productId"].append(el["productId"]["id"])
-        df["brand"].append(el["productId"]["brand"])
+        df["brand"].append(el["productId"]["brandId"]["name"])
         df["quantity"].append(el["quantity"])
         df["unitPrice"].append(el["unitPrice"])
         df["customerId"].append(el["salesId"]["customerId"])
@@ -82,7 +83,7 @@ async def user_to_user_filter(storeId:int, merchantId:int, userIds: list[int] = 
         df["stockCode"].append(el["productId"]["stockCode"])
         df["name"].append(el["productId"]["name"])
         df["productId"].append(el["productId"]["id"])
-        df["brand"].append(el["productId"]["brand"])
+        df["brand"].append(el["productId"]["brandId"]["name"])
         df["description"].append(el["productId"]["description"])
         df["quantity"].append(el["quantity"])
         df["unitPrice"].append(el["unitPrice"])
@@ -131,7 +132,7 @@ async def item_to_item_filter(storeId:int, merchantId: int):
         df["stockCode"].append(el["productId"]["stockCode"])
         df["name"].append(el["productId"]["name"])
         df["productId"].append(el["productId"]["id"])
-        df["brand"].append(el["productId"]["brand"])
+        df["brand"].append(el["productId"]["brandId"]["name"])
         df["quantity"].append(el["quantity"])
         df["unitPrice"].append(el["unitPrice"])
         df["customerId"].append(el["salesId"]["customerId"])
@@ -179,7 +180,7 @@ async def item_to_item_filter(storeId:int, merchantId:int, userIds: list[int]=Bo
         df["stockCode"].append(el["productId"]["stockCode"])
         df["name"].append(el["productId"]["name"])
         df["productId"].append(el["productId"]["id"])
-        df["brand"].append(el["productId"]["brand"])
+        df["brand"].append(el["productId"]["brandId"]["name"])
         df["description"].append(el["productId"]["description"])
         df["quantity"].append(el["quantity"])
         df["unitPrice"].append(el["unitPrice"])

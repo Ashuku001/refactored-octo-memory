@@ -18,7 +18,7 @@ export type SectionType = {
 }
 
 export type RowType = {
-    product: ProductType | null
+    product?: ProductType | null
     id: number;
     title: string;
     description: string;
@@ -102,7 +102,7 @@ export const useInteractiveListStore = create<ListMessageState>((set) => ({
         set(
             produce((draft) => {
                 const section = draft.sections.find((section: SectionType) => section.id === sectionId)
-                section.rows.push(row)
+                section.rows = [...section.rows, row]
             })
         )
     },
@@ -134,7 +134,6 @@ export const useInteractiveListStore = create<ListMessageState>((set) => ({
     },
     updateProduct: (sectionId: number, rowId: number, payload:{product: ProductType}) => {
         set(produce((draft) => {
-            console.log("PAYLOAD",payload.product)
             let section = draft.sections.find((section: SectionType) => section.id === sectionId)
             const row = section.rows.find((row) => row.id === rowId)
             row.product = payload.product

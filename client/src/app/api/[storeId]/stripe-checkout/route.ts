@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { getClient } from "@/lib/graphql/ApolloClient";
-import { AddOrderDocument, GetProductsOfIdsDocument } from "@/graphql";
+import { AddOrderDocument,GetStripeDocument } from "@/graphql";
 import Stripe from "stripe";
 
 // allow request from different origins
@@ -40,8 +40,15 @@ export async function POST(req: Request, { params: { storeId } }: Props) {
     return new NextResponse("Product ids are required", { status: 400 });
   }
 
-  console.log(products)
   const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
+
+  const { data } = await getClient().query({
+    query: GetStripeDocument,
+    variables: {
+      storeId: parseInt(storeId),
+    },
+  });
+  const stripeDoc = data.stripe
 
   products.forEach((product) => {
     line_items.push({
@@ -82,8 +89,8 @@ export async function POST(req: Request, { params: { storeId } }: Props) {
     phone_number_collection: {
       enabled: true,
     },
-    success_url: `${process.env.FRONTEND_STORE_URL}/cart?success=1`,
-    cancel_url: `${process.env.FRONTEND_STORE_URL}/cart?canceled=1`,
+    success_url: `${stripeDoc?.callback_url}/cart?success=1`,
+    cancel_url: `${stripeDoc?.callback_url}/cart?canceled=1`,
     metadata: {
       orderId: order!.id,
       storeId: storeId

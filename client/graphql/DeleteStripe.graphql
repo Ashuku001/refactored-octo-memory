@@ -1,0 +1,5 @@
+mutation DeleteStripe($stripeId: Int!, $storeId: Int!){
+    deleteStripe(stripeId: $stripeId, storeId: $storeId){
+        response
+    }
+}

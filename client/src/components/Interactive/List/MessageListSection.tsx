@@ -1,7 +1,8 @@
 import { XIcon } from "lucide-react";
+import { useParams } from "next/navigation";
 import { Header } from "@/components/Interactive/SubComponents";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, Rotate3DIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { useInteractiveListStore, SectionType, RowType } from "@/store/InteractiveListStore";
@@ -9,22 +10,30 @@ import toast from "react-hot-toast";
 import { Separator } from "@/components/ui/separator";
 import { FormControl, FormField, FormItem } from "@/components/ui/form"
 import { ProductsSwitcherListMessage } from "@/components/ProductsSwitcherListMessage";
+import useLocalStorage from '@/hooks/useLocalStorage';
+import secureLocalStorage from 'react-secure-storage';
+import { useRecommendationModal } from "@/hooks/useRecommendationModal";
+
 
 type MessageListProps = {
     form: UseFormReturn<{
-      [key: string]: "";
-  }, any, undefined>
+        [key: string]: "";
+    }, any, {
+        [key: string]: "";
+    }>
 }
 
 
 export const MessageListSections = ({form}: MessageListProps) => {
-    //@ts-ignore
-    const [rowsCount, sections, setRowsCount,  addSection, deleteSection] = useInteractiveListStore((state) => [
+    const params = useParams()
+    const recommendationModal = useRecommendationModal()
+    const [rowsCount, sections, setRowsCount,  addSection, deleteSection, addRow] = useInteractiveListStore((state) => [
         state.rowsCount,
         state.sections,
         state.setRowsCount,
         state.addSection,
-        state.deleteSection
+        state.deleteSection,
+        state.addRow,
     ]) 
 
     const onAddSection = () => {
@@ -40,10 +49,17 @@ export const MessageListSections = ({form}: MessageListProps) => {
                 rows: [{
                     id: Math.floor(Math.random() * 100),
                     title: '',
-                    description: ''
+                    description: '',
+                    product: null
                 }],
             })
         }
+    }
+
+    const onRecommend = () => {
+        const customerId = params.customerId as unknown as number
+        const merchantId = secureLocalStorage.getItem('merchantId') as number
+        recommendationModal.onOpen({customerId: [customerId], merchantId})
     }
 
     const onDeleteSection  = (secIndex: number, section: SectionType) => {
@@ -51,8 +67,6 @@ export const MessageListSections = ({form}: MessageListProps) => {
         
         const rowFields = Object.keys(form.formState.dirtyFields)
         const deletedFields = rowFields.filter((field) => field.includes(`section-${secIndex}`))
-
-        console.log("DELETED FIELDS", deletedFields)
         deletedFields?.forEach((field) =>{ 
             form.resetField(field)
         })
@@ -64,10 +78,16 @@ export const MessageListSections = ({form}: MessageListProps) => {
     return (
         <div className="p-1 relative">
             <Header variant='required' title='Section' description='Add sections for the list of products. Total rows from all sections is limited to 10' />
-            <Button className="mt-1 sticky top-0" variant={'secondary'} onClick={() => {onAddSection()}} type="button">
-                <PlusIcon className="h-4 w-4"/>
-                Add a Section (max 10)
-            </Button>
+            <div className="flex items-center justify-between">
+                <Button className="mt-1 sticky top-0" variant={'secondary'} onClick={() => {onAddSection()}} type="button">
+                    <PlusIcon className="h-4 w-4"/>
+                    Add a Section (max 10)
+                </Button>
+                <Button className="mt-1 sticky top-0 flex space-x-2 items-center" variant={'secondary'} onClick={() => {onRecommend()}} type="button">
+                    <Rotate3DIcon className="h-4 w-4"/>
+                    Recommend
+                </Button>
+            </div>
             <div className="mt-3">
                 {sections?.map((section: SectionType, secIndex: number) => 
                 <div key={secIndex}  className="w-full">
@@ -92,7 +112,9 @@ export const MessageListSections = ({form}: MessageListProps) => {
 type ListSectionProps = {
     form: UseFormReturn<{
         [key: string]: "";
-    }, any, undefined>
+    }, any, {
+        [key: string]: "";
+    }>
     section: SectionType
     secIndex: number;
     sectionsLength: number;
@@ -115,7 +137,7 @@ export const ListSection = ({secIndex, sectionsLength, section, onDeleteSection,
         if(rowsCount >= 10){
             toast.error("You can only add a maximum of 10 rows in the message")
         } else {
-            const newRow = {id: Math.floor(Math.random() * 100), title: "", description: ""}
+            const newRow = {id: Math.floor(Math.random() * 100), title: "", description: "", product: null}
             setRowsCount(+1)
             addRow(sectionId, newRow)
         }
@@ -186,7 +208,9 @@ export const ListSection = ({secIndex, sectionsLength, section, onDeleteSection,
 type RowProps = {
     form: UseFormReturn<{
         [key: string]: "";
-    }, any, undefined>
+    }, any, {
+        [key: string]: "";
+    }>
     row: RowType;
     section: SectionType;
     rowIndex: number;

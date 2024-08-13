@@ -5564,3 +5564,5 @@
 {"level":"info","message":"Store of merchant 20"}
 {"level":"info","message":"Store of merchant 21"}
 {"level":"info","message":"Store of merchant 22"}
+{"level":"error","message":"update mpesa for 2 failed 08/08/2024"}
+{"level":"error","message":"[ERROR SENDING MESSAGE TO CUSTOMER] for 2"}

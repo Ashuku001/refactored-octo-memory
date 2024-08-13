@@ -192,7 +192,10 @@ const ProductForm = ({ productData, categories, brands }: Props) => {
   useEffect(() => {
     setInitialData(productData)
     form.reset(initialData ? {
-      ...initialData, price: parseFloat(String(initialData?.price)), brand: initialData?.brand ?? '',
+      ...initialData, 
+      price: parseFloat(String(initialData?.price)), 
+      brand: initialData?.brand?.name, 
+      category: initialData.category?.name ?? '',
     } : {
       name: '',
       images: [],
@@ -220,7 +223,7 @@ const ProductForm = ({ productData, categories, brands }: Props) => {
         isOpen={openCat}
         onClose={() => setOpenCat(false)}
       />
-      <div className='flex w-full justify-end bg-muted/80 dark:bg-muted/50 rounded-md   px-2 py-1'>
+      <div className='flex w-full justify-end bg-muted/80 dark:bg-muted/50    px-2 py-1'>
           <div className="flex items-center space-x-5">
             <Button 
               variant={'ghost'}
@@ -462,10 +465,9 @@ const ProductForm = ({ productData, categories, brands }: Props) => {
                 />
               </div>
             <ProductVariation form={form} initialData={{prodCombinations: initialData?.prodCombinations, prodVariations: initialData?.prodVariations}}/>
-            <div className="pb-20"/>
-            <div className="pb-20"/>
           </form>
         </Form>
+        <div className='mb-20'/>
       </ScrollArea>
     </div>
   )

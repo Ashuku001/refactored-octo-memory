@@ -1,0 +1,8 @@
+mutation AddStripe($stripe: StripeSettingInput!){
+    addStripe(stripe: $stripe){
+        id
+        callback_url
+        webhook_secret
+        api_key
+    }
+}

@@ -4,6 +4,7 @@ import { LandingPage } from './logInRegister'
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
+import secureLocalStorage from 'react-secure-storage';
 
 interface GuardProps {
   children: React.ReactNode
@@ -23,7 +24,7 @@ function AuthGuard({ children }: GuardProps) {
   const {data} = useQuery(IS_LOGGED_IN)
   const localStorage = useLocalStorage()
   isLoggedInVar(!!getCookie('jwt'))
-  merchantId(parseInt(localStorage?.getItem('merchantId') as string))
+  merchantId(parseInt(secureLocalStorage.getItem('merchantId') as string))
 
   useEffect(() => {
     setIsMounted(true)

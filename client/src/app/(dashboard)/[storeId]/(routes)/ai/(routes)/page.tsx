@@ -10,8 +10,10 @@ type Props = {
 export default async function ProductsPage({params: {storeId}}: Props) {
     return (
         <div className="w-full h-full py-2 px-2  bg-gradient-to-b  from-muted/20 to-muted/50">
-          <h1 className="font-semibold py-2">Welcome to your store&apos;s modeling studio</h1>
-          <div className="grid gap-4 grid-cols-3">
+          <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50  px-2  py-1">
+            <h1 className="font-semibold py-2">Welcome to your store&apos;s modeling studio</h1>
+          </div>
+          <div className="grid gap-4 grid-cols-3 mt-2">
             <div className="bg-[url('/card-bg.png')] bg-cover rounded-lg">
               <Card className="drop-shadow-md backdrop-filter backdrop-blur-sm bg-opacity-30 dark:bg-black/30 h-full ">
                 <CardHeader className="flex flex-row items-center space-x-5 space-y-0 pb-2">

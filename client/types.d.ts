@@ -291,8 +291,8 @@ type SimilarProductFormatted = {
   id: number;
   name: string;
   price: string;
-  category: string;
-  brand: string;
+  category?: string;
+  brand?: string;
   description: string;
   score: string;
 };

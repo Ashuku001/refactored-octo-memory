@@ -42,7 +42,7 @@ function page({params: {storeId}}: Props) {
                     {tab.head == "Train" && <Train storeId={storeId}/>}
                 </TabsContent>
             ))}
-            <div className="pb-20"/>
+            <div className='mb-20'/>
         </ScrollArea>
     </Tabs>
   </div>);

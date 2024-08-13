@@ -42,7 +42,6 @@ type SectionProps = {
     section: SectionType
 }
 const Section = ({section}: SectionProps) => {
-    console.log("the section",section)
     return (
         <div>
             <div className="font-semibold text-blue-500 py-2">{section?.title}</div>
@@ -61,7 +60,6 @@ type RowProps = {
 }
 
 const Row = ({row}: RowType) => {
-    console.log("THE ROW", row)
     return(
         <div className='flex justify-center items-center'>
             <div className='flex-1' >
