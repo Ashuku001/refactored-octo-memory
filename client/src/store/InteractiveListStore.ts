@@ -58,7 +58,7 @@ export interface ListMessageState {
 export const useInteractiveListStore = create<ListMessageState>((set) => ({
     headerType: "NONE",
     listLoading: false,
-    rowsCount: 0,
+    rowsCount: 1,
 
     headerText: '',
     bodyText: '',

@@ -63,7 +63,7 @@ const Row = ({row}: RowType) => {
     return(
         <div className='flex justify-center items-center'>
             <div className='flex-1' >
-                <p>
+                <p className='line-clamp-1'>
                     {row.title} 
                 </p>
                 <p className='font-light text-slate-400 line-clamp-1'>

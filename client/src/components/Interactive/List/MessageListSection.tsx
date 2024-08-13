@@ -10,9 +10,9 @@ import toast from "react-hot-toast";
 import { Separator } from "@/components/ui/separator";
 import { FormControl, FormField, FormItem } from "@/components/ui/form"
 import { ProductsSwitcherListMessage } from "@/components/ProductsSwitcherListMessage";
-import useLocalStorage from '@/hooks/useLocalStorage';
 import secureLocalStorage from 'react-secure-storage';
 import { useRecommendationModal } from "@/hooks/useRecommendationModal";
+import { useEffect, useState } from "react";
 
 
 type MessageListProps = {
@@ -75,9 +75,10 @@ export const MessageListSections = ({form}: MessageListProps) => {
         deleteSection(section.id)
     }
 
+
     return (
         <div className="p-1 relative">
-            <Header variant='required' title='Section' description='Add sections for the list of products. Total rows from all sections is limited to 10' />
+            <Header variant='required' title='Section' description='Add sections for the list of products. Total rows from all sections is limited to 10.\nYou can also generate recommendation by clicking the button recommend.' />
             <div className="flex items-center justify-between">
                 <Button className="mt-1 sticky top-0" variant={'secondary'} onClick={() => {onAddSection()}} type="button">
                     <PlusIcon className="h-4 w-4"/>
@@ -125,13 +126,14 @@ type ListSectionProps = {
 
 export const ListSection = ({secIndex, sectionsLength, section, onDeleteSection, form,}: ListSectionProps) => {
     //@ts-ignore
-    const [rowsCount, setRowsCount, addRow, deleteRow, updateSectionTitle] = useInteractiveListStore((state) => [
+    const [rowsCount, sections, setRowsCount, addRow, deleteRow, updateSectionTitle] = useInteractiveListStore((state) => [
         state.rowsCount,
+        state.sections,
         state.setRowsCount,
         state.addRow,
         state.deleteRow,
         state.updateSectionTitle
-    ]) 
+    ])
 
     const onAddRow = (sectionId: number) => {
         if(rowsCount >= 10){
@@ -221,11 +223,19 @@ type RowProps = {
 
 
 export const Row = ({ row, section, onDeleteRow, form, rowIndex, secIndex, rowsLength,}: RowProps) => {
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
     //@ts-ignore
-    const [updateRowTitle, updateRowDescription] = useInteractiveListStore((state) => [
+    const [updateRowTitle, updateRowDescription, sections] = useInteractiveListStore((state) => [
         state.updateRowTitle,
-        state.updateRowDescription
+        state.updateRowDescription,
+        state.sections
     ])
+    useEffect(() => {
+        setTitle(sections[secIndex].rows[rowIndex].title)
+        setDescription(sections[secIndex].rows[rowIndex].description)
+    }, [sections, setTitle, setDescription])
+
     return(
         <div className="flex space-x-3 mt-2">
             <div className="flex-1 flex space-x-3">
@@ -237,7 +247,7 @@ export const Row = ({ row, section, onDeleteRow, form, rowIndex, secIndex, rowsL
                         className="w-[30%]">
                             <FormControl>
                                 <Input
-                                    value={field.value}
+                                    value={field.value ?? title}
                                     placeholder={`Title...`}
                                     onChange={(e) => {
                                         field.onChange(e.target.value);
@@ -257,7 +267,7 @@ export const Row = ({ row, section, onDeleteRow, form, rowIndex, secIndex, rowsL
                         className="w-[50%]">
                             <FormControl>
                                 <Input
-                                    value={field.value}
+                                    value={field.value ?? description}
                                     placeholder={`Description...`}
                                     onChange={(e) => {
                                         field.onChange(e.target.value);
