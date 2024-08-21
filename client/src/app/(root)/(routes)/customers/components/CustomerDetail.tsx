@@ -17,9 +17,6 @@ export const  CustomerDetail = () => {
     )
     const customer = data?.customer
 
-    console.log(">>>>>> CUSTOMER", customer)
-    console.log(">>>>>>CUSTOMER ID", customerId)
-
     return (
         <div className='right flex flex-col h-full relative w-full'>
             {(show == "360" && customerId != 'new' && customerId != null) && <Customer360 customerId={customerId}/>}

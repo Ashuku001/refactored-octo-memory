@@ -30,18 +30,19 @@ type Props = {
 }
 
 const formSchema = z.object({
-  first_name: z.string().nonempty({message: "Brand's name is required"}),
-  last_name: z.string().nonempty({message: "Brand's description is required"}),
+  first_name: z.string().nonempty({message: "First name is required"}),
+  last_name: z.string().nonempty({message: "Last name is required"}),
   phoneNumber: z.string().regex(/^(?:\d{9}|0\d{9})$/, {
     message: "Invalid Kenyan phone number. It should be exactly 9 digits."
   }),
   code: z.string().optional(),
-  age: z.string().nonempty({message: "Brand's location name is required"}),
-  gender: z.string().nonempty({message: "Brand's address is required"}),
+  age: z.number(),
+  gender: z.string().nonempty({message: "Gender is required"}),
   incomeCategory: z.string().optional(),
   customerSegment: z.string().optional(),
   occupation: z.string().optional(),
   joinDate: z.string().optional(),
+  status: z.string().optional()
 })
 
 type CustomerFormValue = z.infer<typeof formSchema>
@@ -51,6 +52,11 @@ const CustomerForm = ({ initialData }: Props) => {
   const router = useRouter()
   const params = useParams() // GET STORE ID
   const [setCustomerId] = useCustomer((state) => [state.setCustomerId])
+  const customerSegOptions = ["corporate", "small", "middle", "individual"]
+  const genderOptions = ["male", "female", "not_sure"]
+  const incomeOptions = ["high", "low", "middle"]
+  const occupationOptions = ["student", "employed", "self_employed"]
+  const statusOptions = ["new", "high_rated", "medium_rated", "low_rated"]
 
   const [updateBrand, { loading: upLoading, error: upError, data: upData }] = useMutation(UpdateBrandDocument, {
       update(cache, { data: { updateBrand } }) {
@@ -78,13 +84,20 @@ const CustomerForm = ({ initialData }: Props) => {
 
   const form = useForm<CustomerFormValue>({
     resolver: zodResolver(formSchema),
-    defaultValues: {...initialData, phoneNumber: 
-                                    initialData?.phone_number?.slice(-9), 
+    defaultValues: {...initialData, phoneNumber: initialData?.phone_number?.slice(-9), 
                                     code: initialData?.phone_number?.slice(0,3),
+                                    first_name: initialData?.first_name ?? "",
+                                    last_name: initialData?.last_name ?? "", 
+                                    age: initialData?.age ?? "",
+                                    gender: initialData?.gender ?? "",
+                                    incomeCategory: initialData?.incomeCategory ?? "",
+                                    customerSegment: initialData?.customerSegment ?? "",
+                                    occupation: initialData?.occupation ?? "",
+                                    joinDate: initialData?.joinDate ?? "",
+                                    status: initialData?.status ?? "",
     } || {
       first_name: "",
       last_name: "", 
-      phoneNumber: "",
       phoneNumber: "",
       code: "+254",
       age: "",
@@ -93,6 +106,7 @@ const CustomerForm = ({ initialData }: Props) => {
       customerSegment: "",
       occupation: "",
       joinDate: "",
+      status: "",
     }
   })
 
@@ -262,9 +276,32 @@ const CustomerForm = ({ initialData }: Props) => {
                 render={({ field }) => (
                   <FormItem>
                     <CustomFormLabel title='Gender' variant='required' description=''/>
-                    <FormControl>
-                      <Input disabled={upLoading} placeholder='Gender...' {...field} className="focus-visible:ring-0" />
-                    </FormControl>
+                    <Select
+                      disabled={upLoading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={initialData?.occupation}
+                    >
+                      <FormControl >
+                        <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                          <SelectValue
+                            placeholder="Select gender"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className='h-[200px]'>
+                        <ScrollArea className='h-full'>
+                          {genderOptions?.map((option) => (
+                            <SelectItem
+                              key={option}
+                              value={option}
+                            >
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -275,9 +312,32 @@ const CustomerForm = ({ initialData }: Props) => {
                 render={({ field }) => (
                   <FormItem>
                     <CustomFormLabel title='Income category' variant='optional' description=''/>
-                    <FormControl>
-                      <Input disabled={upLoading} placeholder='Income category...' {...field} className="focus-visible:ring-0" />
-                    </FormControl>
+                    <Select
+                      disabled={upLoading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={initialData?.occupation}
+                    >
+                      <FormControl >
+                        <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                          <SelectValue
+                            placeholder="Select income category"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className='h-[200px]'>
+                        <ScrollArea className='h-full'>
+                          {incomeOptions?.map((option) => (
+                            <SelectItem
+                              key={option}
+                              value={option}
+                            >
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -288,13 +348,32 @@ const CustomerForm = ({ initialData }: Props) => {
                 render={({ field }) => (
                   <FormItem>
                     <CustomFormLabel title='Customer segment' variant='optional' description=''/>
-                    <SelectInput
-                      loading={upLoading}
-                      onChange={field.onChange}
+                    <Select
+                      disabled={upLoading}
+                      onValueChange={field.onChange}
                       value={field.value}
-                      defaultValue={initialData?.customerSegment ?? ""}
-                      options={["corporate", "small", "middle", "individual"]}
-                    />
+                      defaultValue={initialData?.customerSegment}
+                    >
+                      <FormControl >
+                        <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                          <SelectValue
+                            placeholder="Select a segment"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className='h-[200px]'>
+                        <ScrollArea className='h-full'>
+                          {customerSegOptions?.map((option) => (
+                            <SelectItem
+                              key={option}
+                              value={option}
+                            >
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -305,9 +384,32 @@ const CustomerForm = ({ initialData }: Props) => {
                 render={({ field }) => (
                   <FormItem>
                     <CustomFormLabel title='Occupation' variant='optional' description=''/>
-                    <FormControl>
-                      <Input disabled={upLoading} placeholder='Occupation...' {...field} className="focus-visible:ring-0" />
-                    </FormControl>
+                    <Select
+                      disabled={upLoading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={initialData?.occupation}
+                    >
+                      <FormControl >
+                        <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                          <SelectValue
+                            placeholder="Select an occuption"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className='h-[200px]'>
+                        <ScrollArea className='h-full'>
+                          {occupationOptions?.map((option) => (
+                            <SelectItem
+                              key={option}
+                              value={option}
+                            >
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -318,23 +420,10 @@ const CustomerForm = ({ initialData }: Props) => {
             <div className='grid grid-cols-3 gap-5 items-end'>
               <FormField
                 control={form.control}
-                name="zipcode"
-                render={({ field }) => (
-                  <FormItem>
-                    <CustomFormLabel title='Age' variant='required' description=''/>
-                    <FormControl>
-                      <Input disabled={upLoading} placeholder='Age...' {...field} className="focus-visible:ring-0" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="loc_name"
                 render={({ field }) => (
                   <FormItem>
-                    <CustomFormLabel title='Location name' variant='required' description=''/>
+                    <CustomFormLabel title='Location name' variant='optional' description=''/>
                     <FormControl>
                       <Input disabled={upLoading} placeholder='Location name e.g., Nairobi CBD...' {...field} className="focus-visible:ring-0" />
                     </FormControl>
@@ -364,10 +453,33 @@ const CustomerForm = ({ initialData }: Props) => {
                 name="status"
                 render={({ field }) => (
                   <FormItem>
-                    <CustomFormLabel title='Status' variant='required' description=''/>
-                    <FormControl>
-                      <Input disabled={upLoading} placeholder='Status...' {...field} className="focus-visible:ring-0" />
-                    </FormControl>
+                    <CustomFormLabel title='Status' variant='optional' description=''/>
+                    <Select
+                      disabled={upLoading}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      defaultValue={initialData?.occupation}
+                    >
+                      <FormControl >
+                        <SelectTrigger className='border-none ring-0 focus:ring-0'>
+                          <SelectValue
+                            placeholder="Select status"
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className='h-[200px]'>
+                        <ScrollArea className='h-full'>
+                          {statusOptions?.map((option) => (
+                            <SelectItem
+                              key={option}
+                              value={option}
+                            >
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -377,7 +489,7 @@ const CustomerForm = ({ initialData }: Props) => {
                 name="loyalty"
                 render={({ field }) => (
                   <FormItem>
-                    <CustomFormLabel title='Loyalty Points' variant='required' description=''/>
+                    <CustomFormLabel title='Loyalty Points' variant='optional' description=''/>
                     <FormControl>
                       <Input disabled={upLoading} placeholder='Loyalty Points...' {...field} className="focus-visible:ring-0" />
                     </FormControl>
