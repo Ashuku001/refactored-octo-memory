@@ -33,7 +33,7 @@ async function processMessage(message, appSettings) {
     const textMessage = message.text.body; // retrive the message
     try {
       let replyButtonMessage = interactiveReplyButton; // the reply btn object
-      replyButtonMessage.to = appSettings.RECIPIENT_PHONE_NUMBER; // the key to in the replyBtn object give the number to send to
+      replyButtonMessage.to = appSettings.phone_number; // the key to in the replyBtn object give the number to send to
       // const replyButtonSent = await sendWhatsAppMessage(replyButtonMessage, appSettings); // send the message to that number
       // console.log("THE REPLY BUTTONS SENT", replyButtonSent);
     } catch (error) {
@@ -56,7 +56,7 @@ async function processMessage(message, appSettings) {
           // console.log("PRODUCTS", products)
           let productsList = interactiveList; // the interactive list object
           // console.log('PRODUCT LIST', productsList)
-          productsList.to = appSettings.RECIPIENT_PHONE_NUMBER; // the phone number to send to
+          productsList.to = appSettings.phone_number; // the phone number to send to
           productsList.interactive.action.sections[0].rows =
             products.map(createProductsList);
 

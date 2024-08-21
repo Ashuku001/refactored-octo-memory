@@ -6,12 +6,12 @@ export async function POST(request: Request, res: Response) {
   if (setting) {
     try {
       const res = await fetch(
-        `https://graph.facebook.com/${setting.API_VERSION}/${setting.BUSINESS_ACCOUNT_ID}/message_templates`
+        `https://graph.facebook.com/${setting.api_version}/${setting.business_account_id}/message_templates`
         + '?limit=1000',
         {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${setting.ACCESS_TOKEN}`,
+            'Authorization': `Bearer ${setting.access_token}`,
             'Content-Type': 'application/json'
           }
         }

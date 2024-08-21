@@ -1,30 +1,30 @@
 "use server"
 
 export const addSettingToDB = (e: FormData) => {
-    const ACCESS_TOKEN = e.get("ACCESS_TOKEN")?.toString()
-    const APP_ID = e.get("APP_ID")?.toString()
-    const APP_SECRET = e.get("APP_SECRET")?.toString()
-    const BUSINESS_ACCOUNT_ID = e.get("BUSINESS_ACCOUNT_ID")?.toString()
-    const PHONE_NUMBER_ID = e.get("PHONE_NUMBER_ID")?.toString()
-    const API_VERSION = e.get("API_VERSION")?.toString()
-    const WEBHOOK_VERIFICATION_TOKEN = e.get("WEBHOOK_VERIFICATION_TOKEN")?.toString()
-    const RECIPIENT_PHONE_NUMBER = e.get("RECIPIENT_PHONE_NUMBER")?.toString()
+    const access_token = e.get("access_token")?.toString()
+    const app_id = e.get("app_id")?.toString()
+    const app_secret = e.get("app_secret")?.toString()
+    const business_account_id = e.get("business_account_id")?.toString()
+    const phone_number_id = e.get("phone_number_id")?.toString()
+    const api_version = e.get("api_version")?.toString()
+    const webhook_verification_token = e.get("webhook_verification_token")?.toString()
+    const phone_number = e.get("phone_number")?.toString()
 
-    if (!ACCESS_TOKEN || !APP_ID || !APP_SECRET || !BUSINESS_ACCOUNT_ID || !API_VERSION || !WEBHOOK_VERIFICATION_TOKEN || !RECIPIENT_PHONE_NUMBER) {
+    if (!access_token || !app_id || !app_secret || !business_account_id || !api_version || !webhook_verification_token || !phone_number) {
         return
     }
 
     const variables = {
         setting: {
             callBack_url: "",
-            ACCESS_TOKEN: ACCESS_TOKEN,
-            APP_ID: APP_ID,
-            APP_SECRET: APP_SECRET,
-            BUSINESS_ACCOUNT_ID: BUSINESS_ACCOUNT_ID,
-            PHONE_NUMBER_ID: PHONE_NUMBER_ID,
-            API_VERSION: API_VERSION,
-            WEBHOOK_VERIFICATION_TOKEN: WEBHOOK_VERIFICATION_TOKEN,
-            RECIPIENT_PHONE_NUMBER: RECIPIENT_PHONE_NUMBER,
+            access_token: access_token,
+            app_id: app_id,
+            app_secret: app_secret,
+            business_account_id: business_account_id,
+            phone_number_id: phone_number_id,
+            api_version: api_version,
+            webhook_verification_token: webhook_verification_token,
+            phone_number: phone_number,
         }
     }
 

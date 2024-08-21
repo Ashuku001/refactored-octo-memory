@@ -6,14 +6,14 @@ const { gql } = require("graphql-request");
 const GET_SETTINGS = gql`
   query setting($username: String!){
     setting(username: $username){
-        APP_ID
-        APP_SECRET
-        PHONE_NUMBER_ID
-        BUSINESS_ACCOUNT_ID
-        ACCESS_TOKEN
-        API_VERSION
-        WEBHOOK_VERIFICATION_TOKEN
-        RECIPIENT_PHONE_NUMBER
+        app_id
+        app_secret
+        phone_number_id
+        business_account_id
+        access_token
+        api_version
+        webhook_verification_token
+        phone_number
     }
   }
 `
@@ -49,9 +49,9 @@ async function getVerificationToken(req) {
 
       console.log(
         "WEBHOOK VERIFICATION>>>>>".bgGreen,
-        settings.WEBHOOK_VERIFICATION_TOKEN
+        settings.webhook_verification_token
       );
-      const verificationToken = settings.WEBHOOK_VERIFICATION_TOKEN;
+      const verificationToken = settings.webhook_verification_token;
       
       if (verificationToken) {
         return verificationToken;
@@ -74,7 +74,7 @@ async function getAppSecret(req) {
       });
 
       console.log("THE SETTINGS", settings);
-      const appSecret = settings.APP_SECRET;
+      const appSecret = settings.app_secret;
       console.log("app secret>>>>>", appSecret);
       if (appSecret) {
         return appSecret;

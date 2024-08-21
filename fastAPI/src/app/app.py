@@ -45,7 +45,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://cesNextClient:3000", "https://hello-customer.onrender.com"],
+    allow_origins=["http://localhost:3000", "http://cesNextClient:3000", "https://hello-customer.onrender.com", "https://eu2.make.com/"],
     allow_credentials=True, # allowed to send cookies 
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,7 +66,6 @@ app.include_router(classification_router, prefix="/supervised_model/classificati
 app.include_router(deep_learning_router, prefix="/deep-learning/collaborative", tags=["deep learning"])
 
 app.include_router(graphql_app, prefix="/graphql", tags=["graphql"]) 
-
 
 # FastAPIWrapper(
 #     "/sales",

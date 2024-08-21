@@ -125,7 +125,7 @@ type ListSectionProps = {
 
 
 export const ListSection = ({secIndex, sectionsLength, section, onDeleteSection, form,}: ListSectionProps) => {
-    //@ts-ignore
+    const [title, setTitle] = useState("")
     const [rowsCount, sections, setRowsCount, addRow, deleteRow, updateSectionTitle] = useInteractiveListStore((state) => [
         state.rowsCount,
         state.sections,
@@ -152,6 +152,9 @@ export const ListSection = ({secIndex, sectionsLength, section, onDeleteSection,
         setRowsCount(-1)
     }
     
+    useEffect(() => {
+        setTitle(sections[secIndex].title)
+    }, [sections, updateSectionTitle, secIndex])
 
     return (
         <div className="border-2 p-1">
@@ -171,7 +174,7 @@ export const ListSection = ({secIndex, sectionsLength, section, onDeleteSection,
                         <FormItem>
                             <FormControl>
                                 <Input
-                                    value={field.value}
+                                    value={field.value ?? title}
                                     placeholder={`Section ${secIndex + 1} title`}
                                     onChange={(e) => {
                                         field.onChange(e.target.value);
@@ -234,7 +237,7 @@ export const Row = ({ row, section, onDeleteRow, form, rowIndex, secIndex, rowsL
     useEffect(() => {
         setTitle(sections[secIndex].rows[rowIndex].title)
         setDescription(sections[secIndex].rows[rowIndex].description)
-    }, [sections, setTitle, setDescription])
+    }, [sections, setTitle, setDescription, rowIndex, secIndex])
 
     return(
         <div className="flex space-x-3 mt-2">

@@ -59,7 +59,7 @@ type RowProps = {
     row: RowType
 }
 
-const Row = ({row}: RowType) => {
+const Row = ({row}: RowProps) => {
     return(
         <div className='flex justify-center items-center'>
             <div className='flex-1' >

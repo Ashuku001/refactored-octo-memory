@@ -1,4 +1,4 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.11
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10
 WORKDIR /src
 
 COPY ./requirements.txt /src/requirements.txt

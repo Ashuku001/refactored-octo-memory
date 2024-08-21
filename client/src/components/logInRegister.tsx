@@ -5,6 +5,8 @@ import secureLocalStorage from 'react-secure-storage';
 import {setCookie} from 'cookies-next'
 import {  EyeIcon, EyeOffIcon  } from 'lucide-react';
 import DarkModeButton from '@/components/DarkModeButton';
+import * as z from "zod"
+import { useForm } from "react-hook-form"
 
 import { LoginMerchantDocument, SignupMerchantDocument } from '@/graphql';
 
@@ -14,6 +16,9 @@ import { isLoggedInVar, merchantId } from './AuthGuard';
 import FacebookEmbeddedSignup from './FacebookEmbeddedSignup';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { PhoneNumberInput, validateNumber } from '@/components/PhoneNumberInput'
+import { CustomFormLabel } from './ui/CustomFormLabel';
 
 export const LandingPage = () => {
     return(
@@ -108,19 +113,29 @@ const LoginForm = ({showLogin}: LoginProps) => {
     )
 }
 
+const RegisterFormSchema = z.object({
+    phoneNumber: z.string().regex(/^(?:\d{9}|0\d{9})$/, {
+        message: "Invalid Kenyan phone number. It should be exactly 9 digits."
+      }),
+    username: z.string().min(1),
+    password: z.string().min(1 ),
+    code: z.string().optional(),
+})
+
+type RegisterFormValues = z.infer<typeof RegisterFormSchema>
+
 type RegisterProps = {
     showLogin: boolean
 }
 
 const RegisterForm = ({showLogin}: RegisterProps) => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [whatsapp_phone_number, setWhatsapp_phone_number] = useState('')
     const [showPassword, setShowPassword] = useState(false)
     const [signupMerchant, { loading, error, data }] = useMutation(SignupMerchantDocument)
 
-    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+    const form = useForm<RegisterFormValues>()
+
+    const onSubmit = (data: RegisterFormValues) => {
+        const phoneNumber = validateNumber({code: data?.code,phoneNumber: data.phoneNumber})
         signupMerchant({
             //@ts-ignore
             update(cache, { data: { signupMerchant } }) {
@@ -133,64 +148,64 @@ const RegisterForm = ({showLogin}: RegisterProps) => {
                     merchantId(signupMerchant.merchant.id)
                 }
             },
-            variables: { username, whatsapp_phone_number, password }
+            variables: { username:data.username, whatsapp_phone_number: phoneNumber, password: data.password }
         })
-        setUsername('')
-        setPassword('')
-        setWhatsapp_phone_number('')
     }
-
-    useEffect(() => {
-        setUsername('')
-        setPassword('')
-    },[showLogin, setUsername, setPassword])
 
     return (
     <div className='w-full'>
-        {!loading && (
-            <form onSubmit={onSubmit} className='flex flex-col space-y-2' >
-                <Input
-                    type="text"
-                    placeholder='username'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value.replace(/\s/g, "_"))}
-                    className='p-2 rounded-md'
-                    required
-
-                />
-                <Input
-                    type='number'
-                    placeholder='whatsapp phone number'
-                    onChange={(e) => setWhatsapp_phone_number(e.target.value)}
-                    className='p-2 rounded-md'
-                    required
-                />
-                <div className='flex items-center relative'>
-                    <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder='password'
-                        onChange={(e) => setPassword(e.target.value)}
-                        className='p-2 pr-20 rounded-md'
+        {loading
+            ? <LoadingComponent />
+            : <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-2">
+                    <FormField
+                        control={form.control}
+                        name="username"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="Username" variant="required" description="" />
+                                <FormControl>
+                                    <Input placeholder={"Username..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
                     />
-                    <Button
-                        variant={"ghost"}
-                        size={"icon"}
-                        type='button'
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-0"
-                    >
-                        {showPassword ? <EyeOffIcon size="20"/> : <EyeIcon size={"20"}/>}
+                    <PhoneNumberInput form={form}/>
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem className=''>
+                                <CustomFormLabel title="Password" variant="required" description="" />
+                                <div className='flex items-center relative'>
+                                    <FormControl>
+                                        <Input 
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder={"Password..."} 
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <Button
+                                        type='button'
+                                        variant={"ghost"}
+                                        size={'icon'}
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className='absolute right-0'
+                                    >
+                                        {!showPassword ? <EyeOffIcon size="20"/> : <EyeIcon size="20"/>}
+                                    </Button>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit"  disabled={loading || !!Object.keys(form.formState.errors)?.length}>
+                        Signup
                     </Button>
-                </div>
-                <Button
-                    disabled={!username && !password && !whatsapp_phone_number}
-                    type='submit'
-                    variant={"default"}
-                    className='p-2  rounded-md'
-                >Sign up</Button>
-            </form>
-        )}
-        {loading && <LoadingComponent />}
+                </form>
+            </Form>
+        }
         {error && <ErrorComponent message={error.message} />}
     </div>
     )

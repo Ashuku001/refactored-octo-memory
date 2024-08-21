@@ -52,7 +52,6 @@ const BrandForm = ({ initialData }: Props) => {
   const [updateBrand, { loading: upLoading, error: upError, data: upData }] = useMutation(UpdateBrandDocument, {
       update(cache, { data: { updateBrand } }) {
         const data = cache.readQuery({ query: GetBrandsDocument, variables: { storeId: parseInt(params.storeId) } });
-        console.log(data)
         const updatedItems = data.brands.map(item =>
           item.id === updateBrand.id ? updateBrand : item
         );

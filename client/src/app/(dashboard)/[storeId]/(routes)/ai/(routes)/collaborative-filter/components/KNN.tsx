@@ -75,15 +75,22 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
   const [customer, setCustomer] = useState<CustomerSearchQuery["customerSearch"] | null>(null)
   const [customerSearch, {loading: queryloading, error, data}] = useLazyQuery(CustomerSearchDocument)
   const baseUrl = "/model/collaborative/knn-model/predict"
-  let customers: CustomerSearchQuery["customerSearch"] = data?.customerSearch
+  const [customers, setCustomers] = useState<CustomerSearchQuery["customerSearch"] | []>(data?.customerSearch ?? [])
 
   useEffect(() => {
     if(searchString?.length > 2){
       customerSearch({variables: {page: 0, limit:10, text:searchString}})
     } else {
-      customers = []
+      setCustomers([])
     }
-  }, [searchString, customers])
+  }, [searchString, setCustomers, customerSearch])
+
+  
+  useEffect(() => {
+    if(data?.customerSearch){
+      setCustomers(data?.customerSearch)
+    }
+  }, [data?.customerSearch, setCustomers])
 
   useEffect(() => {
     const onPredict = async (customerIds: number[], k:number=5, sample:number=10) => {
@@ -129,7 +136,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
     if(customer?.length) {
       onPredict([customer[0]?.id] as number)
     }
-  }, [customer, storeId])
+  }, [customer, storeId, merchantId])
 
   return <Card>
           <CardHeader className="">

@@ -23,7 +23,7 @@ export const RecommendationModal = () => {
     useEffect(() => {
         if(!recommendationModal.isOpen)
             setOption(undefined)
-    }, [recommendationModal.isOpen])
+    }, [recommendationModal.isOpen, setOption])
 
     useEffect(() => {
         if(option == "content-filter"){

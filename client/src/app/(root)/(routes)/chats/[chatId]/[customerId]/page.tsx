@@ -19,10 +19,10 @@ async function ChatPage({ params: { chatId, customerId } }: Props) {
         (<div className="bg-[url('/chat-room-bg-light.svg')] dark:bg-[url('/chat-room-bg-dark.svg')]  flex flex-col h-full relative">
             <div className="h-15 bg-[#F0F2F5] dark:bg-slate-800 flex justify-center items-center px-4 py-1 ">
                 <Suspense fallback={<LoadingChatHeader />}>
-                    <ChatHeader chatId={parseInt(chatId)} customerId={parseInt(customerId)} />
+                    <ChatHeader customerId={parseInt(customerId)} />
                 </Suspense>
             </div>
-            <div  className="flex-1 max-h-[78vh] pb-[26px]">
+            <div  className="flex-1 max-h-[80vh] pb-[26px]">
                     <Suspense fallback={<LoadingChat />}>
                         <MessageList id={parseInt(chatId)} />
                     </Suspense>

@@ -36,7 +36,7 @@ const BrandClient = ({ brands }: Props) => {
             <Separator className="mb-2"/>
             <ScrollArea className='h-full px-2'>
                 <div className="bg-gradient-to-b  from-muted/20 to-muted/50 rounded-sm">
-                    <DataTable columns={columns} data={brands} searchKey="label"/>
+                    <DataTable columns={columns} data={brands} searchKey="name"/>
                 </div>
                 <Heading title="API" description="API calls for Brands" />
                 <Separator />

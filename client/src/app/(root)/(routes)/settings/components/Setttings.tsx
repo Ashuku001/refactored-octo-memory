@@ -35,7 +35,7 @@ function page({ params: { username } }: Props) {
         </h1>
         <div>
           <p className='text-[16px] font-sans underline'>
-            {setting?.WEBHOOK_VERIFICATION_TOKEN}
+            {setting?.webhook_verification_token}
           </p>
         </div>
       </div>

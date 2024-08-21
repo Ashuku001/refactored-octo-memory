@@ -1,6 +1,6 @@
-query GetCustomers {
-  customers {
-    id
+query GetCustomer($customerId: Int!) {
+  customer(customerId: $customerId) {
+     id
     whatsapp_name
     phone_number
     first_name

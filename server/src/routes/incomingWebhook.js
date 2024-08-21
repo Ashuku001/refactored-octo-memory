@@ -21,7 +21,7 @@ router.post("/", async function (req, res, next) {
                       return value;
                     });
 
-  const appSecret = appSettings.APP_SECRET;
+  const appSecret = appSettings.app_secret;
 
   const xhub = new XHubSignature("SHA256", appSecret);
   

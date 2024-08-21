@@ -52,7 +52,7 @@ export const Filters = ({ columnFilters, setColumnFilters, searchKey, setSearchK
 
     return (
         <div className="mb-3 flex space-x-3 items-center w-full">
-            <div className="w-48 flex space-x-3 items-center relative">
+            <div className="w-50 flex space-x-3 items-center relative">
                 <SearchIcon size="20" className="absolute left-4"/>
                 <Input
                     type="text"

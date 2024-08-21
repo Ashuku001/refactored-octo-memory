@@ -34,10 +34,6 @@ function ProductDetail() {
     )
     const brands = brandData?.brands
 
-    
-
-
-
     return (
         <ProductForm
             productData={product}

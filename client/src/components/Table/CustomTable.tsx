@@ -30,7 +30,7 @@ function CustomDataTable<TData, TValue>({
   searchKeyOptions
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState([]);
-
+  console.log("Check it out")
   const table = useReactTable({
     data,
     columns,
@@ -45,8 +45,8 @@ function CustomDataTable<TData, TValue>({
     meta: {
       // @ts-ignore
       updateData: (rowIndex, columnId, value) => // updates the cell with the value passed
-        setData((prev) =>
-          prev.map((row, index) =>
+        setData((prev: any) =>
+          prev.map((row:any, index: number) =>
             index === rowIndex
               ? {
                   ...prev[rowIndex],

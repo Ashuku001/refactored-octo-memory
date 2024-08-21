@@ -4,20 +4,20 @@ const messageTemplates = require("./messageTemplates.js"); // message Templates
 // const products = require("./models/products.js"); // and the products we are selling
 
 // environment variables
-const accessToken = process.env.ACCESS_TOKEN;
-const apiVersion = process.env.API_VERSION;
-const recipientNumber = process.env.RECIPIENT_PHONE_NUMBER;
-const myNumberId = process.env.PHONE_NUMBER_ID;
-const myBizAcctId = process.env.BUSINESS_ACCOUNT_ID;
+const accessToken = process.env.access_token;
+const apiVersion = process.env.api_version;
+const recipientNumber = process.env.phone_number;
+const myNumberId = process.env.phone_number_id;
+const myBizAcctId = process.env.business_account_id;
 
 const products = {}; // should be from the database
 
 async function sendWhatsAppMessage(data, appSettings) {
   const config = {
     method: "post",
-    url: `https://graph.facebook.com/${appSettings.API_VERSION}/${appSettings.PHONE_NUMBER_ID}/messages`,
+    url: `https://graph.facebook.com/${appSettings.api_version}/${appSettings.phone_number_id}/messages`,
     headers: {
-      Authorization: `Bearer ${appSettings.ACCESS_TOKEN}`,
+      Authorization: `Bearer ${appSettings.access_token}`,
       "Content-Type": "application/json",
     },
     data: JSON.stringify(data),

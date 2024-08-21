@@ -2,14 +2,14 @@ mutation addSetting($setting: SettingInput!) {
   addSetting(setting: $setting) {
     __typename
     callBack_url
-    ACCESS_TOKEN
-    APP_ID
-    APP_SECRET
-    PHONE_NUMBER_ID
-    BUSINESS_ACCOUNT_ID
-    ACCESS_TOKEN
-    API_VERSION
-    WEBHOOK_VERIFICATION_TOKEN
-    RECIPIENT_PHONE_NUMBER
+    access_token
+    app_id
+    app_secret
+    phone_number_id
+    business_account_id
+    access_token
+    api_version
+    webhook_verification_token
+    phone_number
   }
 }

@@ -77,6 +77,7 @@ function ChatList() {
                         <ChatComponent key={chat?.id} chat={chat as ChatType} activeChat={activeChat} />
                     </Suspense>
                 ))}
+            <div className="mb-10"/>
             </ScrollArea>
         </div>
     )

@@ -107,14 +107,14 @@ type SettingType =
   | {
       __typename?: "Setting" | undefined;
       callBack_url: string;
-      APP_ID: string;
-      APP_SECRET: string;
-      PHONE_NUMBER_ID: string;
-      BUSINESS_ACCOUNT_ID: string;
-      ACCESS_TOKEN: string;
-      API_VERSION: string;
-      WEBHOOK_VERIFICATION_TOKEN: string;
-      RECIPIENT_PHONE_NUMBER?: string | undefined;
+      app_id: string;
+      app_secret: string;
+      phone_number_id: string;
+      business_account_id: string;
+      access_token: string;
+      api_version: string;
+      webhook_verification_token: string;
+      phone_number?: string | undefined;
     }
   | null
   | undefined;

@@ -22,7 +22,7 @@ const typeDefinitions = `#graqhql
     type Customer {
         id: Int!
         whatsapp_name: String
-        phone_number: String!
+        phone_number: String
         first_name: String
         last_name: String
         age: Int
@@ -245,14 +245,14 @@ const typeDefinitions = `#graqhql
     }
     type Setting {
         callBack_url: String!
-        APP_ID:String!
-        APP_SECRET:String!
-        PHONE_NUMBER_ID:String!
-        BUSINESS_ACCOUNT_ID:String!
-        ACCESS_TOKEN:String!
-        API_VERSION:String!
-        WEBHOOK_VERIFICATION_TOKEN:String!
-        RECIPIENT_PHONE_NUMBER:String
+        app_id:String!
+        app_secret:String!
+        phone_number_id:String!
+        business_account_id:String!
+        access_token:String!
+        api_version:String!
+        webhook_verification_token:String!
+        phone_number:String
     }
 
     ###########################  STORE SCHEMA #############################
@@ -825,14 +825,14 @@ const typeDefinitions = `#graqhql
 
     input SettingInput {
         callBack_url: String
-        APP_ID:String
-        APP_SECRET:String
-        PHONE_NUMBER_ID:String
-        BUSINESS_ACCOUNT_ID:String
-        ACCESS_TOKEN:String
-        API_VERSION:String
-        WEBHOOK_VERIFICATION_TOKEN:String
-        RECIPIENT_PHONE_NUMBER:String
+        app_id:String
+        app_secret:String
+        phone_number_id:String
+        business_account_id:String
+        access_token:String
+        api_version:String
+        webhook_verification_token:String
+        phone_number:String
     }
     input MerchantInput {
         business_name: String!

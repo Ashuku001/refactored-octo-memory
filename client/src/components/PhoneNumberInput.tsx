@@ -28,12 +28,12 @@ type Props = {
     form: any;
 }
 
-export const validateNumber = ({code, phoneNumber}: {code: string, phoneNumber: string}) => {
+export const validateNumber = ({code, phoneNumber}: {code: string | undefined, phoneNumber: string}) => {
     let temp = ""
     code?.startsWith("+") ? temp = code.slice(1) : temp = code ?? "254"
-    if(phoneNumber.length == 10 ){
+    if(phoneNumber?.length == 10 ){
         temp += phoneNumber.slice(1)
-    } else if( phoneNumber.length == 9){
+    } else if( phoneNumber?.length == 9){
         temp += phoneNumber
     }
     console.log(temp)

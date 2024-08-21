@@ -101,8 +101,6 @@ const ProductForm = ({ productData, categories, brands }: Props) => {
     }
   })
 
-  console.log(">>>>>>>",initialData)
-  console.log(">>>>>>>",categories.map(c => c.name))
 
 
   const onSubmit = (data: ProductFormValue) => {

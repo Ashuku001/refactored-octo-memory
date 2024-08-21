@@ -4,10 +4,10 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
     try {
         const { data } = await request.json()
-        const response = await fetch(`https://graph.facebook.com/${process.env.API_VERSION}/${process.env.PHONE_NUMBER_ID}/messages`, {
+        const response = await fetch(`https://graph.facebook.com/${process.env.api_version}/${process.env.phone_number_id}/messages`, {
             method: "POST",
             headers: {
-                'Authorization': `Bearer ${process.env.ACCESS_TOKEN}`,
+                'Authorization': `Bearer ${process.env.access_token}`,
                 'Content-Type': 'application/json'
             },
             body: data

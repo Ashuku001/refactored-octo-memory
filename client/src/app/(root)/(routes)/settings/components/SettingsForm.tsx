@@ -1,84 +1,246 @@
 'use client'
 import { useMutation } from "@apollo/client"
-import { AddSettingDocument } from "@/graphql"
-import { FormEvent, useState } from "react"
+import { AddSettingDocument, GetSettingQuery } from "@/graphql"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { z } from "zod"
+import { useForm } from "react-hook-form"
+import { CustomFormLabel } from "@/components/ui/CustomFormLabel"
+import { PhoneNumberInput, validateNumber } from "@/components/PhoneNumberInput"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Separator } from "@/components/ui/separator"
+import AlertModal from "@/components/modals/AlertModal"
+import Heading from "@/components/ui/Heading"
+import { Trash } from "lucide-react"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { TipTool } from "@/components/ui/TipTool"
+import toast from "react-hot-toast"
 
+const formSchema = z.object({
+  app_id: z.string().nonempty({message: "App id is required"}),
+  access_token: z.string().nonempty({message: "Access token is required"}),
+  app_secret: z.string().nonempty({message: "App secret is required"}),
+  business_account_id: z.string().nonempty({message: "Business account id is required"}),
+  phone_number_id: z.string().nonempty({message: "phone number id is required"}),
+  api_version: z.string().nonempty({message: "Api version is required"}),
+  webhook_verification_token: z.string().nonempty({message: "webhook verification token is required"}),
+  phoneNumber: z.string().nonempty({message: "Recipient test phone number is required"}),
+  code: z.string().optional()
+})
 
-function SettingsForm() {
-  const [ACCESS_TOKEN, setACCESSTOKEN] = useState('')
-  const [APP_ID, setAPP_ID] = useState('')
-  const [APP_SECRET, setAPP_SECRET] = useState('')
-  const [BUSINESS_ACCOUNT_ID, setBUSINESS_ACCOUNT_ID] = useState('')
-  const [PHONE_NUMBER_ID, setPHONE_NUMBER_ID] = useState('')
-  const [API_VERSION, setAPI_VERSION] = useState('')
-  const [WEBHOOK_VERIFICATION_TOKEN, setWEBHOOK_VERIFICATION_TOKEN] = useState('')
-  const [RECIPIENT_PHONE_NUMBER, setRECIPIENT_PHONE_NUMBER] = useState('')
-
-  const router = useRouter()
-
-  const [addSettings] = useMutation(AddSettingDocument)
-
-  const addSettingToDB = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    if (!ACCESS_TOKEN || !APP_ID || !APP_SECRET || !BUSINESS_ACCOUNT_ID || !API_VERSION || !WEBHOOK_VERIFICATION_TOKEN || !RECIPIENT_PHONE_NUMBER) {
-      return
-    }
-
-    const variables = {
-      setting: {
-        callBack_url: "",
-        ACCESS_TOKEN: ACCESS_TOKEN,
-        APP_ID: APP_ID,
-        APP_SECRET: APP_SECRET,
-        BUSINESS_ACCOUNT_ID: BUSINESS_ACCOUNT_ID,
-        PHONE_NUMBER_ID: PHONE_NUMBER_ID,
-        API_VERSION: API_VERSION,
-        WEBHOOK_VERIFICATION_TOKEN: WEBHOOK_VERIFICATION_TOKEN,
-        RECIPIENT_PHONE_NUMBER: RECIPIENT_PHONE_NUMBER,
-      }
-    }
-
-    addSettings({
-      variables: variables
+type FormValues = z.infer<typeof formSchema>
+type SettingFormProps = {
+    initialData: GetSettingQuery['setting']
+}
+function SettingsForm({
+    initialData
+}: SettingFormProps) {
+    const [open, setOpen] = useState(false)
+    const router = useRouter()
+    const [addSettings] = useMutation(AddSettingDocument)
+    const action = initialData ? "Update settings" : "Add settings"
+    const title = initialData ? "Update settings" : "Add settings"
+    const toastMessage = initialData ? "Updating settings successful" : "Adding settings successful"
+    const description = initialData ? "Update WhatsApp business API settings" : "Add new WhatsApp business API settings"
+    const form = useForm<FormValues>({
+        defaultValues: initialData ? {...initialData, 
+            phoneNumber: initialData?.phone_number?.slice(-9), 
+            code: initialData?.phone_number?.slice(0,3),
+        } : {
+        app_id: "",
+        access_token: "",
+        app_secret: "",
+        business_account_id: "",
+        phone_number_id: "",
+        api_version: "",
+        webhook_verification_token: "",
+        phoneNumber: "",
+        code: "254",
+        }
     })
-    setACCESSTOKEN('')
-    setAPP_ID('')
-    setAPP_SECRET("")
-    setAPP_SECRET("")
-    setBUSINESS_ACCOUNT_ID("")
-    setPHONE_NUMBER_ID("")
-    setAPI_VERSION("")
-    setWEBHOOK_VERIFICATION_TOKEN("")
-    setRECIPIENT_PHONE_NUMBER("")
 
+    const onSubmit = async (data: FormValues) => {
+        console.log(data)
+        const phoneNumber = validateNumber({code: data?.code, phoneNumber: data.phoneNumber})
+        const variables = {
+        setting: {
+            callBack_url: "",
+            access_token: data.access_token,
+            app_id: data.app_id,
+            app_secret: data.app_secret,
+            business_account_id: data.business_account_id,
+            phone_number_id: data.phone_number_id,
+            api_version: data.api_version,
+            webhook_verification_token: data.webhook_verification_token,
+            phone_number: phoneNumber,
+        }
+        }
 
-    router.push(`/settings/${RECIPIENT_PHONE_NUMBER}`)
-  }
+        try{
+            await addSettings({
+            variables: variables
+            })
+            toast.success(toastMessage)
+            router.push(`/settings`)
+        } catch {
+            toast.error("Something went wrong.")
+        }
+    }
+
+  const onDelete = async () => {
+    // try {
+    //     deleteBrand({
+    //         variables: {
+    //             brandId: initialData.id,
+    //             storeId: parseInt(params.storeId as string)
+    //         }
+    //     })
+    //     router.push(`/${params.storeId}/brands`)
+    //     toast.success("Brand deleted")
+    // } catch (error) {
+    //     toast.error("Something went wrong.")
+    // }
+    }
 
   return (
-    <div className="p-2 ">
-      <h1 className="text-[18px] py-2 font-sans font-bold">Your whatsapp business account settings</h1>
-      <form onSubmit={addSettingToDB} className="max-w-3xl font-sans font-bold">
-        <label htmlFor="ACCESS_TOKEN">Access Token</label>
-        <input onChange={e => setACCESSTOKEN(e.target.value)} type="text" placeholder='Access Token' name='ACCESS_TOKEN' id="ACCESS_TOKEN" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <label htmlFor="APP_ID">App ID</label>
-        <input onChange={e => setAPP_ID(e.target.value)} type="text" placeholder='App ID' name='APP_ID' id="APP_ID" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <label htmlFor="APP_SECRET">App Secret</label>
-        <input onChange={e => setAPP_SECRET(e.target.value)} type="text" placeholder='App Secret' name='APP_SECRET' id="APP_SECRET" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <label htmlFor="BUSINESS_ACCOUNT_ID">Whatsapp Business Account ID</label>
-        <input onChange={e => setBUSINESS_ACCOUNT_ID(e.target.value)} type="text" placeholder='Business account ID' name='BUSINESS_ACCOUNT_ID' id="BUSINESS_ACCOUNT_ID" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <label htmlFor="PHONE_NUMBER_ID">phone number ID</label>
-        <input onChange={e => setPHONE_NUMBER_ID(e.target.value)} type="text" placeholder='phone number ID' name='PHONE_NUMBER_ID' id="PHONE_NUMBER_ID" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <label htmlFor="API_VERSION">API Version</label>
-        <input onChange={e => setAPI_VERSION(e.target.value)} type="text" placeholder='API Version' name='API_VERSION' id="API_VERSION" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <label htmlFor="WEBHOOK_VERIFICATION_TOKEN">Webhook verify Token</label>
-        <input onChange={e => setWEBHOOK_VERIFICATION_TOKEN(e.target.value)} type="text" placeholder='WebHook Verfication Token' name='WEBHOOK_VERIFICATION_TOKEN' id="WEBHOOK_VERIFICATION_TOKEN" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <label htmlFor="RECIPIENT_PHONE_NUMBER">Test phone number to confirm your settings</label>
-        <input onChange={e => setRECIPIENT_PHONE_NUMBER(e.target.value)} type="text" placeholder='2547 07 000 000' name='RECIPIENT_PHONE_NUMBER' id="RECIPIENT_PHONE_NUMBER" className="bg-slate-200 dark:bg-gray-700 rounded-lg px-4 py-2 outline-none w-full flex-1 pr-8 cursor-auto mb-2" required />
-        <input type="submit" value="SUBMIT" name='' className="'bg-slate-300 dark:bg-gray-500 rounded-lg px-4 py-2 outline-none cursor-pointer" />
-      </form>
+    <div className="">
+        <AlertModal
+            isOpen={open}
+            onClose={() => setOpen(false)}
+            onConfirm={onDelete}
+            loading={false}
+        />
+        <div className="flex w-full justify-between items-center bg-muted/80 dark:bg-muted/50   px-2  py-1">
+            <Heading
+                title={title}
+                description={description}
+            />
+            <div className='ml-auto flex items-center space-x-4'>
+                {initialData &&
+                <div className=" px-2 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 py-2 rounded-md text-sm">
+                    <TipTool
+                    tip="Delete settings"
+                    sideOffset={4}
+                    className='flex items-center space-x-2 z-50'
+                    onClick={() => { setOpen(true) }}
+                    >
+                    <div className='text-md font-semibold'>Delete</div>
+                    <Trash className='h-4 w-4' />
+                    </TipTool>
+                </div>
+                }
+                <Button 
+                    disabled={false}
+                    className="py-0 px-2"
+                    type='submit'
+                    form="settingForm"
+                >
+                    {action}
+                </Button>
+            </div>
+        </div>
+        <Separator className="my-2"/>
+        <ScrollArea className="px-2">
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} id="settingForm" className="grid grid-cols-2 gap-5 px-10 dark:bg-[#09090B]">
+                    <FormField
+                        control={form.control}
+                        name="app_id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="App ID" variant="required" description=" " />
+                                <FormControl>
+                                    <Input placeholder={"App ID..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="access_token"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="Access token" variant="required" description="" />
+                                <FormControl>
+                                    <Input placeholder={"Access token..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="app_secret"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="App secret" variant="required" description="" />
+                                <FormControl>
+                                    <Input placeholder={"App secret..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="business_account_id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="Business Account ID" variant="required" description="" />
+                                <FormControl>
+                                    <Input placeholder={"Business Account ID..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="phone_number_id"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="Phone number ID" variant="required" description="" />
+                                <FormControl>
+                                    <Input placeholder={"Phone number ID..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="api_version"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="Api version" variant="required" description="" />
+                                <FormControl>
+                                    <Input placeholder={"Api version..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="webhook_verification_token"
+                        render={({ field }) => (
+                            <FormItem>
+                                <CustomFormLabel title="Webhook verification token" variant="required" description="" />
+                                <FormControl>
+                                    <Input placeholder={"Webhook verification token..."} {...field}/>
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <PhoneNumberInput form={form} description="Test phone number for you WhatsApp business API settings."/>
+                </form>
+            </Form>
+            <Separator className="my-2" />
+        </ScrollArea>
     </div>
   )
 }

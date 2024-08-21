@@ -9,28 +9,28 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      APP_ID: {
+      app_id: {
         type: Sequelize.STRING
       },
-      APP_SECRET: {
+      app_secret: {
         type: Sequelize.STRING
       },
-      PHONE_NUMBER_ID: {
+      phone_number_id: {
         type: Sequelize.STRING
       },
-      BUSINESS_ACCOUNT_ID: {
+      business_account_id: {
         type: Sequelize.STRING
       },
-      ACCESS_TOKEN: {
+      access_token: {
         type: Sequelize.STRING
       },
-      API_VERSION: {
+      api_version: {
         type: Sequelize.STRING
       },
-      WEBHOOK_VERIFICATION_TOKEN: {
+      webhook_verification_token: {
         type: Sequelize.STRING
       },
-      RECIPIENT_PHONE_NUMBER: {
+      phone_number: {
         type: Sequelize.STRING
       },
       callBack_url: {

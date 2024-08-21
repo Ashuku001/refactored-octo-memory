@@ -141,6 +141,8 @@ export const InteractiveListPanel = () =>{
       throw new Error()
     }
 
+    console.log(">>>>>>>>>>>>>>>>>>>.",formattedData)
+
 
     const {template, tempVariables} = getInteractiveListObj(formattedData, 2)
 

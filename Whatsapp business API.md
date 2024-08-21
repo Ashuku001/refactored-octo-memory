@@ -39,7 +39,7 @@ permissions whatsapp_business_management and whatsapp_business_messaging
 
 #### Request syntax
 
-Get/<PHONE_NUMBER_ID>
+Get/<phone_number_id>
 
 ##### example request 
 
@@ -241,8 +241,8 @@ Available subscription fields: account_alerts, account_review_update, account_up
 To subscribe your app to webhooks on a WABA, send a `POST` request to the [WABA > Subscribed Apps](https://developers.facebook.com/docs/graph-api/reference/whats-app-business-account/subscribed_apps/) endpoint.
 
 ```
-curl -X POST 'https://graph.facebook.com/<API_VERSION>/<WHATSAPP_BUSINESS_ACCOUNT_ID>/subscribed_apps' \
--H 'Authorization: Bearer <ACCESS_TOKEN>'
+curl -X POST 'https://graph.facebook.com/<api_version>/<WHATSAPP_BUSINESS_ACCOUNT_ID>/subscribed_apps' \
+-H 'Authorization: Bearer <access_token>'
 ```
 
 ##### response
@@ -262,8 +262,8 @@ To get a list of apps subscribed to webhooks on a WABA, send a `GET` request to 
 ##### Request
 
 ```
-curl 'https://graph.facebook.com/<API_VERSION>/<WHATSAPP_BUSINESS_ACCOUNT_ID>/subscribed_apps' \
--H 'Authorization: Bearer <ACCESS_TOKEN>'
+curl 'https://graph.facebook.com/<api_version>/<WHATSAPP_BUSINESS_ACCOUNT_ID>/subscribed_apps' \
+-H 'Authorization: Bearer <access_token>'
 ```
 
 ##### Response
@@ -431,7 +431,7 @@ Before you start, please review these recommendations and guidelines:
 
 ## Business Compliance
 
-Use the `/PHONE_NUMBER_ID/whatsapp_business_profile` endpoint to retrieve and update your business profile
+Use the `/phone_number_id/whatsapp_business_profile` endpoint to retrieve and update your business profile
 
 #### Reminders
 
@@ -446,7 +446,7 @@ Withing the business profile request you can specify what you want to know from 
 ```
 curl \ 
 'https://graph.facebook.com/v18.0/FROM_PHONE_NUMBER_ID/whatsapp_business_profile?fields=about,address,description,email,profile_picture_url,websites,vertical' \
--H 'Authorization: Bearer ACCESS_TOKEN'
+-H 'Authorization: Bearer access_token'
 ```
 
 #### response 
@@ -472,7 +472,7 @@ All
 
 ### Update Business Profile
 
-To update your profile, make a `POST` call to `/PHONE_NUMBER_ID/whatsapp_business_profile`. In your request, you can include the parameters listed below.
+To update your profile, make a `POST` call to `/phone_number_id/whatsapp_business_profile`. In your request, you can include the parameters listed below.
 
 #### parameters
 
@@ -504,8 +504,8 @@ supported vertical
 
 ```
 curl -X POST \
-  'https://graph.facebook.com/v18.0/PHONE_NUMBER_ID/whatsapp_business_profile' \
-  -H 'Authorization: Bearer ACCESS_TOKEN' \
+  'https://graph.facebook.com/v18.0/phone_number_id/whatsapp_business_profile' \
+  -H 'Authorization: Bearer access_token' \
   -H 'Content-Type: application/json' \
   -d '{
     "messaging_product": "whatsapp",

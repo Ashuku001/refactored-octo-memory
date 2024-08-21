@@ -31,7 +31,6 @@ type Props = {
 }
 
 export function CollaborativeFilter({ data}: Props) {
-    const [option, setOption] = useState("")
     const [loading, setLoading] = useState(false)
     const [formattedProducts, setFormattedProducts] = useState<SimilarProductFormatted[] | null>(null)
     const [rowsCount, sections, setRowsCount,  addSection, deleteSection, updateSectionTitle,  addRow, deleteRow, updateRowTitle, updateRowDescription, updateProduct] = useInteractiveListStore((state) => [
@@ -53,7 +52,6 @@ export function CollaborativeFilter({ data}: Props) {
     let baseUrl = "/memory/collaborative"
   
     async function onSubmit(formData: z.infer<typeof FormSchema>) {
-        setOption(formData.option)
         setLoading(true)
         if(formData.option =="item-to-item"){
             baseUrl = baseUrl + "/item-to-item-filter/predict";
@@ -63,18 +61,18 @@ export function CollaborativeFilter({ data}: Props) {
             setFormattedProducts(response)
 
             const sectionId = sections[0].id
-            for(let i=0; i < (response.length - 1); ++i){
-              const newRow = {id:  Math.floor(Math.random() * 100), title: "", description: "", product: null}
-              addRow(sectionId, newRow)
-              setRowsCount(+1)
-            }
+            if(response?.length)
+              for(let i=0; i < (response?.length - 1); ++i){
+                const newRow = {id:  Math.floor(Math.random() * 100), title: "", description: "", product: null}
+                addRow(sectionId, newRow)
+                setRowsCount(+1)
+              }
         }
         setLoading(false)
     }
 
     useEffect(() => {
       if(formattedProducts && formattedProducts.length){
-        
         if(sections.length > 1){
           sections.forEach(section => {
             deleteSection(section.id)
@@ -82,29 +80,20 @@ export function CollaborativeFilter({ data}: Props) {
           });
         }
         const sectionId = sections[0].id
-        console.log(sections[0].rows)
-        // if(rowsCount > 1){
-        //   sections[0].rows.slice(1).reverse().forEach(row => {
-        //     console.log(row.id)
-        //     deleteRow(sectionId, row.id)
-        //     setRowsCount(-1)
-        //   })
-        // }
         updateSectionTitle(sectionId, {title: "Deals just for you!"})
         const rows = (sections.find((s) => s.id == sectionId)).rows
 
         for(let i = 0; i < rows.length; ++i){
           const row = rows[i]
           const product = formattedProducts[i]
-          console.log(product)
           if(product){
-            updateRowTitle(sectionId, row.id, {title: product?.name??"".slice(0, 40)})
-            updateRowDescription(sectionId, row.id, {description: product.description??"".slice(0, 40)})
+            updateRowTitle(sectionId, row.id, {title: product?.name.slice(0, 50)??""})
+            updateRowDescription(sectionId, row.id, {description: product.description.slice(0, 50)??""})
             updateProduct(sectionId, row.id, {product: {id: parseInt(product.id), name: product.name, price: product.price}})
           }
         }
       }
-    }, [formattedProducts])
+    }, [formattedProducts, deleteSection, setRowsCount, updateSectionTitle, updateRowTitle, updateRowDescription, updateProduct])
   
     return (
       <Form {...form}>
@@ -150,7 +139,7 @@ export function CollaborativeFilter({ data}: Props) {
               </FormItem>
             )}
           />
-          <Button disabled={loading} type="submit" disabled={loading}>
+          <Button type="submit" disabled={loading}>
             {loading ? <LoadingSpinner />: "Submit"}
           </Button>
         </form>

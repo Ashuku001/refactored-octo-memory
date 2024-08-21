@@ -77,17 +77,22 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
   const [similarity, setSimilarity] = useState("Cosine")
   const similarityOptions = ["Cosine",  "Manhattan"]
   const [productSearch, {loading: queryloading, error, data}] = useLazyQuery(ProductSearchDocument)
-  let products: ProductSearchQuery["productSearch"] = data?.productSearch
-
+  const [products, setProducts] = useState<ProductSearchQuery["productSearch"] | []>(data?.productSearch ?? [])
   const baseUrl = "/memory/content/tfidf/predict"
 
   useEffect(() => {
     if(searchString.length > 2){
       productSearch({variables: {page: 0, limit:10, text:searchString, storeId: parseInt(storeId)}})
     } else {
-      products = []
+      setProducts([])
     }
-  }, [searchString, products])
+  }, [searchString, storeId, setProducts, productSearch])
+
+  useEffect(() => {
+    if(data?.productSearch){
+      setProducts(data?.productSearch)
+    }
+  }, [data?.productSearch, setProducts])
 
   useEffect(() => {
     const onPredict = async (productId: number, similarity: string) => {
@@ -127,7 +132,7 @@ export const TestRecommendation = ({storeId}: TestRecommendationProps) => {
         onPredict(product[0]?.id as number, similarity.toLowerCase())
       }
     } 
-  }, [product, similarity, storeId])
+  }, [product, similarity, storeId, merchantId])
 
   return <Card>
           <CardHeader className="">

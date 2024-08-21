@@ -6,7 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 function Orders({orders}: Customer360OrderObj[]) {
 
   return (
-  <Tabs defaultValue={orders[0]?.tab} className="h-full relative">
+  <Tabs defaultValue={orders?.length ? orders[0]?.tab : ""} className="h-full relative">
     <TabsList className="sticky top-12 z-20">
         {orders?.map((order, i) => 
         <TabsTrigger

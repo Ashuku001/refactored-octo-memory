@@ -11,6 +11,7 @@ import AlertModal from "@/components/modals/AlertModal";
 import { useState } from "react";
 import { CustomerType } from "@/types";
 import { CustomerModal } from '@/components/modals/CustomerModal';
+import { useCustomerModal } from "@/hooks/useCustomerModal";
 
 
 interface CustomerCellActionProps {
@@ -21,8 +22,7 @@ const CustomerCellAction: React.FC<CustomerCellActionProps> = ({
     data
 }) => {
     const [openConfirm, setOpenConfirm] = useState(false)
-    const [openUpdate, setOpenUpdate] = useState(false)
-
+    const customerModal = useCustomerModal()
     const [deleteBillboard, { loading: delLoading, error: delError }] = useMutation(DeleteBillboardDocument)
 
     const router = useRouter()
@@ -53,12 +53,10 @@ const CustomerCellAction: React.FC<CustomerCellActionProps> = ({
         <>
             <CustomerModal
                 initialData={data}
-                isOpen={openUpdate}
-                onClose={() => setOpenUpdate(false)}
             />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
+                    <Button variant="ghost" type="button" className="h-8 w-8 p-0">
                         <span className="sr-only">Open menu</span>
                         <MoreVertical className="h-4 w-4" />
                     </Button>
@@ -69,7 +67,7 @@ const CustomerCellAction: React.FC<CustomerCellActionProps> = ({
                     </DropdownMenuLabel>
                     <DropdownMenuItem
                         className="flex cursor-pointer hover:outline-none hover:opacity-60"
-                        onClick={() => setOpenUpdate(true)}
+                        onClick={customerModal.onOpen}
                     >
                         <Edit className="h-4 w-4 mr-2" />
                         Update
